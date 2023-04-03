@@ -42,6 +42,18 @@ public class Owner {
     @Column(name = "age", nullable = false)
     private int age;
 
+    public Owner(Long id, Long chatId, String name, String phone, int age) {
+        this.id = id;
+        this.chatId = chatId;
+        this.name = name;
+        this.phone = phone;
+        this.age = age;
+    }
+
+    public Owner() {
+
+    }
+
     public Long getId() {
         return id;
     }
