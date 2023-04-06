@@ -1,10 +1,13 @@
 package com.skypro.shelteranimaltgbot.model;
 
+import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,20 +16,16 @@ public class User {
     private String lastName;
     private Long userTelegramId;
     private Long userChatId;
-    @OneToOne
-    @JoinColumn(name = "status_list_id")
-    private Status status;
+
+    private StatusEnum status;
     private String phone;
 
-
-    @OneToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    private RoleEnum role;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, Long userTelegramId, Long userChatId, Status status,  Role role) {
+    public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userTelegramId = userTelegramId;
@@ -59,11 +58,11 @@ public class User {
         return phone;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 
@@ -71,11 +70,11 @@ public class User {
         this.phone = phone;
     }
 
-    public Status getStatus() {
+    public StatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(StatusEnum status) {
         this.status = status;
     }
 
