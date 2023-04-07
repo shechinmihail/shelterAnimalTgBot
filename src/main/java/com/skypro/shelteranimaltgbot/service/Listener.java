@@ -5,7 +5,10 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import com.skypro.shelteranimaltgbot.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +17,7 @@ import java.util.List;
 
 @Service
 public class Listener {
-
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     @Autowired
     private UserService userService;
 
@@ -30,32 +33,41 @@ public class Listener {
      * метод распределяющий входящие данные от клиента
      */
     public List<SendMessage> messages(Update update) {
-        Message message = update.message();
-        Long chatId = message.chat().id();
-        var contact = update.message().contact();
         List<SendMessage> messages = new ArrayList<>();
-        if (contact != null) {
-            setContact(update);
-            messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
-        } else {
-            switch (message.text()) {
-                case START:
-                    userService.addUser(update);
-                    messages.add(new SendMessage(chatId, "Привет " + message.from().firstName()).replyMarkup(keyboardMenu()));
-                    messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
-                    break;
-                case CALL_VOLUNTEER:
-                    chatJoinRequest().stream()
-                            .forEach(user -> {
-                                messages.add(new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()));
-                                messages.add(new SendMessage(user.getUserChatId(), "принять запрос").replyMarkup(keyboardSession()));
-                            });
-                    messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
-                default:
-                    break;
-            }
+        try {
+            Message message = update.message();
+            Long chatId = message.chat().id();
+            var contact = update.message().contact();
+            if (contact != null) {
+                setContact(update);
+                messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
+                //TODO перенаправить запрос волонтеру
+            } else {
+                switch (message.text()) {
+                    case START:
+                        userService.addUser(update);
+                        messages.add(new SendMessage(chatId, "Привет " + message.from().firstName()).replyMarkup(keyboardMenu()));
+                        messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
+                        break;
+                    case CALL_VOLUNTEER:
+                        //TODO доработать метод
+//                    chatJoinRequest().stream()
+//                            .forEach(user -> {
+//                                messages.add(new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()));
+//
+//                               // messages.add(new SendMessage(user.getUserChatId(), "принять запрос").replyMarkup(keyboardSession()));
+//                            });
+//                    messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
+                    default:
+                        break;
+                }
 
+            }
+        } catch (NullPointerException e) {
+            logger.info("Processing updatePhone: ");
+            e.getMessage();
         }
+
 
         return messages;
     }
@@ -81,10 +93,10 @@ public class Listener {
     /**
      * получаем список волонтеров
      */
-    public List<User> chatJoinRequest() {
-        List<User> volunteers = userService.cheUsersByRole();
-        return new ArrayList<>(userService.cheUsersByRole());
-    }
+   // public List<User> chatJoinRequest() {
+       // List<User> volunteers = userService.cheUsersByRole();
+       // return new ArrayList<>(userService.cheUsersByRole());
+   // }
 
 
     /**
