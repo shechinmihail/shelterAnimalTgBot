@@ -23,8 +23,8 @@ public class ChatSessionWithVolunteerService {
 
     /**
      * получить сессию по id, изменить статус
-     * */
-    public void getChatSession(Long idSession, SessionEnum session) {
+     */
+    public void getChatSessionForClose(Long idSession, SessionEnum session) {
         ChatSessionWithVolunteer chatSessionWithVolunteer = chatSessionRepository.findChatSessionWithVolunteerById(idSession);
         chatSessionWithVolunteer.setSession(session);
         chatSessionRepository.save(chatSessionWithVolunteer);
@@ -42,7 +42,7 @@ public class ChatSessionWithVolunteerService {
     /**
      * получить id пользователя в чате
      * */
-    public ChatSessionWithVolunteer getChatUserId(Long idSessionForConnect) {
+    public ChatSessionWithVolunteer getChatUser(Long idSessionForConnect) {
         return chatSessionRepository.findChatSessionWithVolunteerById(idSessionForConnect);
     }
 }

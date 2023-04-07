@@ -71,9 +71,6 @@ public class ListenerService {
         return messages;
     }
 
-
-    //TODO Доработать метод  разбить на методы
-
     /**
      * метод обработки update.message
      */
@@ -98,17 +95,26 @@ public class ListenerService {
                     openСonnection(messages);
                     break;
                 case CLOSE:
-                    chatSessionService.getChatSession(idSessionForConnect, SessionEnum.CLOSE);
-                    //TODO добавить оповещение о закрытии связи с волонтером
+                    closeСonnection(messages);
                     break;
                 default:
                     chatWithVolunteer();
                     break;
             }
-
         }
         return messages;
 
+    }
+
+    /**
+     * закрытие соединения с клиентом
+     */
+
+    private List<SendMessage> closeСonnection(List<SendMessage> messages) {
+        chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
+        ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
+        messages.add(new SendMessage(chatUser.getChatIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
+        return messages;
     }
 
 
@@ -116,8 +122,8 @@ public class ListenerService {
      * чат с волонтером
      */
     private void chatWithVolunteer() {
-        Long userChatId = chatSessionService.getChatUserId(idSessionForConnect).getChatIdUser();
-        Long volunteerChatId = chatSessionService.getChatUserId(idSessionForConnect).getTelegramIdVolunteer();
+        Long userChatId = chatSessionService.getChatUser(idSessionForConnect).getChatIdUser();
+        Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
         if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userChatId)) {
             ForwardMessage forwardMessage = new ForwardMessage(userChatId, chatId, message.messageId());
             SendResponse response = telegramBot.execute(forwardMessage);
@@ -127,11 +133,16 @@ public class ListenerService {
         }
     }
 
+
+    /**
+     * подтверждение соединения волонтером с клиентом
+     */
+
     private List<SendMessage> openСonnection(List<SendMessage> messages) {
         if (!chatSessionService.checkSession(idSessionForConnect)) {
-            chatSessionService.getChatSession(idSessionForConnect, SessionEnum.OPEN);
+            chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.OPEN);
         } else {
-            messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается либо уже закрыт"));
+            messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
         }
         return messages;
     }
