@@ -4,9 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
-import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,7 @@ public class Listener {
     private TelegramBot telegramBot;
 
     private final String START = "/start";
+
     private final String CALL_VOLUNTEER = "Позвать волонтера";
 
 
@@ -38,8 +37,6 @@ public class Listener {
         if (contact != null) {
             setContact(update);
             messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
-        } else if (message.chat() == null) {
-            messages.add(new SendMessage(chatId, "Ваш запрос обрабатывается"));
         } else {
             switch (message.text()) {
                 case START:
@@ -48,10 +45,16 @@ public class Listener {
                     messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
                     break;
                 case CALL_VOLUNTEER:
-                    chatJoinRequest(message, chatId);
+                    chatJoinRequest().stream()
+                            .forEach(user -> {
+                                messages.add(new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()));
+                                messages.add(new SendMessage(user.getUserChatId(), "принять запрос").replyMarkup(keyboardSession()));
+                            });
+                    messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
                 default:
                     break;
             }
+
         }
 
         return messages;
@@ -63,16 +66,24 @@ public class Listener {
 
 
     /**
-     * Функция позвать волонтера
+     * Метод позвать волонтера
      */
-    public void chatJoinRequest(Message message, Long chatId) {
+//    public void chatJoinRequest(Message message, Long chatId) {
+//        List<User> volunteers = userService.cheUsersByRole();
+//        volunteers.stream()
+//                .forEach(u -> {
+//                            ForwardMessage forwardMessage = new ForwardMessage(u.getUserChatId(), chatId, message.messageId());
+//                            SendResponse response = telegramBot.execute(forwardMessage);
+//                        }
+//                );
+//    }
+
+    /**
+     * получаем список волонтеров
+     */
+    public List<User> chatJoinRequest() {
         List<User> volunteers = userService.cheUsersByRole();
-        volunteers.stream()
-                .forEach(u -> {
-                            ForwardMessage forwardMessage = new ForwardMessage(u.getUserChatId(), chatId, message.messageId());
-                            SendResponse response = telegramBot.execute(forwardMessage);
-                        }
-                );
+        return new ArrayList<>(userService.cheUsersByRole());
     }
 
 
@@ -80,26 +91,20 @@ public class Listener {
      * выпадающее меню в чат
      */
     private Keyboard keyboardChatMenu() {
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup(
-                new InlineKeyboardButton[]{
-                        new InlineKeyboardButton("Узнать информацию о приюте").callbackData("Информация о приюте"),})
-                .addRow(new InlineKeyboardButton[]{new InlineKeyboardButton("Как взять собаку из приюта").callbackData("Как взять собаку из приюта"),})
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Узнать информацию о приюте").callbackData("ABOUT"))
+                .addRow(new InlineKeyboardButton("Как взять собаку из приюта").callbackData("Как взять собаку из приюта"))
                 .addRow(new InlineKeyboardButton("Прислать отчет о питомце").callbackData("Прислать отчет о питомце"))
-                .addRow(new InlineKeyboardButton[]{new InlineKeyboardButton("Порекомендовать нас!").switchInlineQuery("Порекомендовать нас!")});
-        return keyboard;
+                .addRow(new InlineKeyboardButton("Порекомендовать нас!").switchInlineQuery("Порекомендовать нас!"));
     }
 
     /**
      * нижнее меню
      */
     private Keyboard keyboardMenu() {
-        Keyboard keyboard = new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton("Позвать волонтера"),
-                        new KeyboardButton("Оставить контакт").requestContact(true),
-                }
-        ).resizeKeyboard(true);
-        return keyboard;
+        return new ReplyKeyboardMarkup(
+                new KeyboardButton("Позвать волонтера"),
+                new KeyboardButton("Оставить контакт").requestContact(true)).resizeKeyboard(true);
     }
 
 
