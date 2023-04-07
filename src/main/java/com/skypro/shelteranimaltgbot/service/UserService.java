@@ -40,4 +40,10 @@ public class UserService {
     public List<User> cheUsersByRole(RoleEnum role) {
         return new ArrayList<>(userRepository.findAllByRole(role));
     }
+
+    public void setChatIdForConnect(Long chatIdForConnect, Long telegramId) {
+        User user = userRepository.findAllByUserTelegramId(telegramId);
+        user.setUserChatId(chatIdForConnect);
+        userRepository.save(user);
+    }
 }

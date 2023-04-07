@@ -25,6 +25,8 @@ public class User {
     public User() {
     }
 
+
+
     public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,6 +78,9 @@ public class User {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+    public void setUserChatId(Long userChatId) {
+        this.userChatId = userChatId;
     }
 
     @Override

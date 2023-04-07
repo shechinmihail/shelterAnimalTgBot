@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.response.SendResponse;
-import com.skypro.shelteranimaltgbot.service.Listener;
+import com.skypro.shelteranimaltgbot.service.ListenerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private TelegramBot telegramBot;
 
     @Autowired
-    private Listener listener;
+    private ListenerService listenerService;
 
 
     @PostConstruct
@@ -35,7 +35,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing updatePhone: {}", update);
-            listener.messages(update).stream()
+            listenerService.messages(update).stream()
                     .forEach(sendMessage -> {
                             SendResponse response = telegramBot.execute(sendMessage);
                     });
