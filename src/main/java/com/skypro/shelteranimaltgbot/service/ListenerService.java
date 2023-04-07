@@ -40,13 +40,15 @@ public class ListenerService {
     private final String CALL_VOLUNTEER = "Позвать волонтера";
     private final String OPEN = "Принять";
     private final String CLOSE = "Закрыть/Откланить";
-    private final String ABOUT = "Узнать информацию о приюте";
+    private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String REPORT = "Прислать отчет о питомце";
     private final String SHARE = "Рекомендация..";
 
 
     private Long idSessionForConnect;
+    private Message message;
+    private Long chatId;
 
 
     /**
@@ -76,8 +78,8 @@ public class ListenerService {
      * метод обработки update.message
      */
     private List<SendMessage> handlerMessageData(Update update, List<SendMessage> messages) {
-        Message message = update.message();
-        Long chatId = message.chat().id();
+        message = update.message();
+        chatId = message.chat().id();
         var contact = update.message().contact();
 
         if (contact != null) {
@@ -85,56 +87,22 @@ public class ListenerService {
             messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             //TODO перенаправить запрос волонтеру
         } else {
-
             switch (message.text()) {
                 case START:
-                    userService.addUser(update);
-                    messages.add(new SendMessage(chatId, "Привет " + message.from().firstName()).replyMarkup(keyboardMenu()));
-                    messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
+                    mainMenu(update, messages);
                     break;
                 case CALL_VOLUNTEER:
-                    getVolunteer().stream()
-                            .forEach(user -> {
-                                //отправили сообщение всем волонтерам и кнопки принять / откланить, открыли сессию в статусе ожидания
-                                messages.add(
-                                        new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
-                                ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), chatId, SessionEnum.STANDBY);
-                                chatSessionService.createSession(newSession);
-                                idSessionForConnect = newSession.getId();
-                            });
-                    messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
+                    callVolunteer(messages);
                     break;
                 case OPEN:
-                    if (!chatSessionService.checkSession(idSessionForConnect)) {
-                        chatSessionService.getChatSession(idSessionForConnect, SessionEnum.OPEN);
-                    } else {
-                        messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается либо уже закрыт"));
-                    }
+                    openСonnection(messages);
                     break;
                 case CLOSE:
                     chatSessionService.getChatSession(idSessionForConnect, SessionEnum.CLOSE);
-                    break;
-                case ABOUT:
-                    //TODO сделать метод обработки запроса о приюте
-                    messages.add(new SendMessage(chatId, "в разработке"));
-                    break;
-                case TAKE_PET:
-                    //TODO сделать метод обработки запроса как взять питомца
-                    messages.add(new SendMessage(chatId, "в разработке"));
-                    break;
-                case REPORT:
-                    //TODO сделать метод по обработке запроса подать отчет
+                    //TODO добавить оповещение о закрытии связи с волонтером
                     break;
                 default:
-                    Long userChatId = chatSessionService.getChatUserId(idSessionForConnect).getChatIdUser();
-                    Long volunteerChatId = chatSessionService.getChatUserId(idSessionForConnect).getTelegramIdVolunteer();
-                    if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userChatId)) {
-                        ForwardMessage forwardMessage = new ForwardMessage(userChatId, chatId, message.messageId());
-                        SendResponse response = telegramBot.execute(forwardMessage);
-                    } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
-                        ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
-                        SendResponse response = telegramBot.execute(forwardMessage);
-                    }
+                    chatWithVolunteer();
                     break;
             }
 
@@ -143,11 +111,78 @@ public class ListenerService {
 
     }
 
+
+    /**
+     * чат с волонтером
+     */
+    private void chatWithVolunteer() {
+        Long userChatId = chatSessionService.getChatUserId(idSessionForConnect).getChatIdUser();
+        Long volunteerChatId = chatSessionService.getChatUserId(idSessionForConnect).getTelegramIdVolunteer();
+        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userChatId)) {
+            ForwardMessage forwardMessage = new ForwardMessage(userChatId, chatId, message.messageId());
+            SendResponse response = telegramBot.execute(forwardMessage);
+        } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
+            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
+            SendResponse response = telegramBot.execute(forwardMessage);
+        }
+    }
+
+    private List<SendMessage> openСonnection(List<SendMessage> messages) {
+        if (!chatSessionService.checkSession(idSessionForConnect)) {
+            chatSessionService.getChatSession(idSessionForConnect, SessionEnum.OPEN);
+        } else {
+            messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается либо уже закрыт"));
+        }
+        return messages;
+    }
+
+
+    /**
+     * метод направляем волонтерам запрос от клиента
+     */
+    private List<SendMessage> callVolunteer(List<SendMessage> messages) {
+        getVolunteer().stream()
+                .forEach(user -> {
+                    //отправили сообщение всем волонтерам и кнопки принять / откланить, открыли сессию в статусе ожидания
+                    messages.add(new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
+                    ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), chatId, SessionEnum.STANDBY);
+                    chatSessionService.createSession(newSession);
+                    idSessionForConnect = newSession.getId();
+                });
+        messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
+        return messages;
+    }
+
+
+    /**
+     * вывод основного меню
+     */
+    private List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
+        userService.addUser(update);
+        messages.add(new SendMessage(chatId, "Привет " + message.from().firstName()).replyMarkup(keyboardMenu()));
+        messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
+        return messages;
+    }
+
+
     /**
      * метод обработки update.callBack
      */
     private List<SendMessage> handlerСalBakData(CallbackQuery calBackData, List<SendMessage> messages) {
-        messages.add(new SendMessage(calBackData.message().chat().id(), calBackData.data()));
+        switch (calBackData.data()) {
+            case ABOUT:
+                //TODO сделать метод обработки запроса о приюте
+                messages.add(new SendMessage(chatId, "в разработке"));
+                break;
+            case TAKE_PET:
+                //TODO сделать метод обработки запроса как взять питомца
+                messages.add(new SendMessage(chatId, "в разработке"));
+                break;
+            case REPORT:
+                //TODO сделать метод по обработке запроса подать отчет
+                messages.add(new SendMessage(chatId, "в разработке"));
+                break;
+        }
         return messages;
     }
 
