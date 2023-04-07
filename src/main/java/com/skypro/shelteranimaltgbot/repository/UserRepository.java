@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Ищет всех юзеров по id
      **/
-    User findAllByTelegramId(Long id);
+    User findAllByUserTelegramId(Long id);
 
     /**
      * метод возвращает сотрудников по роли (User / Volunteer)

@@ -22,7 +22,7 @@ public class UserService {
         var message = update.message().from();
         var chatId = update.message().chat().id();
         User user = new User(message.firstName(), message.lastName(), message.id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
-        if (userRepository.findAllByTelegramId(message.id()) == null) {
+        if (userRepository.findAllByUserTelegramId(message.id()) == null) {
             userRepository.save(user);
         }
 
@@ -31,7 +31,7 @@ public class UserService {
     public void setContact(Update update) {
         var phone = update.message().contact().phoneNumber();
         var userTelegramId = update.message().from().id();
-        User u = userRepository.findAllByTelegramId(userTelegramId);
+        User u = userRepository.findAllByUserTelegramId(userTelegramId);
         u.setPhone(phone);
         userRepository.save(u);
     }
@@ -39,5 +39,11 @@ public class UserService {
 
     public List<User> cheUsersByRole(RoleEnum role) {
         return new ArrayList<>(userRepository.findAllByRole(role));
+    }
+
+    public void setChatIdForConnect(Long chatIdForConnect, Long telegramId) {
+        User user = userRepository.findAllByUserTelegramId(telegramId);
+        user.setUserChatId(chatIdForConnect);
+        userRepository.save(user);
     }
 }
