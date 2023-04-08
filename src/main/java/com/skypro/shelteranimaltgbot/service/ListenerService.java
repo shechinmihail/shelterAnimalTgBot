@@ -82,7 +82,8 @@ public class ListenerService {
         if (contact != null) {
             setContact(update);
             messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
-            //TODO перенаправить запрос волонтеру
+            sendNotification(update, messages);
+
         } else {
             switch (message.text()) {
                 case START:
@@ -104,6 +105,20 @@ public class ListenerService {
         }
         return messages;
 
+    }
+
+
+    /**
+     * уведомление волонтерам о звонке клиенту
+     */
+    private List<SendMessage> sendNotification(Update update, List<SendMessage> messages) {
+        String name = update.message().from().firstName() + " " + update.message().from().lastName();
+        String phoneNumber = update.message().contact().phoneNumber();
+        getVolunteer().stream()
+                .forEach(user -> {
+                    messages.add(new SendMessage(user.getUserChatId(), "Просьба связаться с " + name + " по номеру " + phoneNumber));
+                });
+        return messages;
     }
 
     /**
