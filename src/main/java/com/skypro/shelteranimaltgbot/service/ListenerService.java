@@ -39,7 +39,7 @@ public class ListenerService {
     private final String START = "/start";
     private final String CALL_VOLUNTEER = "Позвать волонтера";
     private final String OPEN = "Принять";
-    private final String CLOSE = "Закрыть/Откланить";
+    private final String CLOSE = "Закрыть/Отклонить";
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String REPORT = "Прислать отчет о питомце";
