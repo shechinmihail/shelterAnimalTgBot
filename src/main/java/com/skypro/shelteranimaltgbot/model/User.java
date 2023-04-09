@@ -6,27 +6,68 @@ import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * Класс User, представляет сущность пользователя
+ */
 @Entity
 @Table(name = "users")
 public class User {
+
+    /**
+     * Идентификационный номер (id) пользователя
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * Имя пользователя
+     */
     private String firstName;
+
+    /**
+     * Фамилия пользователя
+     */
     private String lastName;
+
+    /**
+     * Телеграм id пользователя
+     */
     private Long userTelegramId;
+
+    /**
+     * Номер чата пользователя
+     */
     private Long userChatId;
 
+    /**
+     * Статус пользователя
+     */
     private StatusEnum status;
+
+    /**
+     * Номер телефона пользователя
+     */
     private String phone;
 
+    /**
+     * Роль пользователя
+     */
     private RoleEnum role;
 
     public User() {
     }
 
-
-
+    /**
+     * Конструктор для создания объекта пользователь
+     *
+     * @param firstName      Имя пользователя
+     * @param lastName       Фамилия пользователя
+     * @param userTelegramId Телеграм id пользователя
+     * @param userChatId     Номер чата пользователя
+     * @param status         Статус пользователя
+     * @param role           Роль пользователя
+     */
     public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -79,6 +120,7 @@ public class User {
     public void setStatus(StatusEnum status) {
         this.status = status;
     }
+
     public void setUserChatId(Long userChatId) {
         this.userChatId = userChatId;
     }
