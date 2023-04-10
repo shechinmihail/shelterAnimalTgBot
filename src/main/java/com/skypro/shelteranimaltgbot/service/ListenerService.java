@@ -45,6 +45,9 @@ public class ListenerService {
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String REPORT = "Прислать отчет о питомце";
     private final String SHARE = "Рекомендация..";
+    private final String ABOUT_SHELTER = "О приюте подробнее";
+    private final String OPERATING_MODE = "Режим работы/Адрес";
+    private final String SAFETY = "Общие рекомендации о технике безопасности";
 
 
     private Long idSessionForConnect;
@@ -194,6 +197,15 @@ public class ListenerService {
         return messages;
     }
 
+    /**
+     * вывод доп меню подробнее о приюте
+     */
+    private List<SendMessage> infoMenu(CallbackQuery callbackQuery, List<SendMessage> messages) {
+        var chatId = callbackQuery.message().chat().id();
+        messages.add(new SendMessage(chatId, "Здравствуйте!" + "\n" + "Выберете пункт меню:").replyMarkup(keyboardChatInfoShelterMenu()));
+        return messages;
+    }
+
 
     /**
      * метод обработки update.callBack
@@ -201,8 +213,7 @@ public class ListenerService {
     private List<SendMessage> handlerСalBakData(CallbackQuery calBackData, List<SendMessage> messages) {
         switch (calBackData.data()) {
             case ABOUT:
-                //TODO сделать метод обработки запроса о приюте
-                messages.add(new SendMessage(chatId, "в разработке"));
+                infoMenu(calBackData, messages);
                 break;
             case TAKE_PET:
                 //TODO сделать метод обработки запроса как взять питомца
@@ -242,6 +253,17 @@ public class ListenerService {
                 .addRow(new InlineKeyboardButton(TAKE_PET).callbackData(TAKE_PET))
                 .addRow(new InlineKeyboardButton(REPORT).callbackData(REPORT))
                 .addRow(new InlineKeyboardButton(SHARE).switchInlineQuery(SHARE));
+    }
+
+    /**
+     * выпадающее меню в чат
+     * подробнее о приюте
+     */
+    private Keyboard keyboardChatInfoShelterMenu() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton(ABOUT_SHELTER).callbackData(ABOUT_SHELTER))
+                .addRow(new InlineKeyboardButton(OPERATING_MODE).callbackData(OPERATING_MODE))
+                .addRow(new InlineKeyboardButton(SAFETY).callbackData(SAFETY));
     }
 
     /**

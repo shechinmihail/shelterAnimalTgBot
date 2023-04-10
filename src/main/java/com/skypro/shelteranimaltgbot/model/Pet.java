@@ -51,14 +51,12 @@ public class Pet {
     /**
      * Конструктор для создания объекта домашний питомец
      *
-     * @param id        идентификационный номер домашнего питомца
      * @param name      имя домашнего питомца
      * @param age       возраст домашнего питомца
      * @param typeOfPet вид домашнего питомца
      * @param statusPet статус домашнего питомца
      */
-    public Pet(Long id, String name, Integer age, String typeOfPet, StatusPet statusPet) {
-        this.id = id;
+    public Pet(String name, Integer age, String typeOfPet, StatusPet statusPet) {
         this.name = name;
         this.age = age;
         this.typeOfPet = typeOfPet;
@@ -73,10 +71,6 @@ public class Pet {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

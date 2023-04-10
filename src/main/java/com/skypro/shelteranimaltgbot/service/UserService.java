@@ -3,7 +3,6 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.slf4j.Logger;
@@ -35,13 +34,14 @@ public class UserService {
      *
      * @param user
      */
-    public void addUser(User user) {
+    public User addUser(User user) {
         logger.info("Вызван метод добавления пользователя");
         if (userRepository.findAllByUserTelegramId(user.getUserTelegramId()) == null) {
             userRepository.save(user);
             logger.info("Пользователь добавлен {}", user.getFirstName() + " " + user.getLastName());
         }
         logger.info("Пользователь {}, существует", user.getFirstName() + " " + user.getLastName());
+        return user;
     }
 
 
@@ -109,6 +109,14 @@ public class UserService {
         User u = userRepository.findAllByUserTelegramId(userTelegramId);
         u.setPhone(phone);
         userRepository.save(u);
+    }
+
+    /**
+     * поиск юзера по айди
+     */
+    public User findUserByChatId(Update update) {
+        User findUser = userRepository.findAllByUserTelegramId(update.message().chat().id());
+        return findUser;
     }
 
 
