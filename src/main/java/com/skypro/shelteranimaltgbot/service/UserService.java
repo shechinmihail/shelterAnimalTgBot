@@ -33,17 +33,17 @@ public class UserService {
     /**
      * Добавление нового пользователя и сохранение его в базе данных
      *
-     * @param update
+     * @param user
      */
-    public void addUser(Update update) {
+    public void addUser(User user) {
         logger.info("Вызван метод добавления пользователя");
-        var message = update.message().from();
-        var chatId = update.message().chat().id();
-        User user = new User(message.firstName(), message.lastName(), message.id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
-        if (userRepository.findAllByUserTelegramId(message.id()) == null) {
+        if (userRepository.findAllByUserTelegramId(user.getUserTelegramId()) == null) {
             userRepository.save(user);
+            logger.info("Пользователь добавлен {}", user.getFirstName() + " " + user.getLastName());
         }
+        logger.info("Пользователь {}, существует", user.getFirstName() + " " + user.getLastName());
     }
+
 
     /**
      * Поиск пользователя в базе данных по идентификатору (id)
@@ -56,6 +56,7 @@ public class UserService {
         logger.info("Вызван метод поиска пользователя по идентификатору (id)");
         return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
+
 
     /**
      * Изменение данных пользователя в базе данных
@@ -75,6 +76,7 @@ public class UserService {
         throw new UserNotFoundException();
     }
 
+
     /**
      * Получение списка пользователей из базы данных
      *
@@ -84,6 +86,7 @@ public class UserService {
         logger.info("Вызван метод получения всех пользователей");
         return userRepository.findAll();
     }
+
 
     /**
      * Удаление пользователя из базы данных по идентификатору (id)
@@ -95,7 +98,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+
+    /**
+     * метод добавления контакта в БД
+     * */
     public void setContact(Update update) {
+        logger.info("Вызван метод добавлкения номера телефона в БД");
         var phone = update.message().contact().phoneNumber();
         var userTelegramId = update.message().from().id();
         User u = userRepository.findAllByUserTelegramId(userTelegramId);
@@ -104,13 +112,12 @@ public class UserService {
     }
 
 
-    public List<User> cheUsersByRole(RoleEnum role) {
+    /**
+     * вернуть всех юзеров по определенной роли
+     * */
+    public List<User> checkUsersByRole(RoleEnum role) {
+        logger.info("Вызван метод получения всех пользователе с ролью {}", role);
         return new ArrayList<>(userRepository.findAllByRole(role));
     }
 
-    public void setChatIdForConnect(Long chatIdForConnect, Long telegramId) {
-        User user = userRepository.findAllByUserTelegramId(telegramId);
-        user.setUserChatId(chatIdForConnect);
-        userRepository.save(user);
-    }
 }

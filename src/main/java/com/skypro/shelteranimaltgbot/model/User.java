@@ -35,10 +35,6 @@ public class User {
      */
     private Long userTelegramId;
 
-    /**
-     * Номер чата пользователя
-     */
-    private Long userChatId;
 
     /**
      * Статус пользователя
@@ -72,7 +68,6 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userTelegramId = userTelegramId;
-        this.userChatId = userChatId;
         this.status = status;
         this.role = role;
     }
@@ -91,10 +86,6 @@ public class User {
 
     public Long getUserTelegramId() {
         return userTelegramId;
-    }
-
-    public Long getUserChatId() {
-        return userChatId;
     }
 
     public String getPhone() {
@@ -121,21 +112,18 @@ public class User {
         this.status = status;
     }
 
-    public void setUserChatId(Long userChatId) {
-        this.userChatId = userChatId;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(userTelegramId, user.userTelegramId) && Objects.equals(userChatId, user.userChatId) && Objects.equals(status, user.status) && Objects.equals(phone, user.phone) && Objects.equals(role, user.role);
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(userTelegramId, user.userTelegramId) && Objects.equals(status, user.status) && Objects.equals(phone, user.phone) && Objects.equals(role, user.role);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, userTelegramId, userChatId, status, phone, role);
+        return Objects.hash(id, firstName, lastName, userTelegramId, status, phone, role);
     }
 
 

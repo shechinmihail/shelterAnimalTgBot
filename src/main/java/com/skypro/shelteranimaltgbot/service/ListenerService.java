@@ -12,6 +12,7 @@ import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +117,7 @@ public class ListenerService {
         String phoneNumber = update.message().contact().phoneNumber();
         getVolunteer().stream()
                 .forEach(user -> {
-                    messages.add(new SendMessage(user.getUserChatId(), "Просьба связаться с " + name + " по номеру " + phoneNumber));
+                    messages.add(new SendMessage(user.getUserTelegramId(), "Просьба связаться с " + name + " по номеру " + phoneNumber));
                 });
         return messages;
     }
@@ -170,7 +171,7 @@ public class ListenerService {
         getVolunteer().stream()
                 .forEach(user -> {
                     //отправили сообщение всем волонтерам и кнопки принять / откланить, открыли сессию в статусе ожидания
-                    messages.add(new SendMessage(user.getUserChatId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
+                    messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
                     ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), chatId, SessionEnum.STANDBY);
                     chatSessionService.createSession(newSession);
                     idSessionForConnect = newSession.getId();
@@ -184,8 +185,11 @@ public class ListenerService {
      * вывод основного меню
      */
     private List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
-        userService.addUser(update);
-        messages.add(new SendMessage(chatId, "Привет " + message.from().firstName()).replyMarkup(keyboardMenu()));
+        var message = update.message().from();
+        var chatId = update.message().chat().id();
+        User user = new User(message.firstName(), message.lastName(), message.id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
+        userService.addUser(user);
+        messages.add(new SendMessage(chatId, "Привет " + message.firstName()).replyMarkup(keyboardMenu()));
         messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
         return messages;
     }
@@ -225,7 +229,7 @@ public class ListenerService {
      * получаем список волонтеров
      */
     public List<User> getVolunteer() {
-        return new ArrayList<>(userService.cheUsersByRole(RoleEnum.VOLUNTEER));
+        return new ArrayList<>(userService.checkUsersByRole(RoleEnum.VOLUNTEER));
     }
 
 
