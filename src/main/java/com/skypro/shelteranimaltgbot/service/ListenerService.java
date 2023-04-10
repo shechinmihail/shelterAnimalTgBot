@@ -129,7 +129,7 @@ public class ListenerService {
     private List<SendMessage> closeСonnection(List<SendMessage> messages) {
         chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
         ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
-        messages.add(new SendMessage(chatUser.getChatIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
+        messages.add(new SendMessage(chatUser.getGetTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
         return messages;
     }
 
@@ -138,10 +138,10 @@ public class ListenerService {
      * чат с волонтером
      */
     private void chatWithVolunteer() {
-        Long userChatId = chatSessionService.getChatUser(idSessionForConnect).getChatIdUser();
+        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getGetTelegramIdUser();
         Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
-        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userChatId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(userChatId, chatId, message.messageId());
+        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userTelegramId)) {
+            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, chatId, message.messageId());
             SendResponse response = telegramBot.execute(forwardMessage);
         } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
             ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
@@ -172,7 +172,7 @@ public class ListenerService {
                 .forEach(user -> {
                     //отправили сообщение всем волонтерам и кнопки принять / откланить, открыли сессию в статусе ожидания
                     messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
-                    ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), chatId, SessionEnum.STANDBY);
+                    ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
                     chatSessionService.createSession(newSession);
                     idSessionForConnect = newSession.getId();
                 });

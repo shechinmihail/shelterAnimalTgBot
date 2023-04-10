@@ -14,16 +14,15 @@ public class ChatSessionWithVolunteer {
 
     private Long telegramIdVolunteer;
     private Long getTelegramIdUser;
-    private Long chatIdUser;
+
     private SessionEnum session;
 
     public ChatSessionWithVolunteer() {
     }
 
-    public ChatSessionWithVolunteer(Long telegramIdVolunteer, Long getTelegramIdUser, Long chatIdUser, SessionEnum session) {
+    public ChatSessionWithVolunteer(Long telegramIdVolunteer, Long getTelegramIdUser, SessionEnum session) {
         this.telegramIdVolunteer = telegramIdVolunteer;
         this.getTelegramIdUser = getTelegramIdUser;
-        this.chatIdUser = chatIdUser;
         this.session = session;
     }
 
@@ -39,9 +38,6 @@ public class ChatSessionWithVolunteer {
         return getTelegramIdUser;
     }
 
-    public Long getChatIdUser() {
-        return chatIdUser;
-    }
 
     public SessionEnum getSession() {
         return session;
@@ -56,12 +52,12 @@ public class ChatSessionWithVolunteer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChatSessionWithVolunteer that = (ChatSessionWithVolunteer) o;
-        return Objects.equals(id, that.id) && Objects.equals(telegramIdVolunteer, that.telegramIdVolunteer) && Objects.equals(getTelegramIdUser, that.getTelegramIdUser) && Objects.equals(chatIdUser, that.chatIdUser) && session == that.session;
+        return Objects.equals(id, that.id) && Objects.equals(telegramIdVolunteer, that.telegramIdVolunteer) && Objects.equals(getTelegramIdUser, that.getTelegramIdUser) && session == that.session;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, telegramIdVolunteer, getTelegramIdUser, chatIdUser, session);
+        return Objects.hash(id, telegramIdVolunteer, getTelegramIdUser, session);
     }
 
     @Override
@@ -70,7 +66,6 @@ public class ChatSessionWithVolunteer {
                 "id=" + id +
                 ", telegramIdVolunteer=" + telegramIdVolunteer +
                 ", getTelegramIdUser=" + getTelegramIdUser +
-                ", chatIdUser=" + chatIdUser +
                 ", session=" + session +
                 '}';
     }
