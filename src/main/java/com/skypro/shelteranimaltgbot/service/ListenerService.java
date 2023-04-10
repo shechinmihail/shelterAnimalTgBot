@@ -47,7 +47,7 @@ public class ListenerService {
     private final String SHARE = "Рекомендация..";
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
-    private final String SAFETY = "Общие рекомендации о технике безопасности";
+    private final String SAFETY = "Техника безопасности";
 
 
     private Long idSessionForConnect;
@@ -62,10 +62,10 @@ public class ListenerService {
     public List<SendMessage> messages(Update update) {
         List<SendMessage> messages = new ArrayList<>();
         try {
-            var calBackData = update.callbackQuery();
-            if (calBackData != null && update.message() == null) {
-                handlerСalBakData(calBackData, messages);
-            } else if (calBackData == null && update.message() != null) {
+            var callBackData = update.callbackQuery();
+            if (callBackData != null && update.message() == null) {
+                handlerСalBakData(callBackData, messages);
+            } else if (callBackData == null && update.message() != null) {
                 handlerMessageData(update, messages);
             }
         } catch (NullPointerException e) {
@@ -81,8 +81,7 @@ public class ListenerService {
     private List<SendMessage> handlerMessageData(Update update, List<SendMessage> messages) {
         message = update.message();
         chatId = message.chat().id();
-        var contact = update.message().contact();
-
+        var contact = message.contact();
         if (contact != null) {
             setContact(update);
             messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
@@ -124,6 +123,7 @@ public class ListenerService {
                 });
         return messages;
     }
+
 
     /**
      * закрытие соединения с клиентом
@@ -188,21 +188,10 @@ public class ListenerService {
      * вывод основного меню
      */
     private List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
-        var message = update.message().from();
-        var chatId = update.message().chat().id();
-        User user = new User(message.firstName(), message.lastName(), message.id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
+        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
         userService.addUser(user);
-        messages.add(new SendMessage(chatId, "Привет " + message.firstName()).replyMarkup(keyboardMenu()));
+        messages.add(new SendMessage(chatId, "Привет " + user.getFirstName()).replyMarkup(keyboardMenu()));
         messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
-        return messages;
-    }
-
-    /**
-     * вывод доп меню подробнее о приюте
-     */
-    private List<SendMessage> infoMenu(CallbackQuery callbackQuery, List<SendMessage> messages) {
-        var chatId = callbackQuery.message().chat().id();
-        messages.add(new SendMessage(chatId, "Здравствуйте!" + "\n" + "Выберете пункт меню:").replyMarkup(keyboardChatInfoShelterMenu()));
         return messages;
     }
 
@@ -210,19 +199,33 @@ public class ListenerService {
     /**
      * метод обработки update.callBack
      */
-    private List<SendMessage> handlerСalBakData(CallbackQuery calBackData, List<SendMessage> messages) {
-        switch (calBackData.data()) {
+    private List<SendMessage> handlerСalBakData(CallbackQuery callBackData, List<SendMessage> messages) {
+        var chatIdFromCallBackData = callBackData.message().chat().id();
+        switch (callBackData.data()) {
             case ABOUT:
-                infoMenu(calBackData, messages);
+                messages.add(new SendMessage(chatIdFromCallBackData, "Здравствуйте!" + "\n" + "Выберете пункт меню:").replyMarkup(keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
                 //TODO сделать метод обработки запроса как взять питомца
-                messages.add(new SendMessage(chatId, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case REPORT:
                 //TODO сделать метод по обработке запроса подать отчет
-                messages.add(new SendMessage(chatId, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
+            case ABOUT_SHELTER:
+                //TODO сделать метод по обработке запроса подать подробное описание
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                break;
+            case OPERATING_MODE:
+                //TODO сделать метод по обработке запроса режим работы , адрес
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                break;
+            case SAFETY:
+                //TODO сделать метод по обработке запроса по технике безопасности
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                break;
+
         }
         return messages;
     }

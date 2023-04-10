@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
@@ -42,7 +42,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing updatePhone: {}", update);
             listenerService.messages(update).stream()
                     .forEach(sendMessage -> {
-
                         SendResponse response = telegramBot.execute(sendMessage); // залогировать отправилось сообщение или нет
                         if (response.isOk()) {
                             logger.info("Message sent");

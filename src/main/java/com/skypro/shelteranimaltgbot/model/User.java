@@ -60,7 +60,6 @@ public class User {
      * @param firstName      Имя пользователя
      * @param lastName       Фамилия пользователя
      * @param userTelegramId Телеграм id пользователя
-     * @param userChatId     Номер чата пользователя
      * @param status         Статус пользователя
      * @param role           Роль пользователя
      */
