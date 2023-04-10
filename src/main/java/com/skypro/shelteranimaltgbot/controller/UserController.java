@@ -63,7 +63,8 @@ public class UserController {
                     )
             ))
     @PostMapping   //POST http://localhost:8080/user
-    public void addUser() {
+    public void addUser(@RequestBody User user) {
+        //TODO доработать
     }
 
     /**
