@@ -36,6 +36,14 @@ public class UserService {
         userRepository.save(u);
     }
 
+    /**
+     * поиск юзера по айди
+     */
+    public User findUserByChatId(Update update) {
+        User findUser = userRepository.findAllByUserTelegramId(update.message().chat().id());
+        return findUser;
+    }
+
 
     public List<User> cheUsersByRole(RoleEnum role) {
         return new ArrayList<>(userRepository.findAllByRole(role));

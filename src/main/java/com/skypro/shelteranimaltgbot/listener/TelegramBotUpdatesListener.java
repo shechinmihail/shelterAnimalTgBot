@@ -13,6 +13,12 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+/**
+ * Класс, обрабатывающий все апдейты для бота.
+ * Содержит вспомогательный класс ListenerService,
+ * распределяющий входящие данные от клиента.
+ */
+
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -37,7 +43,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing updatePhone: {}", update);
             listenerService.messages(update).stream()
                     .forEach(sendMessage -> {
-                            SendResponse response = telegramBot.execute(sendMessage);
+
+                        SendResponse response = telegramBot.execute(sendMessage); // залогировать отправилось сообщение или нет
+                        if (response.isOk()) {
+                            logger.info("Message sent");
+                        } else {
+                            logger.error("Message was not sent because of " + response.errorCode());
+                        }
+
                     });
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
