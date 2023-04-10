@@ -1,6 +1,5 @@
 package com.skypro.shelteranimaltgbot.controller;
 
-import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
@@ -45,9 +44,9 @@ public class UserController {
     }
 
     /**
-     * Функция добавления нового пользователя{@link UserService#addUser}
+     * Функция добавления нового пользователя{@link UserService#addUser(User)}
      *
-     * @param
+     * @param user
      * @return возвращает объект, содержащий данные созданного пользователя
      */
     @Operation(
@@ -63,8 +62,8 @@ public class UserController {
                     )
             ))
     @PostMapping   //POST http://localhost:8080/user
-    public void addUser(@RequestBody User user) {
-        //TODO доработать
+    public User addUser(@RequestBody User user) {
+        return userService.addUser(user);
     }
 
     /**
