@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
@@ -18,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +52,7 @@ public class ListenerService {
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
+    private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
 
 
     private Long idSessionForConnect;
@@ -154,6 +159,15 @@ public class ListenerService {
 
 
     /**
+     * отправка фото
+     */
+    private void sendPhoto(String path, Long chatId) {
+        File photo = new File(path);
+        SendPhoto sendPhoto = new SendPhoto(chatId, photo);
+        telegramBot.execute(sendPhoto);
+    }
+
+    /**
      * подтверждение соединения волонтером с клиентом
      */
 
@@ -218,8 +232,7 @@ public class ListenerService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case OPERATING_MODE:
-                //TODO сделать метод по обработке запроса режим работы , адрес
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
                 break;
             case SAFETY:
                 //TODO сделать метод по обработке запроса по технике безопасности
