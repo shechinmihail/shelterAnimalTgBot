@@ -21,6 +21,14 @@ public class Pet {
     @Column(name = "id", nullable = false)
     private Long id;
 
+
+    /**
+     * Вид домашнего питомца
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_pet_id")
+    private TypePet typePet;
+
     /**
      * Имя домашнего питомца
      */
@@ -33,11 +41,6 @@ public class Pet {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    /**
-     * Вид домашнего питомца
-     */
-    @Column(name = "typeOfPet")
-    private String typeOfPet;
 
     /**
      * Статус домашнего питомца
@@ -48,18 +51,19 @@ public class Pet {
     @Column(name = "status")
     private StatusPet statusPet;
 
+
     /**
      * Конструктор для создания объекта домашний питомец
      *
      * @param name      имя домашнего питомца
      * @param age       возраст домашнего питомца
-     * @param typeOfPet вид домашнего питомца
+     * @param typePet   вид домашнего питомца
      * @param statusPet статус домашнего питомца
      */
-    public Pet(String name, Integer age, String typeOfPet, StatusPet statusPet) {
+    public Pet(String name, Integer age, TypePet typePet, StatusPet statusPet) {
         this.name = name;
         this.age = age;
-        this.typeOfPet = typeOfPet;
+        this.typePet = typePet;
         this.statusPet = statusPet;
     }
 
@@ -67,6 +71,14 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public TypePet getTypePet() {
+        return typePet;
+    }
+
+    public void setTypePet(TypePet typePet) {
+        this.typePet = typePet;
     }
 
     public Long getId() {
@@ -89,14 +101,6 @@ public class Pet {
         this.age = age;
     }
 
-    public String getTypeOfPet() {
-        return typeOfPet;
-    }
-
-    public void setTypeOfPet(String typeOfPet) {
-        this.typeOfPet = typeOfPet;
-    }
-
     public StatusPet getStatusPet() {
         return statusPet;
     }
@@ -110,12 +114,12 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(typeOfPet, pet.typeOfPet) && statusPet == pet.statusPet;
+        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(typePet, pet.typePet) && statusPet == pet.statusPet;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, typeOfPet, statusPet);
+        return Objects.hash(id, name, age, typePet, statusPet);
     }
 
     @Override
@@ -124,7 +128,7 @@ public class Pet {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", typeOfPet='" + typeOfPet + '\'' +
+                ", typePet='" + typePet + '\'' +
                 ", statusPet=" + statusPet +
                 '}';
     }
