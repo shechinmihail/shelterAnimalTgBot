@@ -53,6 +53,8 @@ public class ListenerService {
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
     private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
+    private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
+    private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
 
 
     private Long idSessionForConnect;
@@ -235,8 +237,8 @@ public class ListenerService {
                 sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
                 break;
             case SAFETY:
-                //TODO сделать метод по обработке запроса по технике безопасности
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                sendPhoto(SAFETY_CAT, chatIdFromCallBackData);
+                sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
 
         }
