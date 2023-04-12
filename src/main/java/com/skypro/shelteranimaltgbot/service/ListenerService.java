@@ -15,14 +15,14 @@ import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.repository.PetRepository;
+import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +31,14 @@ public class ListenerService {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     @Autowired
     private UserService userService;
-
     @Autowired
     private TelegramBot telegramBot;
     @Autowired
     private ChatSessionWithVolunteerService chatSessionService;
+    private final String TYPE_PET = "Посмотреть животных";
+    private final String VIEW_ALL_ANIMALS = "Посмотреть список животных";
+    //TODO записать path в properties в виде переменной, вызывать через @Value
+    private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
 
 
     /**
@@ -52,7 +55,12 @@ public class ListenerService {
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
-    private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
+    @Autowired
+    private ShelterService shelterService;
+    @Autowired
+    private PetService petService;
+    @Autowired
+    private TypePetService typePetService;
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
 
@@ -60,6 +68,10 @@ public class ListenerService {
     private Long idSessionForConnect;
     private Message message;
     private Long chatId;
+    @Autowired
+    private PetRepository petRepository;
+    @Autowired
+    private TypePetRepository typePetRepository;
 
 
     /**
@@ -230,8 +242,8 @@ public class ListenerService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case ABOUT_SHELTER:
-                //TODO сделать метод по обработке запроса подать подробное описание
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                String shelter = callBackData.message().from().username();
+                messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)).replyMarkup(keyboardViewListOfAnimals()));
                 break;
             case OPERATING_MODE:
                 sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
@@ -239,6 +251,12 @@ public class ListenerService {
             case SAFETY:
                 sendPhoto(SAFETY_CAT, chatIdFromCallBackData);
                 sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
+                break;
+            case TYPE_PET:
+                //TODO сделать метод по ыводу типов животных
+                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+
+            case VIEW_ALL_ANIMALS:
                 break;
 
         }
@@ -261,6 +279,14 @@ public class ListenerService {
         return new ArrayList<>(userService.checkUsersByRole(RoleEnum.VOLUNTEER));
     }
 
+
+    /**
+     * посмотреть список животных view the list of animals
+     */
+    private Keyboard keyboardViewListOfAnimals() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton(TYPE_PET).callbackData(TYPE_PET));
+    }
 
     /**
      * выпадающее меню в чат
