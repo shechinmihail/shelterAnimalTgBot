@@ -16,7 +16,9 @@ public class Shelter {
     private String userName;
     private String about;
 
-    public Shelter(Shelter byUserName) {
+
+    public Shelter() {
+
     }
 
     public Shelter(String name, String userName, String about) {

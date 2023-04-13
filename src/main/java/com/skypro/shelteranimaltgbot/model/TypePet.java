@@ -2,6 +2,8 @@ package com.skypro.shelteranimaltgbot.model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
+
 
 @Entity
 public class TypePet {
@@ -11,16 +13,14 @@ public class TypePet {
 
     private String type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "document_list_id")
-    private Document document;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Document> documentsList;
 
     public TypePet() {
     }
 
     public TypePet(String type, Document document) {
         this.type = type;
-        this.document = document;
     }
 
     public Long getId() {
@@ -31,8 +31,8 @@ public class TypePet {
         return type;
     }
 
-    public Document getDocument() {
-        return document;
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 
     @Override
@@ -40,20 +40,23 @@ public class TypePet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TypePet typePet = (TypePet) o;
-        return Objects.equals(id, typePet.id) && Objects.equals(type, typePet.type) && Objects.equals(document, typePet.document);
+        return Objects.equals(id, typePet.id) && Objects.equals(type, typePet.type) && Objects.equals(documents, typePet.documents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, document);
+        return Objects.hash(id, type, documents);
     }
 
+    x
+
     @Override
+
     public String toString() {
         return "TypePet{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
-                ", document=" + document +
+                ", documents=" + documents +
                 '}';
     }
 }

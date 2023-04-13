@@ -14,6 +14,7 @@ import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
@@ -254,13 +255,25 @@ public class ListenerService {
                 break;
             case TYPE_PET:
                 //TODO сделать метод по ыводу типов животных
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "выбирите вид ").replyMarkup(iewAllTypePet()));
+
 
             case VIEW_ALL_ANIMALS:
                 break;
 
         }
         return messages;
+    }
+
+    private Keyboard iewAllTypePet() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<TypePet> typePetsList = new ArrayList<>(typePetService.getAllTypePet());
+        for (TypePet typePet : typePetsList) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(typePet.getType()).callbackData(typePet.getType()));
+        }
+
+        return inlineKeyboardMarkup;
+
     }
 
 

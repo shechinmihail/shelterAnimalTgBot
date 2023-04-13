@@ -6,6 +6,7 @@ import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 public class TypePetService {
@@ -17,7 +18,7 @@ public class TypePetService {
     }
 
     public Collection<TypePet> getAllTypePet() {
-        return typePetRepository.findAll();
+        return new HashSet<>(typePetRepository.findAll());
     }
 
 }
