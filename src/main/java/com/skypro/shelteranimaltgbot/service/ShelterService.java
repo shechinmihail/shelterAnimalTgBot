@@ -13,10 +13,10 @@ public class ShelterService {
 
 
     public String getAbout(String userNameShelter) {
-        Shelter shelter = new Shelter(shelterRepository.findByUserName(userNameShelter));
+        Shelter shelter = shelterRepository.findByUserName(userNameShelter);
         if (shelter.getAbout() != null) {
             return shelter.getAbout();
         }
-        return "Описание нет";
+        return "Описания нет";
     }
 }

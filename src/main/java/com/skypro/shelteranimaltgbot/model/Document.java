@@ -10,18 +10,16 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String document;
 
-
-    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "documentsList", cascade = CascadeType.ALL)
     private Set<TypePet> typePets;
 
-    private String document;
 
     public Document() {
     }
 
-    public Document(Set<TypePet> typePets, String document) {
-        this.typePets = typePets;
+    public Document(String document) {
         this.document = document;
     }
 
@@ -29,12 +27,20 @@ public class Document {
         return id;
     }
 
+    public String getDocument() {
+        return document;
+    }
+
     public Set<TypePet> getTypePets() {
         return typePets;
     }
 
-    public String getDocument() {
-        return document;
+    public void setTypePets(Set<TypePet> typePets) {
+        this.typePets = typePets;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
     }
 
     @Override
@@ -42,12 +48,21 @@ public class Document {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Document document1 = (Document) o;
-        return Objects.equals(id, document1.id) && Objects.equals(typePets, document1.typePets) && Objects.equals(document, document1.document);
+        return Objects.equals(id, document1.id) && Objects.equals(document, document1.document);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, typePets, document);
+        return Objects.hash(id, document);
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id=" + id +
+                ", document='" + document + '\'' +
+                ", typePets=" + typePets +
+                '}';
     }
 }
 

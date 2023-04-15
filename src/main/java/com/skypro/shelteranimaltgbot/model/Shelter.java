@@ -1,9 +1,6 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -14,9 +11,13 @@ public class Shelter {
 
     private String name;
     private String userName;
+
+    @Column(columnDefinition = "text")
     private String about;
 
-    public Shelter(Shelter byUserName) {
+
+    public Shelter() {
+
     }
 
     public Shelter(String name, String userName, String about) {

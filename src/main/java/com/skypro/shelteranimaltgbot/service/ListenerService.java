@@ -14,6 +14,8 @@ import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
@@ -23,8 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ListenerService {
@@ -243,7 +244,8 @@ public class ListenerService {
                 break;
             case ABOUT_SHELTER:
                 String shelter = callBackData.message().from().username();
-                messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)).replyMarkup(keyboardViewListOfAnimals()));
+                messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Посмотреть каталог животных ").replyMarkup(iewAllTypePet()));
                 break;
             case OPERATING_MODE:
                 sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
@@ -252,15 +254,61 @@ public class ListenerService {
                 sendPhoto(SAFETY_CAT, chatIdFromCallBackData);
                 sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
-            case TYPE_PET:
-                //TODO сделать метод по ыводу типов животных
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
-
             case VIEW_ALL_ANIMALS:
                 break;
+            default:
+                //if (checkCallbackDataTypePet(callBackData.data())) {
+                messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(viewPets(callBackData.data())));
+                //} else {
 
+                //}
+                break;
         }
         return messages;
+    }
+
+    /**
+     * метод проверяет если выбор типа животного то возврат true
+     */
+    private boolean checkCallbackDataTypePet(String data) {
+        Set<TypePet> typePets = new HashSet<>(typePetService.getAllTypePet());
+        return typePets.stream().anyMatch(typePet -> {
+            return typePet.getType().equals(data);
+        });
+    }
+
+
+    /**
+     * метод выводит всех питомцев по выбранному типу
+     **/
+    private Keyboard viewPets(String data) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<Pet> pets = new ArrayList<>(petService.getAllPetByTypePet(data));
+        pets.stream()
+                .filter(p -> p.getTypePet().getType().equals(data))
+                .sorted(Comparator.comparing(Pet::getName))
+                .forEach(pet -> {
+                    inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Имя " + pet.getName() + " Возраст " + pet.getAge() + " года")
+                            .callbackData(pet.getName() + "\n" +
+                                    "Возраст " + pet.getAge() + " года" + "\n"
+
+                            ));
+                });
+        return inlineKeyboardMarkup;
+    }
+
+    /**
+     * метод выводит все виды животных(кошки собаки и тд)
+     */
+    private Keyboard iewAllTypePet() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        Set<TypePet> typePetsList = new HashSet<>(typePetService.getAllTypePet());
+        for (TypePet typePet : typePetsList) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(typePet.getType()).callbackData(typePet.getType()));
+        }
+
+        return inlineKeyboardMarkup;
+
     }
 
 
@@ -279,14 +327,6 @@ public class ListenerService {
         return new ArrayList<>(userService.checkUsersByRole(RoleEnum.VOLUNTEER));
     }
 
-
-    /**
-     * посмотреть список животных view the list of animals
-     */
-    private Keyboard keyboardViewListOfAnimals() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton(TYPE_PET).callbackData(TYPE_PET));
-    }
 
     /**
      * выпадающее меню в чат
