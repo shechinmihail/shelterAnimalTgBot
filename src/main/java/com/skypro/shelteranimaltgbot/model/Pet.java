@@ -114,21 +114,21 @@ public class Pet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(typePet, pet.typePet) && statusPet == pet.statusPet;
+        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && statusPet == pet.statusPet;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, typePet, statusPet);
+        return Objects.hash(id, name, age, statusPet);
     }
 
     @Override
     public String toString() {
         return "Pet{" +
                 "id=" + id +
+                ", typePet=" + typePet +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", typePet='" + typePet + '\'' +
                 ", statusPet=" + statusPet +
                 '}';
     }

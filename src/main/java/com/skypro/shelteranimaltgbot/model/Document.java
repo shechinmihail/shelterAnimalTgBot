@@ -12,6 +12,9 @@ public class Document {
     private Long id;
     private String document;
 
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "documentsList", cascade = CascadeType.ALL)
+    private Set<TypePet> typePets;
+
 
     public Document() {
     }
@@ -45,12 +48,12 @@ public class Document {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Document document1 = (Document) o;
-        return Objects.equals(id, document1.id) && Objects.equals(document, document1.document) && Objects.equals(typePets, document1.typePets);
+        return Objects.equals(id, document1.id) && Objects.equals(document, document1.document);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, document, typePets);
+        return Objects.hash(id, document);
     }
 
     @Override
