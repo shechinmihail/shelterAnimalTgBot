@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Класс конфигурации для создания бота.
+ * Содержит поле с токеном.
+ */
+
 @Configuration
 public class TelegramBotConfiguration {
 
@@ -15,7 +20,7 @@ public class TelegramBotConfiguration {
     @Bean
     public TelegramBot telegramBot() {
         TelegramBot bot = new TelegramBot(token);
-        bot.execute(new DeleteMyCommands());
+            bot.execute(new DeleteMyCommands());
         return bot;
     }
 

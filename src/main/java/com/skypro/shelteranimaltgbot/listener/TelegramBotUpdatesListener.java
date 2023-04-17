@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.response.SendResponse;
-import com.skypro.shelteranimaltgbot.service.Listener;
+import com.skypro.shelteranimaltgbot.service.ListenerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +13,22 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+/**
+ * Класс, обрабатывающий все апдейты для бота.
+ * Содержит вспомогательный класс ListenerService,
+ * распределяющий входящие данные от клиента.
+ */
+
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
 
     @Autowired
-    private Listener listener;
+    private ListenerService listenerService;
 
 
     @PostConstruct
@@ -35,11 +40,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing updatePhone: {}", update);
-            listener.messages(update).stream()
+            listenerService.messages(update).stream()
                     .forEach(sendMessage -> {
-                        if (update.message() != null) {
-                            SendResponse response = telegramBot.execute(sendMessage);
+                        SendResponse response = telegramBot.execute(sendMessage); // залогировать отправилось сообщение или нет
+                        if (response.isOk()) {
+                            logger.info("Message sent");
+                        } else {
+                            logger.error("Message was not sent because of " + response.errorCode());
                         }
+
                     });
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
