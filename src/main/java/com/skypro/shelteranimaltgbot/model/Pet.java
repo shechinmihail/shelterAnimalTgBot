@@ -51,6 +51,12 @@ public class Pet {
     @Column(name = "status")
     private StatusPet statusPet;
 
+    /**
+     * фото питомца
+     */
+    @Column(name = "photo")
+    private String filePath;
+
 
     /**
      * Конструктор для создания объекта домашний питомец
@@ -109,17 +115,25 @@ public class Pet {
         this.statusPet = statusPet;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && statusPet == pet.statusPet;
+        return Objects.equals(id, pet.id) && Objects.equals(typePet, pet.typePet) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && statusPet == pet.statusPet && Objects.equals(filePath, pet.filePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, statusPet);
+        return Objects.hash(id, typePet, name, age, statusPet, filePath);
     }
 
     @Override
@@ -130,6 +144,7 @@ public class Pet {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", statusPet=" + statusPet +
+                ", filePath='" + filePath + '\'' +
                 '}';
     }
 }

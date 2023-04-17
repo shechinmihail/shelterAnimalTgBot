@@ -29,6 +29,7 @@ import java.util.*;
 
 @Service
 public class ListenerService {
+
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     @Autowired
     private UserService userService;
@@ -245,7 +246,7 @@ public class ListenerService {
             case ABOUT_SHELTER:
                 String shelter = callBackData.message().from().username();
                 messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)));
-                messages.add(new SendMessage(chatIdFromCallBackData, "Посмотреть каталог животных ").replyMarkup(iewAllTypePet()));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Посмотреть каталог животных ").replyMarkup(viewAllTypePet()));
                 break;
             case OPERATING_MODE:
                 sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
@@ -257,14 +258,26 @@ public class ListenerService {
             case VIEW_ALL_ANIMALS:
                 break;
             default:
-                //if (checkCallbackDataTypePet(callBackData.data())) {
-                messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(viewPets(callBackData.data())));
-                //} else {
-
-                //}
+                if (checkCallbackDataTypePet(callBackData.data())) {
+                    messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(viewPets(callBackData.data())));
+                } else if (checkCallbackDataPet(callBackData.data())) {
+                    messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                    viewInfoAboutPet(callBackData.data());
+                }
                 break;
         }
         return messages;
+    }
+
+    private void viewInfoAboutPet(String data) {
+
+    }
+
+
+    private boolean checkCallbackDataPet(String data) {
+        String[] dataSplit = data.split(" ");
+        Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));
+        return pet.getName().equals(dataSplit[1]) && pet.getAge() == Integer.valueOf(dataSplit[2]);
     }
 
     /**
@@ -289,10 +302,7 @@ public class ListenerService {
                 .sorted(Comparator.comparing(Pet::getName))
                 .forEach(pet -> {
                     inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Имя " + pet.getName() + " Возраст " + pet.getAge() + " года")
-                            .callbackData(pet.getName() + "\n" +
-                                    "Возраст " + pet.getAge() + " года" + "\n"
-
-                            ));
+                            .callbackData(pet.getId() + " " + pet.getName() + " " + pet.getAge()));
                 });
         return inlineKeyboardMarkup;
     }
@@ -300,7 +310,7 @@ public class ListenerService {
     /**
      * метод выводит все виды животных(кошки собаки и тд)
      */
-    private Keyboard iewAllTypePet() {
+    private Keyboard viewAllTypePet() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         Set<TypePet> typePetsList = new HashSet<>(typePetService.getAllTypePet());
         for (TypePet typePet : typePetsList) {
