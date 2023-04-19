@@ -19,8 +19,7 @@ import java.util.Collection;
  */
 @Service
 public class PetService {
-    @Value("${path.to.photo.folder}")
-    private String photoDir;
+
 
     /**
      * Поле репозитория домашнего питомца
