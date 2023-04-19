@@ -69,7 +69,7 @@ public class ListenerService {
 
     private Long idSessionForConnect;
     private Message message;
-    private Long chatId;
+    private Long userId;
     @Autowired
     private PetRepository petRepository;
     @Autowired
@@ -101,11 +101,11 @@ public class ListenerService {
      */
     private List<SendMessage> handlerMessageData(Update update, List<SendMessage> messages) {
         message = update.message();
-        chatId = message.chat().id();
+        userId = message.from().id();
         var contact = message.contact();
         if (contact != null) {
             setContact(update);
-            messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
+            messages.add(new SendMessage(userId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             sendNotification(update, messages);
 
         } else {
@@ -123,7 +123,7 @@ public class ListenerService {
                     closeСonnection(messages);
                     break;
                 default:
-                    chatWithVolunteer();
+                    chatWithVolunteer(userId);
                     break;
             }
         }
@@ -153,7 +153,7 @@ public class ListenerService {
     private List<SendMessage> closeСonnection(List<SendMessage> messages) {
         chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
         ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
-        messages.add(new SendMessage(chatUser.getGetTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
+        messages.add(new SendMessage(chatUser.getTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
         return messages;
     }
 
@@ -161,16 +161,31 @@ public class ListenerService {
     /**
      * чат с волонтером
      */
-    private void chatWithVolunteer() {
-        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getGetTelegramIdUser();
-        Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
-        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userTelegramId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, chatId, message.messageId());
+    private void chatWithVolunteer(Long userId) {
+        ChatSessionWithVolunteer session = chatSessionService.getSession(userId);
+        idSessionForConnect = session.getId();
+        Long userTelegramId = session.getTelegramIdUser();
+        Long volunteerChatId = session.getTelegramIdVolunteer();
+
+
+        if (chatSessionService.checkSession(idSessionForConnect) && !userId.equals(userTelegramId)) {
+            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, userId, message.messageId());
             SendResponse response = telegramBot.execute(forwardMessage);
-        } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
+        } else if (chatSessionService.checkSession(idSessionForConnect) && !userId.equals(volunteerChatId)) {
+            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, userId, message.messageId());
             SendResponse response = telegramBot.execute(forwardMessage);
         }
+
+//        idSessionForConnect = chatSessionService.getSessionId(userId);
+//        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdUser();
+//        Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
+//        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userTelegramId)) {
+//            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, chatId, message.messageId());
+//            SendResponse response = telegramBot.execute(forwardMessage);
+//        } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
+//            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
+//            SendResponse response = telegramBot.execute(forwardMessage);
+//        }
     }
 
 
@@ -191,7 +206,7 @@ public class ListenerService {
         if (!chatSessionService.checkSession(idSessionForConnect)) {
             chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.OPEN);
         } else {
-            messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
+            messages.add(new SendMessage(userId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
         }
         return messages;
     }
@@ -207,9 +222,9 @@ public class ListenerService {
                     messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
                     ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
                     chatSessionService.createSession(newSession);
-                    idSessionForConnect = newSession.getId();
+                    //idSessionForConnect = newSession.getId();
                 });
-        messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
+        messages.add(new SendMessage(userId, "Соединение устанавливается.."));
         return messages;
     }
 
@@ -218,10 +233,10 @@ public class ListenerService {
      * вывод основного меню
      */
     private List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
-        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
+        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), userId, StatusEnum.GUEST, RoleEnum.USER);
         userService.addUser(user);
-        messages.add(new SendMessage(chatId, "Привет " + user.getFirstName()).replyMarkup(keyboardMenu()));
-        messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
+        messages.add(new SendMessage(userId, "Привет " + user.getFirstName()).replyMarkup(keyboardMenu()));
+        messages.add(new SendMessage(userId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
         return messages;
     }
 

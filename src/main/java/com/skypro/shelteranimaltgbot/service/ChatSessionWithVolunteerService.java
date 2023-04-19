@@ -45,4 +45,8 @@ public class ChatSessionWithVolunteerService {
     public ChatSessionWithVolunteer getChatUser(Long idSessionForConnect) {
         return chatSessionRepository.findChatSessionWithVolunteerById(idSessionForConnect);
     }
+
+    public ChatSessionWithVolunteer getSession(Long userId) {
+        return chatSessionRepository.findChatSessionWithVolunteerByTelegramIdUser(userId);
+    }
 }
