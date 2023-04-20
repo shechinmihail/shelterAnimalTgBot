@@ -123,6 +123,10 @@ public class Pet {
         this.filePath = filePath;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
