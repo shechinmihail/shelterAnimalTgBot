@@ -18,37 +18,43 @@ public class User {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     /**
      * Имя пользователя
      */
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     /**
      * Фамилия пользователя
      */
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     /**
      * Телеграм id пользователя
      */
+    @Column(name = "user_telegram_id")
     private Long userTelegramId;
-
 
     /**
      * Статус пользователя
      */
+    @Column(name = "status")
     private StatusEnum status;
 
     /**
      * Номер телефона пользователя
      */
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     /**
      * Роль пользователя
      */
+    @Column(name = "role")
     private RoleEnum role;
 
     public User() {
@@ -125,5 +131,16 @@ public class User {
         return Objects.hash(id, firstName, lastName, userTelegramId, status, phone, role);
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userTelegramId=" + userTelegramId +
+                ", status=" + status +
+                ", phone='" + phone + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }
