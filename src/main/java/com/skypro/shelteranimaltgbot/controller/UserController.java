@@ -61,7 +61,7 @@ public class UserController {
                             schema = @Schema(implementation = User.class)
                     )
             ))
-    @PostMapping   //POST http://localhost:8080/user
+    @PostMapping   //POST http://localhost:8080/users
     public User addUser(@RequestBody User user) {
         return userService.addUser(user);
     }
@@ -91,7 +91,7 @@ public class UserController {
                                     schema = @Schema(implementation = User.class)
                             )
                     )})
-    @GetMapping(path = "{id}")   //GET http://localhost:8080/user/{id}
+    @GetMapping(path = "{id}")   //GET http://localhost:8080/users/{id}
     public ResponseEntity<User> findUser(@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
                                          @PathVariable Long id) {
         User user = userService.findUser(id);
@@ -150,7 +150,7 @@ public class UserController {
                     )
             }
     )
-    @PutMapping    //PUT http://ocalhost:8080/user
+    @PutMapping    //PUT http://ocalhost:8080/users
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         User foundUser = userService.updateUser(user);
         if (foundUser == null) {
@@ -179,7 +179,7 @@ public class UserController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/user/{id}
+    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/users/{id}
     public ResponseEntity<Void> deleteUser(@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
                                            @PathVariable Long id) {
         userService.deleteUser(id);
