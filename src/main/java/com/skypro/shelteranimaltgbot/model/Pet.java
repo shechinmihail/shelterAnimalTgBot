@@ -36,7 +36,7 @@ public class Pet {
     /**
      * Вид домашнего питомца
      */
-    @Column(name = "typeOfPet")
+    @Column(name = "type_of_pet")
     private String typeOfPet;
 
     /**
