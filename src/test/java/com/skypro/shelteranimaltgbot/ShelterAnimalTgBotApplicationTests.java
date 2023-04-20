@@ -37,6 +37,8 @@ class ShelterAnimalTgBotApplicationTests {
         jsonObject.put("status","GUEST");
         jsonObject.put("phone", "123");
         jsonObject.put("role", "USER");
+
+
         mockMvc
                 .perform(
                         post("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
@@ -54,5 +56,26 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$.userTelegramId").value("1")
 
                 );
+        mockMvc
+                .perform(
+                        put("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/users/all"))
+                .andExpectAll(
+                        jsonPath("$.size()").value(1),
+                        status().isOk(),
+                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[0].firstName").value("TEST"),
+                        jsonPath("$[0].lastName").value("TEST"),
+                        jsonPath("$[0].phone").value("123"),
+                        jsonPath("$[0].role").value("USER"),
+                        jsonPath("$[0].status").value("GUEST"),
+                        jsonPath("$[0].userTelegramId").value("1")
+
+                );
+        mockMvc
+                .perform(
+                        delete("/users/1").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
     }
 }

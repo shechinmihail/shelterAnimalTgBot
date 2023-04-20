@@ -162,19 +162,6 @@ public class ListenerService {
      * чат с волонтером
      */
     private void chatWithVolunteer(Long userId) {
-        ChatSessionWithVolunteer session = chatSessionService.getSession(userId);
-        idSessionForConnect = session.getId();
-        Long userTelegramId = session.getTelegramIdUser();
-        Long volunteerChatId = session.getTelegramIdVolunteer();
-
-
-        if (chatSessionService.checkSession(idSessionForConnect) && !userId.equals(userTelegramId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, userId, message.messageId());
-            SendResponse response = telegramBot.execute(forwardMessage);
-        } else if (chatSessionService.checkSession(idSessionForConnect) && !userId.equals(volunteerChatId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, userId, message.messageId());
-            SendResponse response = telegramBot.execute(forwardMessage);
-        }
 
 //        idSessionForConnect = chatSessionService.getSessionId(userId);
 //        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdUser();

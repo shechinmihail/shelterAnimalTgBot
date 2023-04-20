@@ -150,7 +150,7 @@ public class UserController {
                     )
             }
     )
-    @PutMapping    //PUT http://ocalhost:8080/users
+    @PutMapping   //PUT http://ocalhost:8080/users
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         User foundUser = userService.updateUser(user);
         if (foundUser == null) {
