@@ -13,15 +13,18 @@ public class TypePet {
 
     private String type;
 
-    //@ManyToMany(fetch = FetchType.EAGER, mappedBy = "typePets", cascade = CascadeType.ALL)
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
     private Set<Document> documentsList;
+    public void setDocumentsList(Set<Document> documentsList) {
+        this.documentsList = documentsList;
+    }
 
     public TypePet() {
     }
 
-    public TypePet(String type, Document document) {
+    public TypePet(String type, Set<Document> documents) {
         this.type = type;
+        this.documentsList = documents;
     }
 
     public Long getId() {
@@ -30,11 +33,6 @@ public class TypePet {
 
     public String getType() {
         return type;
-    }
-
-
-    public void setDocuments(Set<Document> documents) {
-        this.documentsList = documents;
     }
 
     @Override

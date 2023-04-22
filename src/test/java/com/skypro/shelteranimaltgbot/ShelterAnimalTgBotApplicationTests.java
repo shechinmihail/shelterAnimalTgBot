@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -77,5 +76,34 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         delete("/users/1").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testPet() throws Exception {
+        JSONObject jsonObjectTypePet = new JSONObject();
+        jsonObjectTypePet.put("id", "1");
+        jsonObjectTypePet.put("type", "Кошки");
+
+        JSONObject jsonObjectDocument = new JSONObject();
+        jsonObjectTypePet.put("id", "1");
+        jsonObjectTypePet.put("document", "Паспорт");
+        jsonObjectTypePet.put("typePetId", jsonObjectTypePet);
+
+
+
+        JSONObject jsonObjectPet = new JSONObject();
+        jsonObjectPet.put("name", "test");
+        jsonObjectPet.put("age", "1");
+        jsonObjectPet.put("typePet", jsonObjectTypePet);
+        jsonObjectPet.put("statusPet", "FREE");
+
+
+        mockMvc
+                .perform(
+                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
+                .andExpect(status().isOk());
+
+
+
     }
 }

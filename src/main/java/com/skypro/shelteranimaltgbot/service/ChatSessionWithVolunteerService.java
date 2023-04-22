@@ -6,6 +6,8 @@ import com.skypro.shelteranimaltgbot.repository.ChatSessionWithVolunteerReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class ChatSessionWithVolunteerService {
@@ -13,6 +15,7 @@ public class ChatSessionWithVolunteerService {
 
     @Autowired
     ChatSessionWithVolunteerRepository chatSessionRepository;
+
 
     /**
      * создание сессии
@@ -41,12 +44,20 @@ public class ChatSessionWithVolunteerService {
 
     /**
      * получить id пользователя в чате
-     * */
+     */
     public ChatSessionWithVolunteer getChatUser(Long idSessionForConnect) {
         return chatSessionRepository.findChatSessionWithVolunteerById(idSessionForConnect);
     }
 
     public ChatSessionWithVolunteer getSession(Long userId) {
         return chatSessionRepository.findChatSessionWithVolunteerByTelegramIdUser(userId);
+    }
+
+    public List<ChatSessionWithVolunteer> getAllSession() {
+        return chatSessionRepository.findAll();
+    }
+
+    public Long getLastId(Long id) {
+        return chatSessionRepository.findId(id);
     }
 }
