@@ -12,9 +12,9 @@ public class Document {
     private Long id;
     private String document;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "documentsList", cascade = CascadeType.ALL)
-    private Set<TypePet> typePets;
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "type_pet_id")
+    private TypePet typePet;
 
     public Document() {
     }
@@ -31,13 +31,6 @@ public class Document {
         return document;
     }
 
-    public Set<TypePet> getTypePets() {
-        return typePets;
-    }
-
-    public void setTypePets(Set<TypePet> typePets) {
-        this.typePets = typePets;
-    }
 
     public void setDocument(String document) {
         this.document = document;
@@ -61,7 +54,7 @@ public class Document {
         return "Document{" +
                 "id=" + id +
                 ", document='" + document + '\'' +
-                ", typePets=" + typePets +
+               // ", typePets=" + typePets +
                 '}';
     }
 }

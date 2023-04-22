@@ -48,7 +48,7 @@ public class User {
     /**
      * Номер телефона пользователя
      */
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone")
     private String phone;
 
     /**
