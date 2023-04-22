@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.service.ForwardListenerService;
-import com.skypro.shelteranimaltgbot.service.ListenerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private TelegramBot telegramBot;
-
-    @Autowired
-    private ListenerService listenerService;
 
     @Autowired
     ForwardListenerService forwardListenerService;

@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class CommandButtonService {
 
-
+    @Autowired
     private TelegramBot telegramBot;
 
     @Autowired
@@ -34,7 +34,6 @@ public class CommandButtonService {
     private Message message;
     private Long userId;
 
-    private Long idSessionForConnect;
 
 
 
@@ -60,11 +59,10 @@ public class CommandButtonService {
         userId = message.from().id();
         getVolunteer().stream()
                 .forEach(user -> {
-                    //отправили сообщение всем волонтерам и кнопки принять / откланить, открыли сессию в статусе ожидания
+                    //отправили сообщение всем волонтерам и кнопки принять / отклонить, открыли сессию в статусе ожидания
                     messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(buttonService.keyboardForChatSession()));
                     ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
                     chatSessionService.createSession(newSession);
-                    idSessionForConnect = newSession.getId();
                 });
         messages.add(new SendMessage(userId, "Соединение устанавливается.."));
         return messages;
@@ -75,6 +73,7 @@ public class CommandButtonService {
      * получаем список волонтеров
      */
     public List<SendMessage> openСonnection(List<SendMessage> messages) {
+        Long idSessionForConnect = chatSessionService.getLastId(userId);
         if (!chatSessionService.checkSession(idSessionForConnect)) {
             chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.OPEN);
         } else {
@@ -88,7 +87,10 @@ public class CommandButtonService {
      * закрытие соединения с клиентом
      */
 
-    public List<SendMessage> closeСonnection(List<SendMessage> messages) {
+    public List<SendMessage> closeСonnection(Update update, List<SendMessage> messages) {
+        message = update.message();
+        userId = message.from().id();
+        Long idSessionForConnect = chatSessionService.getLastId(userId);
         chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
         ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
         messages.add(new SendMessage(chatUser.getTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
@@ -102,6 +104,7 @@ public class CommandButtonService {
     public List<User> getVolunteer() {
         return new ArrayList<>(userService.checkUsersByRole(RoleEnum.VOLUNTEER));
     }
+
 
     /**
      * отправка фото
