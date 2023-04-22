@@ -41,7 +41,6 @@ public class Pet {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-
     /**
      * Статус домашнего питомца
      *

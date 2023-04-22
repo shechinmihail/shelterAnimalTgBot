@@ -119,7 +119,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(path = "all")   //GET http://localhost:8080/all
+    @GetMapping(path = "all")   //GET http://localhost:8080/users/all
     public ResponseEntity<Collection<User>> getAll() {
         return ResponseEntity.ok(userService.getAll());
     }

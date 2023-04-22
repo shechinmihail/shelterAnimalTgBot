@@ -131,7 +131,6 @@ public class ListenerService {
 
     }
 
-
     /**
      * уведомление волонтерам о звонке клиенту
      */
@@ -145,7 +144,6 @@ public class ListenerService {
         return messages;
     }
 
-
     /**
      * закрытие соединения с клиентом
      */
@@ -156,7 +154,6 @@ public class ListenerService {
         messages.add(new SendMessage(chatUser.getTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
         return messages;
     }
-
 
     /**
      * чат с волонтером

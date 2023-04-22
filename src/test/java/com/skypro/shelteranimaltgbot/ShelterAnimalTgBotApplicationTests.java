@@ -9,11 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 
 @SpringBootTest
@@ -34,10 +32,9 @@ class ShelterAnimalTgBotApplicationTests {
         jsonObject.put("firstName", "TEST");
         jsonObject.put("lastName", "TEST");
         jsonObject.put("userTelegramId", "1");
-        jsonObject.put("status","GUEST");
+        jsonObject.put("status", "GUEST");
         jsonObject.put("phone", "123");
         jsonObject.put("role", "USER");
-
 
         mockMvc
                 .perform(
@@ -56,11 +53,15 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$.userTelegramId").value("1")
 
                 );
+
         mockMvc
                 .perform(
                         put("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/users/all"))
+
+        mockMvc.
+                perform
+                        (get("/users/all"))
                 .andExpectAll(
                         jsonPath("$.size()").value(1),
                         status().isOk(),
@@ -73,9 +74,62 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$[0].userTelegramId").value("1")
 
                 );
+
         mockMvc
                 .perform(
                         delete("/users/1").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testPet() throws Exception {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", "2");
+        jsonObject.put("typePet", "1");
+        jsonObject.put("name", "TEST");
+        jsonObject.put("age", "5");
+        jsonObject.put("statusPet", "BUSY");
+        jsonObject.put("filePath", "photo");
+
+        mockMvc
+                .perform(
+                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/pet/2"))
+                .andExpectAll(
+                        jsonPath("$.size()").value(5),
+                        status().isOk(),
+                        jsonPath("$.id").value(2),
+                        jsonPath("$.typePet").value("1"),
+                        jsonPath("$.name").value("TEST"),
+                        jsonPath("$.age").value("5"),
+                        jsonPath("$.statusPet").value("BUSY"),
+                        jsonPath("$.filePath").value("photo")
+                );
+
+        mockMvc
+                .perform(
+                        put("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
+
+        mockMvc.
+                perform
+                        (get("/pet/all"))
+                .andExpectAll(
+                        jsonPath("$.size()").value(1),
+                        status().isOk(),
+                        jsonPath("$[0].id").value(2),
+                        jsonPath("$[0].typePet").value("1"),
+                        jsonPath("$[0].name").value("TEST"),
+                        jsonPath("$[0].age").value("5"),
+                        jsonPath("$[0].statusPet").value("BUSY"),
+                        jsonPath("$[0].filePath").value("photo")
+                );
+
+        mockMvc
+                .perform(
+                        delete("/pet/2").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
     }
 }

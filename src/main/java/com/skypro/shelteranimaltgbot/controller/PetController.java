@@ -44,7 +44,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Добавление омашнего питомца в базу данных",
+            summary = "Добавление домашнего питомца в базу данных",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Добавленный домашний питомец",
                     content = @Content(
@@ -103,7 +103,7 @@ public class PetController {
                     )
             }
     )
-    @GetMapping(path = "all")   //GET http://localhost:8080/all
+    @GetMapping(path = "all")   //GET http://localhost:8080/pet/all
     public ResponseEntity<Collection<Pet>> getAllPet() {
         return ResponseEntity.ok(petService.getAllPet());
     }
