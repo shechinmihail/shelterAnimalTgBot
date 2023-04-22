@@ -5,10 +5,11 @@ import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -19,11 +20,14 @@ import java.util.Collection;
 @Service
 public class PetService {
 
+
     /**
      * Поле репозитория домашнего питомца
      */
-    @Autowired
+
     private final PetRepository petRepository;
+
+
     private final static Logger logger = LoggerFactory.getLogger(PetService.class);
 
     /**
@@ -82,7 +86,7 @@ public class PetService {
     }
 
     /**
-     * олучение списка домашних питомцев из базы данных
+     * получение списка домашних питомцев из базы данных
      *
      * @return список(коллекцию) домашних питомцев
      */
@@ -100,4 +104,17 @@ public class PetService {
         logger.info("Вызван метод удаления домашнего питомца по идентификатору (id)");
         petRepository.deleteById(id);
     }
+
+    /**
+     * возвращаем всех животных по типу
+     *
+     * @param typePet вид домашнего питомца, не может быть null
+     */
+    public Collection<Pet> getAllPetByTypePet(String typePet) {
+        logger.info("Вызван метод показать всех питомцев по типу {} ", typePet);
+        return new ArrayList<>(petRepository.findAll());
+
+    }
+
+
 }

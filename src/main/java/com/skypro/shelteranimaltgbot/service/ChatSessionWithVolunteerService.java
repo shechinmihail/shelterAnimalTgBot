@@ -6,6 +6,7 @@ import com.skypro.shelteranimaltgbot.repository.ChatSessionWithVolunteerReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class ChatSessionWithVolunteerService {
 
@@ -15,21 +16,20 @@ public class ChatSessionWithVolunteerService {
 
     /**
      * создание сессии
-     * */
-    public void createSession(ChatSessionWithVolunteer session) {
-        chatSessionRepository.save(session);
+     */
+    public ChatSessionWithVolunteer createSession(ChatSessionWithVolunteer session) {
+        return chatSessionRepository.save(session);
     }
 
 
     /**
      * получить сессию по id, изменить статус
      */
-    public void getChatSessionForClose(Long idSession, SessionEnum session) {
+    public ChatSessionWithVolunteer getChatSessionForClose(Long idSession, SessionEnum session) {
         ChatSessionWithVolunteer chatSessionWithVolunteer = chatSessionRepository.findChatSessionWithVolunteerById(idSession);
         chatSessionWithVolunteer.setSession(session);
-        chatSessionRepository.save(chatSessionWithVolunteer);
+        return chatSessionRepository.save(chatSessionWithVolunteer);
     }
-
 
 
     /**
@@ -44,5 +44,9 @@ public class ChatSessionWithVolunteerService {
      * */
     public ChatSessionWithVolunteer getChatUser(Long idSessionForConnect) {
         return chatSessionRepository.findChatSessionWithVolunteerById(idSessionForConnect);
+    }
+
+    public ChatSessionWithVolunteer getSession(Long userId) {
+        return chatSessionRepository.findChatSessionWithVolunteerByTelegramIdUser(userId);
     }
 }

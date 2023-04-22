@@ -14,28 +14,33 @@ import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.repository.PetRepository;
+import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ListenerService {
+
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     @Autowired
     private UserService userService;
-
     @Autowired
     private TelegramBot telegramBot;
     @Autowired
     private ChatSessionWithVolunteerService chatSessionService;
+    private final String TYPE_PET = "Посмотреть животных";
+    private final String VIEW_ALL_ANIMALS = "Посмотреть список животных";
+    //TODO записать path в properties в виде переменной, вызывать через @Value
+    private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
 
 
     /**
@@ -52,12 +57,23 @@ public class ListenerService {
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
-    private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
+    @Autowired
+    private ShelterService shelterService;
+    @Autowired
+    private PetService petService;
+    @Autowired
+    private TypePetService typePetService;
+    private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
+    private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
 
 
     private Long idSessionForConnect;
     private Message message;
-    private Long chatId;
+    private Long userId;
+    @Autowired
+    private PetRepository petRepository;
+    @Autowired
+    private TypePetRepository typePetRepository;
 
 
     /**
@@ -85,11 +101,11 @@ public class ListenerService {
      */
     private List<SendMessage> handlerMessageData(Update update, List<SendMessage> messages) {
         message = update.message();
-        chatId = message.chat().id();
+        userId = message.from().id();
         var contact = message.contact();
         if (contact != null) {
             setContact(update);
-            messages.add(new SendMessage(chatId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
+            messages.add(new SendMessage(userId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             sendNotification(update, messages);
 
         } else {
@@ -107,7 +123,7 @@ public class ListenerService {
                     closeСonnection(messages);
                     break;
                 default:
-                    chatWithVolunteer();
+                    chatWithVolunteer(userId);
                     break;
             }
         }
@@ -137,7 +153,7 @@ public class ListenerService {
     private List<SendMessage> closeСonnection(List<SendMessage> messages) {
         chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
         ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
-        messages.add(new SendMessage(chatUser.getGetTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
+        messages.add(new SendMessage(chatUser.getTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
         return messages;
     }
 
@@ -145,16 +161,18 @@ public class ListenerService {
     /**
      * чат с волонтером
      */
-    private void chatWithVolunteer() {
-        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getGetTelegramIdUser();
-        Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
-        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userTelegramId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, chatId, message.messageId());
-            SendResponse response = telegramBot.execute(forwardMessage);
-        } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
-            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
-            SendResponse response = telegramBot.execute(forwardMessage);
-        }
+    private void chatWithVolunteer(Long userId) {
+
+//        idSessionForConnect = chatSessionService.getSessionId(userId);
+//        Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdUser();
+//        Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
+//        if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(userTelegramId)) {
+//            ForwardMessage forwardMessage = new ForwardMessage(userTelegramId, chatId, message.messageId());
+//            SendResponse response = telegramBot.execute(forwardMessage);
+//        } else if (chatSessionService.checkSession(idSessionForConnect) && !chatId.equals(volunteerChatId)) {
+//            ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, message.messageId());
+//            SendResponse response = telegramBot.execute(forwardMessage);
+//        }
     }
 
 
@@ -175,7 +193,7 @@ public class ListenerService {
         if (!chatSessionService.checkSession(idSessionForConnect)) {
             chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.OPEN);
         } else {
-            messages.add(new SendMessage(chatId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
+            messages.add(new SendMessage(userId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
         }
         return messages;
     }
@@ -191,9 +209,9 @@ public class ListenerService {
                     messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(keyboardForChatSession()));
                     ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
                     chatSessionService.createSession(newSession);
-                    idSessionForConnect = newSession.getId();
+                    //idSessionForConnect = newSession.getId();
                 });
-        messages.add(new SendMessage(chatId, "Соединение устанавливается.."));
+        messages.add(new SendMessage(userId, "Соединение устанавливается.."));
         return messages;
     }
 
@@ -202,10 +220,10 @@ public class ListenerService {
      * вывод основного меню
      */
     private List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
-        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), chatId, StatusEnum.GUEST, RoleEnum.USER);
+        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), userId, StatusEnum.GUEST, RoleEnum.USER);
         userService.addUser(user);
-        messages.add(new SendMessage(chatId, "Привет " + user.getFirstName()).replyMarkup(keyboardMenu()));
-        messages.add(new SendMessage(chatId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
+        messages.add(new SendMessage(userId, "Привет " + user.getFirstName()).replyMarkup(keyboardMenu()));
+        messages.add(new SendMessage(userId, "Выберете пункт меню:").replyMarkup(keyboardChatMenu()));
         return messages;
     }
 
@@ -228,19 +246,81 @@ public class ListenerService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case ABOUT_SHELTER:
-                //TODO сделать метод по обработке запроса подать подробное описание
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                String shelter = callBackData.message().from().username();
+                messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Посмотреть каталог животных ").replyMarkup(viewAllTypePet()));
                 break;
             case OPERATING_MODE:
                 sendPhoto(PATH_ADRESS, chatIdFromCallBackData);
                 break;
             case SAFETY:
-                //TODO сделать метод по обработке запроса по технике безопасности
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                sendPhoto(SAFETY_CAT, chatIdFromCallBackData);
+                sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
-
+            case VIEW_ALL_ANIMALS:
+                break;
+            default:
+                if (checkCallbackDataTypePet(callBackData.data())) {
+                    messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(viewPets(callBackData.data())));
+                } else if (checkCallbackDataPet(callBackData.data())) {
+                    messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                    viewInfoAboutPet(callBackData.data());
+                }
+                break;
         }
         return messages;
+    }
+
+    private void viewInfoAboutPet(String data) {
+
+    }
+
+
+    private boolean checkCallbackDataPet(String data) {
+        String[] dataSplit = data.split(" ");
+        Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));
+        return pet.getName().equals(dataSplit[1]) && pet.getAge() == Integer.valueOf(dataSplit[2]);
+    }
+
+    /**
+     * метод проверяет если выбор типа животного то возврат true
+     */
+    private boolean checkCallbackDataTypePet(String data) {
+        Set<TypePet> typePets = new HashSet<>(typePetService.getAllTypePet());
+        return typePets.stream().anyMatch(typePet -> {
+            return typePet.getType().equals(data);
+        });
+    }
+
+
+    /**
+     * метод выводит всех питомцев по выбранному типу
+     **/
+    private Keyboard viewPets(String data) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<Pet> pets = new ArrayList<>(petService.getAllPetByTypePet(data));
+        pets.stream()
+                .filter(p -> p.getTypePet().getType().equals(data))
+                .sorted(Comparator.comparing(Pet::getName))
+                .forEach(pet -> {
+                    inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Имя " + pet.getName() + " Возраст " + pet.getAge() + " года")
+                            .callbackData(pet.getId() + " " + pet.getName() + " " + pet.getAge()));
+                });
+        return inlineKeyboardMarkup;
+    }
+
+    /**
+     * метод выводит все виды животных(кошки собаки и тд)
+     */
+    private Keyboard viewAllTypePet() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        Set<TypePet> typePetsList = new HashSet<>(typePetService.getAllTypePet());
+        for (TypePet typePet : typePetsList) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(typePet.getType()).callbackData(typePet.getType()));
+        }
+
+        return inlineKeyboardMarkup;
+
     }
 
 

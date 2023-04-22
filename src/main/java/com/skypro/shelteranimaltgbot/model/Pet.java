@@ -21,6 +21,14 @@ public class Pet {
     @Column(name = "id", nullable = false)
     private Long id;
 
+
+    /**
+     * Вид домашнего питомца
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_pet_id")
+    private TypePet typePet;
+
     /**
      * Имя домашнего питомца
      */
@@ -33,11 +41,6 @@ public class Pet {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    /**
-     * Вид домашнего питомца
-     */
-    @Column(name = "type_of_pet")
-    private String typeOfPet;
 
     /**
      * Статус домашнего питомца
@@ -49,17 +52,24 @@ public class Pet {
     private StatusPet statusPet;
 
     /**
+     * фото питомца
+     */
+    @Column(name = "photo")
+    private String filePath;
+
+
+    /**
      * Конструктор для создания объекта домашний питомец
      *
      * @param name      имя домашнего питомца
      * @param age       возраст домашнего питомца
-     * @param typeOfPet вид домашнего питомца
+     * @param typePet   вид домашнего питомца
      * @param statusPet статус домашнего питомца
      */
-    public Pet(String name, Integer age, String typeOfPet, StatusPet statusPet) {
+    public Pet(String name, Integer age, TypePet typePet, StatusPet statusPet) {
         this.name = name;
         this.age = age;
-        this.typeOfPet = typeOfPet;
+        this.typePet = typePet;
         this.statusPet = statusPet;
     }
 
@@ -67,6 +77,14 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public TypePet getTypePet() {
+        return typePet;
+    }
+
+    public void setTypePet(TypePet typePet) {
+        this.typePet = typePet;
     }
 
     public Long getId() {
@@ -89,14 +107,6 @@ public class Pet {
         this.age = age;
     }
 
-    public String getTypeOfPet() {
-        return typeOfPet;
-    }
-
-    public void setTypeOfPet(String typeOfPet) {
-        this.typeOfPet = typeOfPet;
-    }
-
     public StatusPet getStatusPet() {
         return statusPet;
     }
@@ -105,27 +115,40 @@ public class Pet {
         this.statusPet = statusPet;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && Objects.equals(typeOfPet, pet.typeOfPet) && statusPet == pet.statusPet;
+        return Objects.equals(id, pet.id) && Objects.equals(typePet, pet.typePet) && Objects.equals(name, pet.name) && Objects.equals(age, pet.age) && statusPet == pet.statusPet && Objects.equals(filePath, pet.filePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, typeOfPet, statusPet);
+        return Objects.hash(id, typePet, name, age, statusPet, filePath);
     }
 
     @Override
     public String toString() {
         return "Pet{" +
                 "id=" + id +
+                ", typePet=" + typePet +
                 ", name='" + name + '\'' +
                 ", age=" + age +
-                ", typeOfPet='" + typeOfPet + '\'' +
                 ", statusPet=" + statusPet +
+                ", filePath='" + filePath + '\'' +
                 '}';
     }
 }

@@ -62,8 +62,8 @@ public class UserController {
                     )
             ))
     @PostMapping   //POST http://localhost:8080/users
-    public User addUser(@RequestBody User user) {
-        return userService.addUser(user);
+    public ResponseEntity<User> addUser(@RequestBody User user)  {
+        return ResponseEntity.ok(userService.addUser(user));
     }
 
     /**
