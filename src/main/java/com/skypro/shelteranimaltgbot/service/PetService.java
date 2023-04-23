@@ -53,6 +53,7 @@ public class PetService {
         return petRepository.save(pet);
     }
 
+
     /**
      * Поиск домашнего питомеца в базе данных по идентификатору (id)
      *

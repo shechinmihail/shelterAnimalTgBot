@@ -103,7 +103,7 @@ public class UserService {
      * метод добавления контакта в БД
      * */
     public void setContact(Update update) {
-        logger.info("Вызван метод добавлкения номера телефона в БД");
+        logger.info("Вызван метод добавления номера телефона в БД");
         var phone = update.message().contact().phoneNumber();
         var userTelegramId = update.message().from().id();
         User u = userRepository.findAllByUserTelegramId(userTelegramId);

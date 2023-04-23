@@ -82,6 +82,35 @@ class ShelterAnimalTgBotApplicationTests {
     }
 
     @Test
+    void testPet2() throws Exception {
+        JSONObject jsonObjectTypePet = new JSONObject();
+        jsonObjectTypePet.put("id", "1");
+        jsonObjectTypePet.put("type", "Кошки");
+
+        JSONObject jsonObjectDocument = new JSONObject();
+        jsonObjectTypePet.put("id", "1");
+        jsonObjectTypePet.put("document", "Паспорт");
+        jsonObjectTypePet.put("typePetId", jsonObjectTypePet);
+
+
+
+        JSONObject jsonObjectPet = new JSONObject();
+        jsonObjectPet.put("name", "test");
+        jsonObjectPet.put("age", "1");
+        jsonObjectPet.put("typePet", jsonObjectTypePet);
+        jsonObjectPet.put("statusPet", "FREE");
+
+
+        mockMvc
+                .perform(
+                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
+                .andExpect(status().isOk());
+
+
+
+    }
+
+    @Test
     void testPet() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", "2");

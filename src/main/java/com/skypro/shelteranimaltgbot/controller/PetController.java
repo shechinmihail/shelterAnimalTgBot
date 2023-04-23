@@ -56,9 +56,10 @@ public class PetController {
     @PostMapping    //POST http://localhost:8080/pet
     public ResponseEntity<Pet> addPet(@RequestBody Pet pet,
                       @Parameter(description = "Установка статуса домашнего питомца", example = "BUSY")
-                      @RequestParam(name = "Статус") StatusPet statusPet) {
+                      @RequestParam(name = "Status") StatusPet statusPet) {
         return ResponseEntity.ok(petService.addPet(pet, statusPet));
     }
+
 
     @Operation(
             summary = "Функция получения домашнего питомца по идентификатору (id) из базы данных",
