@@ -1,6 +1,6 @@
 INSERT INTO "TG".public.type_pet
-VALUES ('1', 'Кошки'),
-       ('2', 'Собаки');
+VALUES ('3', 'Кошки'),
+       ('4', 'Собаки');
 
 INSERT INTO "TG".public.documents
 VALUES ('1', 'Паспорт', '1'),

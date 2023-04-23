@@ -1,5 +1,6 @@
 package com.skypro.shelteranimaltgbot;
 
+import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,58 +84,41 @@ class ShelterAnimalTgBotApplicationTests {
     }
 
     @Test
-    void testPet2() throws Exception {
+    void testPet() throws Exception {
+
         JSONObject jsonObjectTypePet = new JSONObject();
-        jsonObjectTypePet.put("id", "1");
-        jsonObjectTypePet.put("type", "Кошки");
+        jsonObjectTypePet.put("id", "2");
+        jsonObjectTypePet.put("type", "Cat");
 
         JSONObject jsonObjectDocument = new JSONObject();
-        jsonObjectTypePet.put("id", "1");
-        jsonObjectTypePet.put("document", "Паспорт");
-        jsonObjectTypePet.put("typePetId", jsonObjectTypePet);
+        jsonObjectDocument.put("id", "1");
+        jsonObjectDocument.put("document", "Удостоверение ФСБ");
+        jsonObjectDocument.put("typePetId", jsonObjectTypePet);
 
-
-
-        JSONObject jsonObjectPet = new JSONObject();
-        jsonObjectPet.put("name", "test");
-        jsonObjectPet.put("age", "1");
-        jsonObjectPet.put("typePet", jsonObjectTypePet);
-        jsonObjectPet.put("statusPet", "FREE");
-
-
-        mockMvc
-                .perform(
-                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
-                .andExpect(status().isOk());
-
-
-
-    }
-
-    @Test
-    void testPet() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", "2");
-        jsonObject.put("typePet", "1");
-        jsonObject.put("name", "TEST");
+        jsonObject.put("typePet", jsonObjectTypePet);
+        jsonObject.put("name", "TEST2");
         jsonObject.put("age", "5");
-        jsonObject.put("statusPet", "BUSY");
+        jsonObject.put("statusPet", "FREE");
         jsonObject.put("filePath", "photo");
 
         mockMvc
                 .perform(
-                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-                .andExpect(status().isOk());
+                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString())
+                .param("Статус", String.valueOf(StatusPet.FREE))).andExpect(status().isOk()).andDo(print());
+        // Request processing failed; nested exception is org.springframework.orm.jpa.JpaObjectRetrievalFailureException: Unable to find com.skypro.shelteranimaltgbot.model.TypePet with id 2;
+        // такую ошибку выдает((
 
         mockMvc.perform(get("/pet/2"))
                 .andExpectAll(
-                        jsonPath("$.size()").value(5),
+                        jsonPath("$.size()").value(6),
                         status().isOk(),
                         jsonPath("$.id").value(2),
-                        jsonPath("$.typePet").value("1"),
+                        jsonPath("$.typePet").value(jsonObjectTypePet),
                         jsonPath("$.name").value("TEST"),
                         jsonPath("$.age").value("5"),
-                        jsonPath("$.statusPet").value("BUSY"),
+                        jsonPath("$.statusPet").value("FREE"),
                         jsonPath("$.filePath").value("photo")
                 );
 
@@ -149,10 +134,10 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$.size()").value(1),
                         status().isOk(),
                         jsonPath("$[0].id").value(2),
-                        jsonPath("$[0].typePet").value("1"),
+                        jsonPath("$[0].typePet").value(jsonObjectTypePet),
                         jsonPath("$[0].name").value("TEST"),
                         jsonPath("$[0].age").value("5"),
-                        jsonPath("$[0].statusPet").value("BUSY"),
+                        jsonPath("$[0].statusPet").value("FREE"),
                         jsonPath("$[0].filePath").value("photo")
                 );
 
@@ -160,5 +145,7 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         delete("/pet/2").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
+
+
     }
 }
