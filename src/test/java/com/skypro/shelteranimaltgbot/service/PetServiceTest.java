@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -121,12 +122,15 @@ public class PetServiceTest {
         final String name = "Tiger";
         final Integer age = 2;
         final long id = 1;
-       // final TypePet typePet = new TypePet("Dog", new Document("Passport"));
         final StatusPet statusPet = StatusPet.FREE;
 
-     //   Pet pet = new Pet(name, age, typePet, statusPet);
+        Pet pet = new Pet();
+        pet.setName(name);
+        pet.setAge(age);
+        pet.setStatusPet(statusPet);
 
-   //     when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
+
+        when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/pet/{id}", id)
