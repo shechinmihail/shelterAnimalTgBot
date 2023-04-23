@@ -63,7 +63,7 @@ public class User {
      * @param status         Статус пользователя
      * @param role           Роль пользователя
      */
-    public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
+    public User(String firstName, String lastName, Long userTelegramId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userTelegramId = userTelegramId;

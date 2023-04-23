@@ -46,7 +46,7 @@ public class HandlerСalBakDataService {
         Long chatIdFromCallBackData = callBackData.message().chat().id();
         switch (callBackData.data()) {
             case ABOUT:
-                messages.add(new SendMessage(chatIdFromCallBackData, "Милые пушитсики").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n"+"МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
                 //TODO сделать метод обработки запроса как взять питомца

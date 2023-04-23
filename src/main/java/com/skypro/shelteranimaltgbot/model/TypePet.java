@@ -15,11 +15,11 @@ public class TypePet {
 
     @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
     private Set<Document> documentsList;
-    public void setDocumentsList(Set<Document> documentsList) {
-        this.documentsList = documentsList;
+    public TypePet() {
     }
 
-    public TypePet() {
+    public TypePet(String type) {
+        this.type = type;
     }
 
     public TypePet(String type, Set<Document> documents) {
@@ -33,6 +33,18 @@ public class TypePet {
 
     public String getType() {
         return type;
+    }
+
+    public Set<Document> getDocumentsList() {
+        return documentsList;
+    }
+
+    public void setDocumentsList(Set<Document> documentsList) {
+        this.documentsList = documentsList;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

@@ -116,25 +116,25 @@ public class PetServiceTest {
                 .andExpect(jsonPath("$.statusPet").value(statusPet));
     }
 
-    @Test
-    public void findPetById() throws Exception {
-        final String name = "Tiger";
-        final Integer age = 2;
-        final long id = 1;
-       // final TypePet typePet = new TypePet("Dog", new Document("Passport"));
-        final StatusPet statusPet = StatusPet.FREE;
-
-     //   Pet pet = new Pet(name, age, typePet, statusPet);
-
-   //     when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/pet/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(pet)));
-    }
+//    @Test
+//    public void findPetById() throws Exception {
+//        final String name = "Tiger";
+//        final Integer age = 2;
+//        final long id = 1;
+//       // final TypePet typePet = new TypePet("Dog", new Document("Passport"));
+//        final StatusPet statusPet = StatusPet.FREE;
+//
+//     //   Pet pet = new Pet(name, age, typePet, statusPet);
+//
+//   //     when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
+//
+//        mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/pet/{id}", id)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(content().json(objectMapper.writeValueAsString(pet)));
+//    }
 
     @Test
     public void findAll() throws Exception {

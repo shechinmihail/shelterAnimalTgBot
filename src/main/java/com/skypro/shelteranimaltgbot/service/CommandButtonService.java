@@ -43,7 +43,7 @@ public class CommandButtonService {
     public  List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), userId, StatusEnum.GUEST, RoleEnum.USER);
+        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), StatusEnum.GUEST, RoleEnum.USER);
         userService.addUser(user);
         messages.add(new SendMessage(userId, "Здравствуйте " + user.getFirstName()).replyMarkup(buttonService.keyboardMenu()));
         messages.add(new SendMessage(userId, "Выберете пункт меню:").replyMarkup(buttonService.keyboardChatMenu()));
