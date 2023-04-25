@@ -20,11 +20,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     /**
      * Имя пользователя
      */
     private String firstName;
 
+    //TODO сделать поле lastName, phone @Nullable, убрать setter Id
     /**
      * Фамилия пользователя
      */
