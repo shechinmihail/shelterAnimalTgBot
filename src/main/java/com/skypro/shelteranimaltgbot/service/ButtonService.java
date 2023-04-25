@@ -22,7 +22,7 @@ public class ButtonService {
 
 
     /**
-     * позвать волонтера, поделится контактом
+     * основное меню + позвать волонтера, поделится контактом
      */
     public Keyboard keyboardMenu() {
         return new ReplyKeyboardMarkup(

@@ -8,7 +8,9 @@ import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class HandlerСalBakDataService {
@@ -46,14 +48,17 @@ public class HandlerСalBakDataService {
         Long chatIdFromCallBackData = callBackData.message().chat().id();
         switch (callBackData.data()) {
             case ABOUT:
-                messages.add(new SendMessage(chatIdFromCallBackData, "Милые пушитсики").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n" + "МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
-                //TODO сделать метод обработки запроса как взять питомца
+                //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
+                //TODO создать Service и Repository класса takePetFromShelter
+                //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
                 messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case REPORT:
-                //TODO сделать метод по обработке запроса подать отчет
+                //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
+
                 messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
                 break;
             case ABOUT_SHELTER:
@@ -85,7 +90,7 @@ public class HandlerСalBakDataService {
 
 
     private void viewInfoAboutPet(String data) {
-    //TODO доработать метод
+        //TODO доработать метод, вывести его фотографию (фото с хранилища "/petPhoto" не из БД!), вывести всю информацию о животном, + 1) кнопку взять/оформить питомца 2) вновь показать список питомцев(?)
     }
 
 
