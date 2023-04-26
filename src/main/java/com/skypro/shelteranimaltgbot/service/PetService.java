@@ -5,7 +5,6 @@ import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -43,13 +42,11 @@ public class PetService {
     /**
      * Добавление нового домашнего питомца и сохранение его в базе данных
      *
-     * @param pet       домашний питомец
-     * @param statusPet статус домашнего питомеца
+     * @param pet домашний питомец
      * @return добавленный новый домашний питомец
      */
-    public Pet addPet(Pet pet, StatusPet statusPet) {
+    public Pet addPet(Pet pet) {
         logger.info("Вызван метод добавления домашнего животного");
-        pet.setStatusPet(statusPet);
         return petRepository.save(pet);
     }
 
