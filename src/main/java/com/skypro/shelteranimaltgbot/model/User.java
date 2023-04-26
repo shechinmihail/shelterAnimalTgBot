@@ -20,11 +20,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     /**
      * Имя пользователя
      */
     private String firstName;
 
+    //TODO сделать поле lastName, phone @Nullable, убрать setter Id
     /**
      * Фамилия пользователя
      */
@@ -63,7 +65,7 @@ public class User {
      * @param status         Статус пользователя
      * @param role           Роль пользователя
      */
-    public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
+    public User(String firstName, String lastName, Long userTelegramId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userTelegramId = userTelegramId;
