@@ -12,6 +12,8 @@ public class Shelter {
     private String name;
     private String userName;
 
+    //TODO добавить поле Set<Pet> pets со связью Один приют ко многим животным
+
     @Column(columnDefinition = "text")
     private String about;
 
