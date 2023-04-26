@@ -34,7 +34,8 @@ class TypePetServiceTest {
     void setUp() {
         TypePet typePet = new TypePet("Собака", (Set<Document>) new Document("Паспорт"));
         TypePet typePet1 = new TypePet("Кошка", (Set<Document>) new Document("Паспорт"));
-        typePets = List.of(typePet, typePet1);
+        typePets.add(typePet);
+        typePets.add(typePet1);
         when(typePetRepository.findAll()).thenReturn(typePets);
     }
 
