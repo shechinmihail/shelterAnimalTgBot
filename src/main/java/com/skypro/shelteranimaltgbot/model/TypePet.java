@@ -1,6 +1,7 @@
 package com.skypro.shelteranimaltgbot.model;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ public class TypePet {
 
     private String type;
 
-    @OneToMany(mappedBy = "typePets", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
     private Set<Document> documentsList;
 
     public TypePet() {
@@ -30,7 +31,7 @@ public class TypePet {
 
     public TypePet(String type, Document documents) {
         this.type = type;
-        this.documentsList = (Set<Document>) documents;
+        this.documentsList = Collections.singleton(documents);
     }
 
     public Long getId() {
@@ -43,10 +44,6 @@ public class TypePet {
 
     public Set<Document> getDocumentsList() {
         return documentsList;
-    }
-
-    public void setDocumentsList(Set<Document> documentsList) {
-        this.documentsList = documentsList;
     }
 
     public void setType(String type) {

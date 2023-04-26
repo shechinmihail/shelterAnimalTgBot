@@ -54,14 +54,11 @@ public class PetController {
             )
     )
 
-    //TODO убрать @RequestParam status , по умолчанию если питомец попадает в приют то он FREE, принимать питомца BUSY не логично
+    //TODO убрать @RequestParam status , по умолчанию если питомец попадает в приют то он FREE, принимать питомца BUSY не логично (выполнено, можно убрать)
     @PostMapping    //POST http://localhost:8080/pet
-    public ResponseEntity<Pet> addPet(@RequestBody Pet pet,
-                      @Parameter(description = "Установка статуса домашнего питомца", example = "BUSY")
-                      @RequestParam(name = "Статус") StatusPet statusPet) {
-        return ResponseEntity.ok(petService.addPet(pet, statusPet));
+    public ResponseEntity<Pet> addPet(@RequestBody Pet pet) {
+        return ResponseEntity.ok(petService.addPet(pet));
     }
-
 
     @Operation(
             summary = "Функция получения домашнего питомца по идентификатору (id) из базы данных",
@@ -131,11 +128,11 @@ public class PetController {
                     )
             }
     )
-    //TODO RequestParam  английском!!!)
+
     @PutMapping   //PUT http://ocalhost:8080/pet
     public ResponseEntity<Pet> updatePet(@RequestBody Pet pet,
                                          @Parameter(description = "Установка статуса домашнего питомца", example = "BUSY")
-                                         @RequestParam(name = "Статус") StatusPet statusPet) {
+                                         @RequestParam(name = "Status") StatusPet statusPet) {
         Pet foundPet = petService.updatePet(pet, statusPet);
         if (foundPet == null) {
             return ResponseEntity.notFound().build();

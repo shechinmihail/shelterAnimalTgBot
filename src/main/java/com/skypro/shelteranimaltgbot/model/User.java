@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.model;
 
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -20,23 +21,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     /**
      * Имя пользователя
      */
     private String firstName;
 
-    //TODO сделать поле lastName, phone @Nullable, убрать setter Id
+    //TODO сделать поле lastName, phone @Nullable, убрать setter Id (Выполнено, можно убирать)
     /**
      * Фамилия пользователя
      */
+    @Nullable
     private String lastName;
 
     /**
      * Телеграм id пользователя
      */
     private Long userTelegramId;
-
 
     /**
      * Статус пользователя
@@ -46,6 +46,7 @@ public class User {
     /**
      * Номер телефона пользователя
      */
+    @Nullable
     private String phone;
 
     /**
@@ -71,6 +72,13 @@ public class User {
         this.userTelegramId = userTelegramId;
         this.status = status;
         this.role = role;
+    }
+
+    public User(String firstName, String lastName, Long userTelegramId, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userTelegramId = userTelegramId;
+        this.phone = phone;
     }
 
     public Long getId() {
@@ -111,10 +119,6 @@ public class User {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setFirstName(String firstName) {

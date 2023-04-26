@@ -27,8 +27,7 @@ class ButtonServiceTest {
     @InjectMocks
     TypePetService typePetService;
 
-
-
+    //TODO Посмотреть что не так показывает 0% по тестам
     @Test
     void keyboardMenu() {
         KeyboardButton keyboardButton1 = new KeyboardButton(CALL_VOLUNTEER.getCommandText());

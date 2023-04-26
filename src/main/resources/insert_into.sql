@@ -1,4 +1,4 @@
-INSERT INTO TG.public.type_pet
+INSERT INTO "TG".public.type_pet
 VALUES ('1', 'Кошки'),
        ('2', 'Собаки');
 

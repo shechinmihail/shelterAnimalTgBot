@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,12 +71,10 @@ public class PetServiceTest {
                         .content(petObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("Статус", String.valueOf(StatusPet.FREE)))
+                        .param("Status", String.valueOf(StatusPet.FREE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.statusPet").value(statusPet.toString()));
-        // ??? java.lang.AssertionError: JSON path "$.statusPet" expected:<BUSY> but was:<BUSY> ??? это ошибка теста
-        // работает))
     }
 
     @Test
@@ -84,15 +83,12 @@ public class PetServiceTest {
         TypePet typePet = new TypePet("Dog", new Document("Passport"));
         String name = "Ball";
         Integer age = 2;
-        StatusPet statusPet = StatusPet.FREE;
         String filePath = "photo";
 
         Pet pet = new Pet();
-        //pet.setId(id);
         pet.setTypePet(typePet);
         pet.setAge(age);
         pet.setName(name);
-        pet.setStatusPet(statusPet);
         pet.setFilePath(filePath);
 
         JSONObject jsonObjectTypePet = new JSONObject();
@@ -109,7 +105,6 @@ public class PetServiceTest {
         petObject.put("name", name);
         petObject.put("age", age);
         petObject.put("typePet", jsonObjectTypePet);
-        petObject.put("statusPet", statusPet);
         petObject.put("filePath", "photo");
 
 
@@ -120,8 +115,7 @@ public class PetServiceTest {
                         .post("/pet")
                         .content(petObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .param("Статус", String.valueOf(StatusPet.FREE)))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 //                .andDo(print())
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(name))
@@ -139,9 +133,8 @@ public class PetServiceTest {
         final Integer age = 2;
         final long id = 1;
         final TypePet typePet = new TypePet("Dog", new Document("Passport"));
-        final StatusPet statusPet = StatusPet.FREE;
 
-        Pet pet = new Pet(name, age, typePet, statusPet);
+        Pet pet = new Pet(name, age, typePet);
 
         when(petRepository.findById(any(Long.class))).thenReturn(Optional.of(pet));
 
@@ -163,12 +156,10 @@ public class PetServiceTest {
         final long id2 = 2;
 
         Pet pet = new Pet();
-        //pet.setId(id);
         pet.setName(name);
         pet.setAge(age);
 
         Pet pet2 = new Pet();
-        //et2.setId(id2);
         pet2.setName(name2);
         pet2.setAge(age2);
 
@@ -191,7 +182,6 @@ public class PetServiceTest {
         final long id = 1;
 
         Pet pet = new Pet();
-        //pet.setId(id);
         pet.setName(name);
         pet.setAge(age);
 
@@ -203,6 +193,11 @@ public class PetServiceTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(petRepository, atLeastOnce()).deleteById(id);
+    }
+
+    @Test
+    public Collection<Pet> getAllPetByTypePet(String typePet) {
+        return null;
     }
 
 }

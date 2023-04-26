@@ -1,6 +1,7 @@
 package com.skypro.shelteranimaltgbot;
 
 import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,14 +87,17 @@ class ShelterAnimalTgBotApplicationTests {
     @Test
     void testPet() throws Exception {
 
-        JSONObject jsonObjectTypePet = new JSONObject();
-        jsonObjectTypePet.put("id", "2");
-        jsonObjectTypePet.put("type", "Cat");
-
         JSONObject jsonObjectDocument = new JSONObject();
         jsonObjectDocument.put("id", "1");
         jsonObjectDocument.put("document", "Удостоверение ФСБ");
-        jsonObjectDocument.put("typePetId", jsonObjectTypePet);
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(jsonObjectDocument);
+
+        JSONObject jsonObjectTypePet = new JSONObject();
+        jsonObjectTypePet.put("id", "1");
+        jsonObjectTypePet.put("type", "Dog");
+        jsonObjectTypePet.put("documentsList", jsonArray);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", "2");
@@ -101,13 +105,13 @@ class ShelterAnimalTgBotApplicationTests {
         jsonObject.put("name", "TEST2");
         jsonObject.put("age", "5");
         jsonObject.put("statusPet", "FREE");
-        jsonObject.put("filePath", "photo");
 
         mockMvc
                 .perform(
                         post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString())
-                .param("Статус", String.valueOf(StatusPet.FREE))).andExpect(status().isOk()).andDo(print());
-        // Request processing failed; nested exception is org.springframework.orm.jpa.JpaObjectRetrievalFailureException: Unable to find com.skypro.shelteranimaltgbot.model.TypePet with id 2;
+                .param("Status", String.valueOf(StatusPet.FREE))).andExpect(status().isOk()).andDo(print());
+        // Request processing failed; nested exception is org.springframework.orm.jpa.JpaObjectRetrievalFailureException:
+        // Unable to find com.skypro.shelteranimaltgbot.model.TypePet with id 2;
         // такую ошибку выдает((
 
         mockMvc.perform(get("/pet/2"))

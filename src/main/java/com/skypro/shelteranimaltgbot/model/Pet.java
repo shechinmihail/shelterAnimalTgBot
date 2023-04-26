@@ -56,6 +56,18 @@ public class Pet {
     @Column(name = "photo")
     private String filePath;
 
+    /**
+     * Конструктор для создания объекта домашний питомец
+     *
+     * @param name      имя домашнего питомца
+     * @param age       возраст домашнего питомца
+     * @param typePet   вид домашнего питомца
+     */
+    public Pet(String name, Integer age, TypePet typePet) {
+        this.name = name;
+        this.age = age;
+        this.typePet = typePet;
+    }
 
     /**
      * Конструктор для создания объекта домашний питомец

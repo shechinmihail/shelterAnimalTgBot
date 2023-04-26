@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Shelter {
@@ -12,14 +13,14 @@ public class Shelter {
     private String name;
     private String userName;
 
-    //TODO добавить поле Set<Pet> pets со связью Один приют ко многим животным
+    //TODO добавить поле Set<Pet> pets со связью Один приют ко многим животным (Выполнено, можно убирать)
+    @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
+    private Set<Pet> pets;
 
     @Column(columnDefinition = "text")
     private String about;
 
-
     public Shelter() {
-
     }
 
     public Shelter(String name, String userName, String about) {
