@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.model;
 
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -26,10 +27,11 @@ public class User {
      */
     private String firstName;
 
-    //TODO сделать поле lastName, phone @Nullable, убрать setter Id
+    //TODO  убрать setter Id <--пока давайте оставим, сеттер используется в тестах
     /**
      * Фамилия пользователя
      */
+    @Nullable
     private String lastName;
 
     /**
@@ -46,6 +48,7 @@ public class User {
     /**
      * Номер телефона пользователя
      */
+    @Nullable
     private String phone;
 
     /**
