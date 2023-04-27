@@ -30,7 +30,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Autowired
     ForwardListenerService forwardListenerService;
 
-
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);

@@ -86,10 +86,9 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testPet() throws Exception {
-
         JSONObject jsonObjectDocument = new JSONObject();
-        jsonObjectDocument.put("id", "1");
-        jsonObjectDocument.put("document", "Удостоверение ФСБ");
+        jsonObjectDocument.put("id", "2");
+        jsonObjectDocument.put("document", "Паспорт");
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(jsonObjectDocument);
@@ -100,11 +99,11 @@ class ShelterAnimalTgBotApplicationTests {
         jsonObjectTypePet.put("documentsList", jsonArray);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "2");
+        jsonObject.put("id", "1");
+        jsonObject.put("name", "Test");
+        jsonObject.put("age", "3");
         jsonObject.put("typePet", jsonObjectTypePet);
-        jsonObject.put("name", "TEST2");
-        jsonObject.put("age", "5");
-        jsonObject.put("statusPet", "FREE");
+        jsonObject.put("statusPet", "BUSY");
 
         mockMvc
                 .perform(

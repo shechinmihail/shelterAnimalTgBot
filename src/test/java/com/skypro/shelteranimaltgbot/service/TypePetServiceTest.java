@@ -32,16 +32,16 @@ class TypePetServiceTest {
 
     @BeforeEach
     void setUp() {
-        TypePet typePet = new TypePet("Собака", (Set<Document>) new Document("Паспорт"));
-        TypePet typePet1 = new TypePet("Кошка", (Set<Document>) new Document("Паспорт"));
+        TypePet typePet = new TypePet("Собака", new Document("Passport"));
+        TypePet typePet1 = new TypePet("Кошка", new Document("Passport"));
         typePets = List.of(typePet, typePet1);
         when(typePetRepository.findAll()).thenReturn(typePets);
     }
 
     @Test
     void getAllTypePet() {
-        TypePet tP = new TypePet("Собака", (Set<Document>) new Document("Паспорт"));
-        TypePet tP1 = new TypePet("Кошка", (Set<Document>) new Document("Паспорт"));
+        TypePet tP = new TypePet("Собака", new Document("Passport"));
+        TypePet tP1 = new TypePet("Кошка", new Document("Passport"));
         Set<TypePet> typePetsList = new HashSet<>(List.of(tP, tP1));
         Assertions.assertEquals(typePetsList, typePetService.getAllTypePet());
     }

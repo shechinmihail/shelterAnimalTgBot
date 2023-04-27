@@ -150,10 +150,8 @@ public class PetServiceTest {
     public void findAll() throws Exception {
         final String name = "Tiger";
         final Integer age = 2;
-        final long id = 1;
         final String name2 = "Sharik";
         final Integer age2 = 3;
-        final long id2 = 2;
 
         Pet pet = new Pet();
         pet.setName(name);
