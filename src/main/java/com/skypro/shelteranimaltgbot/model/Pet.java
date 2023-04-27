@@ -57,6 +57,13 @@ public class Pet {
     @Column(name = "photo")
     private String filePath;
 
+    /**
+     * приют
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
+
 
     /**
      * Конструктор для создания объекта домашний питомец
@@ -77,6 +84,14 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public TypePet getTypePet() {
