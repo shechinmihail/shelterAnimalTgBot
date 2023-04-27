@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommandButtonService {
@@ -57,14 +57,19 @@ public class CommandButtonService {
     public List<SendMessage> callVolunteer(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        getVolunteer().stream()
-                .forEach(user -> {
-                    //отправили сообщение всем волонтерам и кнопки принять / отклонить, открыли сессию в статусе ожидания
-                    messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(buttonService.keyboardForChatSession()));
-                    ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
-                    chatSessionService.createSession(newSession);
-                });
-        messages.add(new SendMessage(userId, "Соединение устанавливается.."));
+        try {
+            getFreeVolunteer().stream()
+                    .forEach(user -> {
+                        //отправили сообщение всем волонтерам и кнопки принять / отклонить, открыли сессию в статусе ожидания
+                        messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(buttonService.keyboardForChatSession()));
+                        ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
+                        chatSessionService.createSession(newSession);
+                    });
+            messages.add(new SendMessage(userId, "Соединение устанавливается.."));
+        } catch (NullPointerException e) {
+            e.getMessage();
+            messages.add(new SendMessage(userId, "Пока все волонтеры заняты "));
+        }
         return messages;
     }
 
@@ -99,9 +104,42 @@ public class CommandButtonService {
 
 
     /**
-     * метод получения всех волонтеров
+     * метод получения всех свободных волонтеров, если нет свободных волонтеров включить режим ожидания
      * */
-    public List<User> getVolunteer() {
+    public List<User> getFreeVolunteer(){
+        Set<ChatSessionWithVolunteer> sessions = new HashSet<>(
+                chatSessionService.getAllSession()
+                        .stream()
+                        .filter(chatSessionWithVolunteer -> chatSessionWithVolunteer.getSession() == SessionEnum.OPEN).toList()
+
+        );
+
+        Set<Long> idFreeVolunteer = new HashSet<>();
+        sessions.stream()
+                .forEach(session -> {
+                    idFreeVolunteer.add(session.getTelegramIdVolunteer());
+                });
+
+        if (sessions.size() != 0) {
+            List<User> freeVolunteerList = new ArrayList<>();
+            for (User u : getAllVolunteer()) {
+                if (!idFreeVolunteer.contains(u.getUserTelegramId())) {
+                    freeVolunteerList.add(u);
+                }
+            }
+            return freeVolunteerList;
+        } else {
+            return getAllVolunteer();
+        }
+
+
+    }
+
+
+    /**
+     * получение всех волонтеров
+     * */
+    private List<User> getAllVolunteer() {
         return new ArrayList<>(userService.checkUsersByRole(RoleEnum.VOLUNTEER));
     }
 
@@ -131,7 +169,7 @@ public class CommandButtonService {
     public List<SendMessage> sendNotification(Update update, List<SendMessage> messages) {
         String name = update.message().from().firstName() + " " + update.message().from().lastName();
         String phoneNumber = update.message().contact().phoneNumber();
-        getVolunteer().stream()
+        getFreeVolunteer().stream()
                 .forEach(user -> {
                     messages.add(new SendMessage(user.getUserTelegramId(), "Просьба связаться с " + name + " по номеру " + phoneNumber));
                 });

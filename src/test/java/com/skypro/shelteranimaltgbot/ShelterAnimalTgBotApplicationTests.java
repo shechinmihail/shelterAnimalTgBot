@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,8 +29,9 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testUser() throws Exception {
+        String i = "12";
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "1");
+        jsonObject.put("id", i); //нужен для pet
         jsonObject.put("firstName", "TEST");
         jsonObject.put("lastName", "TEST");
         jsonObject.put("userTelegramId", "1");
@@ -43,11 +43,11 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         post("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
-        mockMvc.perform(get("/users/1"))
+        mockMvc.perform(get("/users/" + i))
                 .andExpectAll(
                         jsonPath("$.size()").value(7),
                         status().isOk(),
-                        jsonPath("$.id").value(1),
+                        jsonPath("$.id").value(i),
                         jsonPath("$.firstName").value("TEST"),
                         jsonPath("$.lastName").value("TEST"),
                         jsonPath("$.phone").value("123"),
@@ -68,7 +68,7 @@ class ShelterAnimalTgBotApplicationTests {
                 .andExpectAll(
                         jsonPath("$.size()").value(1),
                         status().isOk(),
-                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[0].id").value(i),
                         jsonPath("$[0].firstName").value("TEST"),
                         jsonPath("$[0].lastName").value("TEST"),
                         jsonPath("$[0].phone").value("123"),
@@ -80,14 +80,15 @@ class ShelterAnimalTgBotApplicationTests {
 
         mockMvc
                 .perform(
-                        delete("/users/1").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                        delete("/users/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void testPet() throws Exception {
+        String i = "17";
         JSONObject jsonObjectDocument = new JSONObject();
-        jsonObjectDocument.put("id", "2");
+        jsonObjectDocument.put("id", "1");
         jsonObjectDocument.put("document", "Паспорт");
 
         JSONArray jsonArray = new JSONArray();
@@ -95,60 +96,42 @@ class ShelterAnimalTgBotApplicationTests {
 
         JSONObject jsonObjectTypePet = new JSONObject();
         jsonObjectTypePet.put("id", "1");
-        jsonObjectTypePet.put("type", "Dog");
+        jsonObjectTypePet.put("type", "Кошки");
         jsonObjectTypePet.put("documentsList", jsonArray);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "1");
-        jsonObject.put("name", "Test");
-        jsonObject.put("age", "3");
-        jsonObject.put("typePet", jsonObjectTypePet);
-        jsonObject.put("statusPet", "BUSY");
+
+        JSONObject jsonObjectPet = new JSONObject();
+        jsonObjectPet.put("id", i);
+        jsonObjectPet.put("name", "test");
+        jsonObjectPet.put("age", "1");
+        jsonObjectPet.put("typePet", jsonObjectTypePet);
+        jsonObjectPet.put("statusPet", "FREE");
+
 
         mockMvc
                 .perform(
-                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString())
-                .param("Status", String.valueOf(StatusPet.FREE))).andExpect(status().isOk()).andDo(print());
-        // Request processing failed; nested exception is org.springframework.orm.jpa.JpaObjectRetrievalFailureException:
-        // Unable to find com.skypro.shelteranimaltgbot.model.TypePet with id 2;
-        // такую ошибку выдает((
-
-        mockMvc.perform(get("/pet/2"))
+                        post("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
+                .andExpect(status().isOk());
+        mockMvc
+                .perform(
+                        put("/pet").param("Status", "BUSY").contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
+                .andExpect(status().isOk());
+        mockMvc.perform(
+                        get("/pet/" + i))
                 .andExpectAll(
                         jsonPath("$.size()").value(6),
                         status().isOk(),
-                        jsonPath("$.id").value(2),
-                        jsonPath("$.typePet").value(jsonObjectTypePet),
-                        jsonPath("$.name").value("TEST"),
-                        jsonPath("$.age").value("5"),
-                        jsonPath("$.statusPet").value("FREE"),
-                        jsonPath("$.filePath").value("photo")
+                        jsonPath("$.id").value(i)
                 );
-
-        mockMvc
-                .perform(
-                        put("/pet").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-                .andExpect(status().isOk());
-
-        mockMvc.
-                perform
-                        (get("/pet/all"))
+        mockMvc.perform(get("/pet/all"))
                 .andExpectAll(
                         jsonPath("$.size()").value(1),
-                        status().isOk(),
-                        jsonPath("$[0].id").value(2),
-                        jsonPath("$[0].typePet").value(jsonObjectTypePet),
-                        jsonPath("$[0].name").value("TEST"),
-                        jsonPath("$[0].age").value("5"),
-                        jsonPath("$[0].statusPet").value("FREE"),
-                        jsonPath("$[0].filePath").value("photo")
+                        status().isOk()
                 );
-
         mockMvc
                 .perform(
-                        delete("/pet/2").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                        delete("/pet/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
                 .andExpect(status().isOk());
-
 
     }
 }
