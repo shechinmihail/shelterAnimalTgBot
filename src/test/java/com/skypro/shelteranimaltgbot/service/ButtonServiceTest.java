@@ -1,19 +1,14 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.request.*;
-import com.skypro.shelteranimaltgbot.model.Enum.CommandButton;
-import com.skypro.shelteranimaltgbot.model.TypePet;
-import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 import static org.mockito.Mockito.when;
@@ -27,6 +22,7 @@ class ButtonServiceTest {
     @InjectMocks
     TypePetService typePetService;
 
+
     //TODO Посмотреть что не так показывает 0% по тестам
     @Test
     void keyboardMenu() {
@@ -34,8 +30,8 @@ class ButtonServiceTest {
         KeyboardButton keyboardButton2 = new KeyboardButton("Оставить контакт").requestContact(true);
         KeyboardButton keyboardButton3 = new KeyboardButton(START.getCommandText()).requestContact(true);
         Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(keyboardButton1, keyboardButton2).addRow(keyboardButton3);
-        when(buttonService.keyboardMenu()).thenReturn(replyKeyboardMarkup);
-        Assertions.assertEquals(replyKeyboardMarkup,  buttonService.keyboardMenu());
+        Mockito.when(buttonService.keyboardMenu()).thenReturn(replyKeyboardMarkup);
+        Assertions.assertEquals(replyKeyboardMarkup, buttonService.keyboardMenu());
     }
 
     @Test

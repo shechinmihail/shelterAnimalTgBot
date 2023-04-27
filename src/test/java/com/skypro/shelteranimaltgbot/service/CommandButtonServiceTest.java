@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CommandButtonServiceTest {
 
+    //TODO Посмотреть что не так показывает 0% по тестам))
+
     List<SendMessage> messages;
 
     @Test

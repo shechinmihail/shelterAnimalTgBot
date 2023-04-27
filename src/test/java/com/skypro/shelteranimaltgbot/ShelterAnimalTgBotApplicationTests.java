@@ -29,7 +29,7 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testUser() throws Exception {
-        String i = "12";
+        String i = "1";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", i); //нужен для pet
         jsonObject.put("firstName", "TEST");
@@ -86,17 +86,17 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testPet() throws Exception {
-        String i = "17";
+        String i = "1";
         JSONObject jsonObjectDocument = new JSONObject();
-        jsonObjectDocument.put("id", "1");
+        jsonObjectDocument.put("id", "2");
         jsonObjectDocument.put("document", "Паспорт");
 
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(jsonObjectDocument);
 
         JSONObject jsonObjectTypePet = new JSONObject();
-        jsonObjectTypePet.put("id", "1");
-        jsonObjectTypePet.put("type", "Кошки");
+        jsonObjectTypePet.put("id", "2");
+        jsonObjectTypePet.put("type", "Cat");
         jsonObjectTypePet.put("documentsList", jsonArray);
 
 
