@@ -1,13 +1,14 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.request.*;
-
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 
@@ -24,7 +25,10 @@ public class ButtonService {
     /**
      * основное меню + позвать волонтера, поделится контактом
      */
+
+
     public Keyboard keyboardMenu() {
+
         return new ReplyKeyboardMarkup(
                 new KeyboardButton(CALL_VOLUNTEER.getCommandText()),
                 new KeyboardButton("Оставить контакт").requestContact(true))
@@ -80,7 +84,7 @@ public class ButtonService {
      * */
     public Keyboard viewPets(String data) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<Pet> pets = new ArrayList<>(petService.getAllPetByTypePet(data));
+        Set<Pet> pets = new HashSet<>(petService.getAllPetByTypePet(data));
         pets.stream()
                 .filter(p -> p.getTypePet().getType().equals(data))
                 .sorted(Comparator.comparing(Pet::getName))

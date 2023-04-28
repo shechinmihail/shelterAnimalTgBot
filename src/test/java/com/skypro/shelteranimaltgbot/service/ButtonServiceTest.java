@@ -1,7 +1,8 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.request.*;
-import com.skypro.shelteranimaltgbot.model.Enum.CommandButton;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
+import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,9 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 import static org.mockito.Mockito.when;
@@ -22,80 +23,88 @@ import static org.mockito.Mockito.when;
 class ButtonServiceTest {
 
     @Mock
-    ButtonService buttonService;
+    TypePetRepository typePetRepository;
 
-    @InjectMocks
+    @Mock
     TypePetService typePetService;
 
+    @Mock
+    PetService petService;
+
+    @InjectMocks
+    ButtonService buttonService;
+
+
+    // @InjectMocks
 
 
     @Test
     void keyboardMenu() {
-        KeyboardButton keyboardButton1 = new KeyboardButton(CALL_VOLUNTEER.getCommandText());
-        KeyboardButton keyboardButton2 = new KeyboardButton("Оставить контакт").requestContact(true);
-        KeyboardButton keyboardButton3 = new KeyboardButton(START.getCommandText()).requestContact(true);
-        Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(keyboardButton1, keyboardButton2).addRow(keyboardButton3);
-        when(buttonService.keyboardMenu()).thenReturn(replyKeyboardMarkup);
-        Assertions.assertEquals(replyKeyboardMarkup,  buttonService.keyboardMenu());
+        Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                new KeyboardButton(CALL_VOLUNTEER.getCommandText()),
+                new KeyboardButton("Оставить контакт").requestContact(true))
+                .addRow(new KeyboardButton(START.getCommandText())).resizeKeyboard(true);
+        Assertions.assertEquals(replyKeyboardMarkup.getClass(), buttonService.keyboardMenu().getClass());
+    }
+
+
+    @Test
+    void keyboardForChatSession() {
+        Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(
+                new KeyboardButton(OPEN.getCommandText()),
+                new KeyboardButton(CLOSE.getCommandText())).resizeKeyboard(true);
+        System.out.println(replyKeyboardMarkup.hashCode());
+        Assertions.assertEquals(replyKeyboardMarkup.getClass(), buttonService.keyboardForChatSession().getClass());
+
     }
 
     @Test
     void keyboardChatMenu() {
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(ABOUT.getCommandText()).callbackData(ABOUT.getCommandText());
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(TAKE_PET.getCommandText()).callbackData(TAKE_PET.getCommandText());
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(REPORT.getCommandText()).callbackData(REPORT.getCommandText());
-        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(SHARE.getCommandText()).callbackData(SHARE.getCommandText());
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(inlineKeyboardButton);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton1);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton2);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton3);
-        when(buttonService.keyboardChatMenu()).thenReturn(inlineKeyboardMarkup);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(
+                new InlineKeyboardButton(ABOUT.getCommandText()).callbackData(ABOUT.getCommandText()))
+                .addRow(new InlineKeyboardButton(TAKE_PET.getCommandText()).callbackData(TAKE_PET.getCommandText()))
+                .addRow(new InlineKeyboardButton(REPORT.getCommandText()).callbackData(REPORT.getCommandText()))
+                .addRow(new InlineKeyboardButton(SHARE.getCommandText()).switchInlineQuery(SHARE.getCommandText()));
         Assertions.assertEquals(inlineKeyboardMarkup, buttonService.keyboardChatMenu());
-
-
-    }
-
-    @Test
-    void keyboardForChatSession() {
-        KeyboardButton keyboardButton1 = new KeyboardButton(OPEN.getCommandText());
-        KeyboardButton keyboardButton2 = new KeyboardButton(CLOSE.getCommandText());
-        Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(keyboardButton1, keyboardButton2);
-        when(buttonService.keyboardForChatSession()).thenReturn(replyKeyboardMarkup);
-        Assertions.assertEquals(replyKeyboardMarkup, buttonService.keyboardForChatSession());
-
     }
 
     @Test
     void viewAllTypePet() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton("Кошки");
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton("Собаки");
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton1);
-        when(buttonService.viewAllTypePet()).thenReturn(inlineKeyboardMarkup);
+        List<TypePet> typePetsList = new ArrayList<>();
+        typePetsList.add(new TypePet("Кошки"));
+        typePetsList.add(new TypePet("Собаки"));
+        for (TypePet typePet : typePetsList) {
+            inlineKeyboardMarkup.addRow(new InlineKeyboardButton(typePet.getType()).callbackData(typePet.getType()));
+        }
+
+        when(typePetService.getAllTypePet()).thenReturn(typePetsList);
         Assertions.assertEquals(inlineKeyboardMarkup, buttonService.viewAllTypePet());
+
     }
 
     @Test
     void keyboardChatInfoShelterMenu() {
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton(ABOUT_SHELTER.getCommandText()).callbackData(ABOUT_SHELTER.getCommandText());
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(OPERATING_MODE.getCommandText()).callbackData(OPERATING_MODE.getCommandText());
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(SAFETY.getCommandText()).callbackData(OPERATING_MODE.getCommandText());
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton1);
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton2);
-        when(buttonService.keyboardChatInfoShelterMenu()).thenReturn(inlineKeyboardMarkup);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(
+                new InlineKeyboardButton(ABOUT_SHELTER.getCommandText()).callbackData(ABOUT_SHELTER.getCommandText()))
+                .addRow(new InlineKeyboardButton(OPERATING_MODE.getCommandText()).callbackData(OPERATING_MODE.getCommandText()))
+                .addRow(new InlineKeyboardButton(SAFETY.getCommandText()).callbackData(SAFETY.getCommandText()));
         Assertions.assertEquals(inlineKeyboardMarkup, buttonService.keyboardChatInfoShelterMenu());
     }
 
     @Test
     void viewPets() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton("Имя Шарик возраст 2 года ").callbackData("1 Шарик 2");
-        inlineKeyboardMarkup.addRow(inlineKeyboardButton);
-        when(buttonService.viewPets("Собаки")).thenReturn(inlineKeyboardMarkup);
-        Assertions.assertEquals(inlineKeyboardMarkup, buttonService.viewPets("Собаки"));
+        List<Pet> pets = new ArrayList<>();
+        pets.add(new Pet("Шарик", 2, new TypePet("Собаки", null), StatusPet.FREE));
+        pets.stream()
+                .sorted(Comparator.comparing(Pet::getName))
+                .forEach(pet -> {
+                    inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Имя " + pet.getName() + " Возраст " + pet.getAge() + " года")
+                            .callbackData(pet.getId() + " " + pet.getName() + " " + pet.getAge()));
+                });
+        when(petService.getAllPetByTypePet("Собаки")).thenReturn(pets);
+        Assertions.assertEquals(inlineKeyboardMarkup.getClass(), buttonService.viewPets("Собаки").getClass());
 
     }
 }

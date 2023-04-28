@@ -2,10 +2,8 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.shelteranimaltgbot.controller.PetController;
-import com.skypro.shelteranimaltgbot.model.Document;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
-import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -67,7 +65,7 @@ public class PetServiceTest {
         when(petRepository.save(any(Pet.class))).thenReturn(updatedPet);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/pet?Статус=" + newStatusPet)
+                        .put("/pet").param("Status", "BUSY")
                         .content(petObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
