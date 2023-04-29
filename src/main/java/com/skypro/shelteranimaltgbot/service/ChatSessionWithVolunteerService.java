@@ -28,7 +28,7 @@ public class ChatSessionWithVolunteerService {
     /**
      * получить сессию по id, изменить статус
      */
-    public ChatSessionWithVolunteer getChatSessionForClose(Long idSession, SessionEnum session) {
+    public ChatSessionWithVolunteer getChatSessionForReplaceStatus(Long idSession, SessionEnum session) {
         ChatSessionWithVolunteer chatSessionWithVolunteer = chatSessionRepository.findChatSessionWithVolunteerById(idSession);
         chatSessionWithVolunteer.setSession(session);
         return chatSessionRepository.save(chatSessionWithVolunteer);
@@ -49,14 +49,23 @@ public class ChatSessionWithVolunteerService {
         return chatSessionRepository.findChatSessionWithVolunteerById(idSessionForConnect);
     }
 
+    /**
+     * получение сессии по userId
+     */
     public ChatSessionWithVolunteer getSession(Long userId) {
         return chatSessionRepository.findChatSessionWithVolunteerByTelegramIdUser(userId);
     }
 
+    /**
+     * получение всех сессий
+     */
     public List<ChatSessionWithVolunteer> getAllSession() {
         return chatSessionRepository.findAll();
     }
 
+    /**
+     * получить id последней сессии
+     */
     public Long getLastId(Long id) {
         return chatSessionRepository.findId(id);
     }

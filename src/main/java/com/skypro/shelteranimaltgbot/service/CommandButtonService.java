@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class CommandButtonService {
@@ -80,7 +82,7 @@ public class CommandButtonService {
     public List<SendMessage> openСonnection(List<SendMessage> messages) {
         Long idSessionForConnect = chatSessionService.getLastId(userId);
         if (!chatSessionService.checkSession(idSessionForConnect)) {
-            chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.OPEN);
+            chatSessionService.getChatSessionForReplaceStatus(idSessionForConnect, SessionEnum.OPEN);
         } else {
             messages.add(new SendMessage(userId, "Запрос от пользователя обрабатывается, либо уже закрыт"));
         }
@@ -96,7 +98,7 @@ public class CommandButtonService {
         message = update.message();
         userId = message.from().id();
         Long idSessionForConnect = chatSessionService.getLastId(userId);
-        chatSessionService.getChatSessionForClose(idSessionForConnect, SessionEnum.CLOSE);
+        chatSessionService.getChatSessionForReplaceStatus(idSessionForConnect, SessionEnum.CLOSE);
         ChatSessionWithVolunteer chatUser = chatSessionService.getChatUser(idSessionForConnect);
         messages.add(new SendMessage(chatUser.getTelegramIdUser(), "Волонтер перевел Вас на бота, для повторной связи с волонтером нажмите кнопку Позвать волонтера"));
         return messages;

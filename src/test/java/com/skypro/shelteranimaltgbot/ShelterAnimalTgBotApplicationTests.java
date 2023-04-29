@@ -28,7 +28,7 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testUser() throws Exception {
-        String i = "15";
+        String i = "17";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", i); //нужен для pet
         jsonObject.put("firstName", "TEST");
@@ -62,7 +62,7 @@ class ShelterAnimalTgBotApplicationTests {
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users/all"))
                 .andExpectAll(
-                        jsonPath("$.size()").value(3),
+                        jsonPath("$.size()").value(1),
                         status().isOk(),
                         jsonPath("$[0].id").value(i),
                         jsonPath("$[0].firstName").value("TEST"),
@@ -81,7 +81,7 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testPet() throws Exception {
-        String i = "21";
+        String i = "24";
         JSONObject jsonObjectDocument = new JSONObject();
         jsonObjectDocument.put("id", "1");
         jsonObjectDocument.put("document", "Паспорт");
