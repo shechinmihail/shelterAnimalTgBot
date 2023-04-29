@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class TakePetFromShelterService {
@@ -40,6 +41,13 @@ public class TakePetFromShelterService {
     public TakePetFromShelter findDescription(Long id) {
         logger.info("Вызван метод поиска описания по идентификатору (id)");
         return takePetFromShelterRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public String getDescription(Long id) {
+        logger.info("Вызван метод вывода описания по идентификатору (id)");
+        Optional<TakePetFromShelter> takePetFromShelter = takePetFromShelterRepository.findById(id);
+        return takePetFromShelter.get().getDescription();
+
     }
 
     /**

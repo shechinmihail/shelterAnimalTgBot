@@ -16,7 +16,9 @@ public enum CommandButton {
     ABOUT_SHELTER ( "О приюте подробнее"),
     OPERATING_MODE ( "Режим работы/Адрес"),
     VIEW_ALL_ANIMALS ( "Посмотреть список животных"),
-    SAFETY ( "Техника безопасности");
+    SAFETY ( "Техника безопасности"),
+    HOW_TAKE_CAT ("Как взять кошку"),
+    HOW_TAKE_DOG ("Как взять собаку");
 
     private String commandText;
 

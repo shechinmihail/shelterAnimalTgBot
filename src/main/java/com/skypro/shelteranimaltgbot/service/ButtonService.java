@@ -91,4 +91,13 @@ public class ButtonService {
         return inlineKeyboardMarkup;
     }
 
+    /**
+     * кнопки получить рекомендации как взять кошку/собаку
+     * */
+    public Keyboard keyboardGetRecomendation() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton(HOW_TAKE_CAT.getCommandText()).callbackData(HOW_TAKE_CAT.getCommandText()))
+                .addRow(new InlineKeyboardButton(HOW_TAKE_DOG.getCommandText()).callbackData(HOW_TAKE_DOG.getCommandText()));
+    }
+
 }

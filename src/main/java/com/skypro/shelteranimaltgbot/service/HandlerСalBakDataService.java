@@ -32,12 +32,17 @@ public class HandlerСalBakDataService {
     @Autowired
     CommandButtonService commandButtonService;
 
+    @Autowired
+    TakePetFromShelterService takePetFromShelterService;
+
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
+    private final String HOW_TAKE_CAT = "Как взять кошку";
+    private final String HOW_TAKE_DOG = "Как взять собаку";
     private final String VIEW_ALL_ANIMALS = "Посмотреть список животных";
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
@@ -54,7 +59,13 @@ public class HandlerСalBakDataService {
                 //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
                 //TODO создать Service и Repository класса takePetFromShelter
                 //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "Выберите животное:").replyMarkup(buttonService.keyboardGetRecomendation()));
+                break;
+            case HOW_TAKE_CAT:
+                messages.add(new SendMessage(chatIdFromCallBackData, takePetFromShelterService.getDescription(1L)));
+                break;
+            case HOW_TAKE_DOG:
+                messages.add(new SendMessage(chatIdFromCallBackData, takePetFromShelterService.getDescription(2L)));
                 break;
             case REPORT:
                 //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
