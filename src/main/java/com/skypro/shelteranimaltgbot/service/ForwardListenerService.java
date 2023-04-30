@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class ForwardListenerService {
 
-
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
     @Autowired
     HandlerСalBakDataService handlerСalBakDataService;
 

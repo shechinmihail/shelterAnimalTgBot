@@ -54,7 +54,6 @@ public class PetController {
             )
     )
 
-    //TODO убрать @RequestParam status , по умолчанию если питомец попадает в приют то он FREE, принимать питомца BUSY не логично (выполнено, можно убрать)
     @PostMapping    //POST http://localhost:8080/pet
     public ResponseEntity<Pet> addPet(@RequestBody Pet pet) {
         return ResponseEntity.ok(petService.addPet(pet));
