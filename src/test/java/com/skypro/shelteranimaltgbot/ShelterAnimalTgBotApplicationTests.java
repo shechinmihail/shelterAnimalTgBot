@@ -86,9 +86,9 @@ class ShelterAnimalTgBotApplicationTests {
 
     @Test
     void testPet() throws Exception {
-        String i = "24";
+        String i = "1";
         JSONObject jsonObjectDocument = new JSONObject();
-        jsonObjectDocument.put("id", "2");
+        jsonObjectDocument.put("id", "1");
         jsonObjectDocument.put("document", "Паспорт");
 
         JSONArray jsonArray = new JSONArray();

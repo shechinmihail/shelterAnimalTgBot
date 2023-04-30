@@ -61,7 +61,7 @@ public class Document {
         return "Document{" +
                 "id=" + id +
                 ", document='" + document + '\'' +
-                //", typePet=" + typePet +
+                ", typePet=" + typePet +
                 '}';
     }
 }

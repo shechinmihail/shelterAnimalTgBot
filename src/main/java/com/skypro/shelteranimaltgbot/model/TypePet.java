@@ -24,14 +24,9 @@ public class TypePet {
         this.type = type;
     }
 
-    public TypePet(String type, Set<Document> documentsList) {
+    public TypePet(String type, Set<Document> documents) {
         this.type = type;
-        this.documentsList = documentsList;
-    }
-
-    public TypePet(String type, Document documents) {
-        this.type = type;
-        this.documentsList = Collections.singleton(documents);
+        this.documentsList = documents;
     }
 
     public Long getId() {
@@ -44,6 +39,10 @@ public class TypePet {
 
     public Set<Document> getDocumentsList() {
         return documentsList;
+    }
+
+    public void setDocumentsList(Set<Document> documentsList) {
+        this.documentsList = documentsList;
     }
 
     public void setType(String type) {

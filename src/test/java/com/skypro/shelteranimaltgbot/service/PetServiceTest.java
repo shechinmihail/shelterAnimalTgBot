@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,7 +68,7 @@ public class PetServiceTest {
         when(petRepository.save(any(Pet.class))).thenReturn(updatedPet);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/pet")
+                        .put("/pet?Статус=" + newStatusPet)
                         .content(petObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -78,13 +79,11 @@ public class PetServiceTest {
     @Test
     public void addPet() throws Exception {
         Long id = 1L;
-        TypePet typePet = new TypePet("Dog", new Document("Passport"));
         String name = "Ball";
         Integer age = 2;
         String filePath = "photo";
 
         Pet pet = new Pet();
-        pet.setTypePet(typePet);
         pet.setAge(age);
         pet.setName(name);
         pet.setFilePath(filePath);
@@ -130,7 +129,7 @@ public class PetServiceTest {
         final String name = "Tiger";
         final Integer age = 2;
         final long id = 1;
-        final TypePet typePet = new TypePet("Dog", new Document("Passport"));
+        final TypePet typePet = new TypePet("Dog");
 
         Pet pet = new Pet(name, age, typePet);
 

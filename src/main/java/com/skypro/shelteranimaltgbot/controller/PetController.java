@@ -166,6 +166,21 @@ public class PetController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO добавить метод
-
+    @Operation(
+            summary = "Получение списка всех домашних питомцев по типу",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Получение всех домашних питомцев по типу",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(path = "typePet")   //GET http://localhost:8080/pet/typePet
+    public ResponseEntity<Collection<Pet>> getAllPetsByType(String typePet) {
+        return ResponseEntity.ok(petService.getAllPetByTypePet(typePet));
+    }
 }
