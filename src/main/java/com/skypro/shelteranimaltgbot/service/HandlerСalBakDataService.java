@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 @Service
 public class HandlerСalBakDataService {
@@ -31,6 +33,9 @@ public class HandlerСalBakDataService {
 
     @Autowired
     CommandButtonService commandButtonService;
+
+    @Autowired
+    SendReportService sendReportService;
 
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
@@ -54,12 +59,12 @@ public class HandlerСalBakDataService {
                 //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
                 //TODO создать Service и Repository класса takePetFromShelter
                 //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "В разработке"));
                 break;
             case REPORT:
                 //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
 
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                messages.add(new SendMessage(chatIdFromCallBackData, "В разработке"));
                 break;
             case ABOUT_SHELTER:
                 String shelter = callBackData.message().from().username();
@@ -95,7 +100,7 @@ public class HandlerСalBakDataService {
 
 
      /**
-     * метод проверяет
+     * Метод проверяет
      * */
     private boolean checkCallbackDataPet(String data) {
         String[] dataSplit = data.split(" ");
@@ -104,7 +109,7 @@ public class HandlerСalBakDataService {
     }
 
     /**
-     * метод проверяет если выбор типа животного то возврат true
+     * Метод проверяет если выбор типа животного то возврат true
      */
     private boolean checkCallbackDataTypePet(String data) {
         Set<TypePet> typePets = new HashSet<>(typePetService.getAllTypePet());
