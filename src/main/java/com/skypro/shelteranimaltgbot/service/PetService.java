@@ -62,11 +62,11 @@ public class PetService {
 
 
     /**
-     * Поиск домашнего питомеца в базе данных по идентификатору (id)
+     * Поиск домашнего питомца в базе данных по идентификатору (id)
      *
-     * @param id идентификатор домашнего питомеца, не может быть null
-     * @return найденый домашний питомец
-     * @throws EntityNotFoundException если домвшний питомец с указаным id не был найден в базе данных
+     * @param id идентификатор домашнего питомца, не может быть null
+     * @return найденный домашний питомец
+     * @throws EntityNotFoundException если домашний питомец с указанным id не был найден в базе данных
      */
     public Pet findPet(Long id) {
         logger.info("Вызван метод поиска домашнего питомца по идентификатору (id)");
@@ -77,7 +77,7 @@ public class PetService {
      * Изменение данных домашнего питомца в базе данных
      *
      * @param pet       редактируемый домашний питомец
-     * @param statusPet статус домашнего питомеца
+     * @param statusPet статус домашнего питомца
      * @return отредактированный домашний питомец
      * @throws EntityNotFoundException если домашний питомец не найден
      */
@@ -94,7 +94,7 @@ public class PetService {
     }
 
     /**
-     * получение списка домашних питомцев из базы данных
+     * Получение списка домашних питомцев из базы данных
      *
      * @return список(коллекцию) домашних питомцев
      */
@@ -114,14 +114,13 @@ public class PetService {
     }
 
     /**
-     * возвращаем всех животных по типу
+     * Возвращаем всех животных по типу
      *
      * @param typePet вид домашнего питомца, не может быть null
      */
     public Collection<Pet> getAllPetByTypePet(String typePet) {
         logger.info("Вызван метод показать всех питомцев по типу {} ", typePet);
         return new ArrayList<>(petRepository.findAll());
-
     }
 
 
@@ -145,7 +144,6 @@ public class PetService {
 
         pet.setFilePath(filePath.toString());
         petRepository.save(pet);
-
 
     }
 

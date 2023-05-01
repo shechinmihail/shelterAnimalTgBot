@@ -26,11 +26,13 @@ public class HandlerMessageDataService {
     @Autowired
     private CommandButtonService commandButtonService;
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    TelegramBot telegramBot;
+    private TelegramBot telegramBot;
     @Autowired
     private ChatSessionWithVolunteerService chatSessionService;
+    @Autowired
+    private SendReportService sendReportService;
 
 
     //TODO убрать message userId
@@ -42,8 +44,9 @@ public class HandlerMessageDataService {
         userId = message.from().id();
         String text = update.message().text();
         var contact = update.message().contact();
-
-        if (contact != null) {
+        if (update.message().caption() != null) {
+            sendReportService.saveReport(update);
+        } else if (contact != null) {
             commandButtonService.setContact(update);
             messages.add(new SendMessage(userId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             commandButtonService.sendNotification(update, messages);

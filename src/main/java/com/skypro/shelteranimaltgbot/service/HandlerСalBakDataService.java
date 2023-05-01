@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Service
 public class HandlerСalBakDataService {
     @Autowired
@@ -38,6 +39,13 @@ public class HandlerСalBakDataService {
     @Autowired
     TakePetFromShelterService takePetFromShelterService;
 
+    @Autowired
+    ReportService reportService;
+    @Autowired
+    SendReportService sendReportService;
+    @Autowired
+    UserService userService;
+
     private final String PREV = "/prev";
 
     private final String DESIGN = "Design";
@@ -50,11 +58,10 @@ public class HandlerСalBakDataService {
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
-    @Autowired
-    UserService userService;
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
     private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
+
 
     public List<SendMessage> handlerСalBakData(CallbackQuery callBackData, List<SendMessage> messages) {
         Long chatIdFromCallBackData = callBackData.message().chat().id();
@@ -68,9 +75,7 @@ public class HandlerСalBakDataService {
                 commandButtonService.editTakePet(callBackData);
                 break;
             case REPORT:
-                //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
-
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                messages.add(sendReportService.reportForm(chatIdFromCallBackData));
                 break;
             case ABOUT_SHELTER, BACK:
                 String shelter = callBackData.message().from().username();
@@ -85,6 +90,7 @@ public class HandlerСalBakDataService {
                 commandButtonService.sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
             default:
+
                 if (checkCallbackDataTypePet(callBackData.data())) {
                     messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(buttonService.viewPets(callBackData.data())));
                 } else if (checkCallbackDataPet(callBackData.data())) {
@@ -99,7 +105,7 @@ public class HandlerСalBakDataService {
                     for (Document doc : petService.findPet(petId).getTypePet().getDocumentsList()) {
                         text.append(doc.getDocument() + "\n");
                     }
-                    text.append("\n\n Спасибо за ваш отклик" + callBackData.message().chat().firstName() + " оставьте свой номер телефона, в ближайшее время с Вами свяжется волонтер");
+                    text.append("\n\n Спасибо за ваш отклик " + callBackData.message().chat().firstName() + " оставьте свой номер телефона, в ближайшее время с Вами свяжется волонтер");
                     messages.add(new SendMessage(chatIdFromCallBackData, text.toString()));
                     // отправили Пользователю список документов
                     List<User> volunteers = userService.checkUsersByRole(RoleEnum.VOLUNTEER);
@@ -107,6 +113,7 @@ public class HandlerСalBakDataService {
                         messages.add(new SendMessage(user.getUserTelegramId(), callBackData.message().chat().firstName() + " " + callBackData.message().chat().username() + " хочет оформить " + petName));
                     }
                 }
+
                 break;
         }
         return messages;
@@ -135,8 +142,9 @@ public class HandlerСalBakDataService {
         return sendMessage;
     }
 
+
     /**
-     * метод проверяет если выбор животного то возврат true
+     * метод проверяет
      */
     private boolean checkCallbackDataPet(String data) {
         String[] dataSplit = data.split(" ");
