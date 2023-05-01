@@ -73,7 +73,7 @@ public class TakePetFromShelterService {
      *
      * @return список(коллекцию) рекомендаций
      */
-    public Collection<TakePetFromShelter> getAllRecomendations() {
+    public Collection<TakePetFromShelter> getAll() {
         logger.info("Вызван метод получения всех рекомендаций");
         return takePetFromShelterRepository.findAll();
     }
