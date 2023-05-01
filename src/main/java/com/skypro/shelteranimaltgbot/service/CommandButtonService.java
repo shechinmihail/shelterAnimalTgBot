@@ -3,13 +3,16 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,16 +36,22 @@ public class CommandButtonService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    TypePetService typePetService;
+
     private Message message;
     private Long userId;
+    private Integer rule = 1;
 
-
+    @Autowired
+    private TypePetRepository typePetRepository;
 
 
     /**
      * метод выводит основное меню после нажатия start
-     * */
-    public  List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
+     */
+    public List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
         User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), StatusEnum.GUEST, RoleEnum.USER);
@@ -177,5 +186,27 @@ public class CommandButtonService {
                 });
         return messages;
     }
+
+    public List<SendMessage> takePet(String text, Long id, List<SendMessage> messages) {
+        Integer count = 1;
+        if (text != null && text.equals("/next") && rule < typePetRepository.findAll().size()) {
+            rule++;
+        } else if (text != null && text.equals("/back") && rule > 1) {
+            rule--;
+        }
+        StringBuilder takePetsRule = new StringBuilder();
+        List<TypePet> pets = typePetService.findAllByPagination(rule, count);
+        pets.stream().forEach(typePet -> {
+            takePetsRule.append("<b>" + typePet.getType() + "</b>" + "\n\n");
+            typePet.getTakePetFromShelters().stream()
+                    .forEach(takePetFromShelter -> {
+                        takePetsRule.append("<b>" + takePetFromShelter.getDescription() + "</b>" + "\n" + "<i>" + takePetFromShelter.getNameRule() + "</i>" + "\n");
+                    });
+            messages.add(new SendMessage(id, takePetsRule.toString()).parseMode(ParseMode.HTML).replyMarkup(buttonService.paginationButton()));
+        });
+
+        return messages;
+    }
+
 
 }

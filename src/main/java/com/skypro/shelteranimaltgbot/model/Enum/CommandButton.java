@@ -17,20 +17,20 @@ public enum CommandButton {
     ABOUT_SHELTER("О приюте подробнее"),
     OPERATING_MODE("Режим работы/Адрес"),
     VIEW_ALL_ANIMALS("Посмотреть список животных"),
-    SAFETY("Техника безопасности"),
-    RULES_OF_ACQUAINTANCE("Правила знакомства"),
-    DOCUMENTS("Список документов для усыновления"),
-    TRANSPORT_RECOMMENDATIONS ("Рекомендации по транспортировке"),
-    RECOMMENDATIONS_FOR_KID_HOUSE ("Обустройство дома для щенка/котенка"),
-    RECOMMENDATIONS_FOR_ADULT_HOUSE ("Обустройство дома для взрослого животного"),
-    RECOMMENDATIONS_FOR_INVALID_HOUSE ("Обустройство дома для животного с ограниченными возможностями"),
-    REASONS_FOR_REJECTION ("Причины отказа в усыновлении животного"),
-    CYNOLOGIST_ADVICE ("Советы кинолога"),
-    BEST_CYNOLOGISTS ("Проверенные кинологи"),
-    TAKE_CAT ("Взять кошку"),
-    TAKE_DOG ("Взять собаку");
+    SAFETY("Техника безопасности");
+//    RULES_OF_ACQUAINTANCE("Правила знакомства"),
+//    DOCUMENTS("Список документов для усыновления"),
+//    TRANSPORT_RECOMMENDATIONS ("Рекомендации по транспортировке"),
+//    RECOMMENDATIONS_FOR_KID_HOUSE ("Обустройство дома для щенка/котенка"),
+//    RECOMMENDATIONS_FOR_ADULT_HOUSE ("Обустройство дома для взрослого животного"),
+//    RECOMMENDATIONS_FOR_INVALID_HOUSE ("Обустройство дома для животного с ограниченными возможностями"),
+//    REASONS_FOR_REJECTION ("Причины отказа в усыновлении животного"),
+//    CYNOLOGIST_ADVICE ("Советы кинолога"),
+//    BEST_CYNOLOGISTS ("Проверенные кинологи"),
+//    TAKE_CAT ("Взять кошку"),
+//    TAKE_DOG ("Взять собаку");
 
-    private String commandText;
+    private final String commandText;
 
     CommandButton(String commandText) {
         this.commandText = commandText;

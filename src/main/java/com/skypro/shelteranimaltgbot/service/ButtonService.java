@@ -97,18 +97,18 @@ public class ButtonService {
 
     /**
      * кнопки рекомендаций как взять кошку
-     * */
+     */
 
-    public Keyboard keyboardGetCatRecommendation() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton(RULES_OF_ACQUAINTANCE.getCommandText()).callbackData(RULES_OF_ACQUAINTANCE.getCommandText()))
-                .addRow(new InlineKeyboardButton(TRANSPORT_RECOMMENDATIONS.getCommandText()).callbackData(TRANSPORT_RECOMMENDATIONS.getCommandText()))
-                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText()))
-                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText()))
-                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_INVALID_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_INVALID_HOUSE.getCommandText()))
-                .addRow(new InlineKeyboardButton(REASONS_FOR_REJECTION.getCommandText()).callbackData(REASONS_FOR_REJECTION.getCommandText()))
-                .addRow(new InlineKeyboardButton(DOCUMENTS.getCommandText()).switchInlineQuery(DOCUMENTS.getCommandText()));
-    }
+//    public Keyboard keyboardGetCatRecommendation() {
+//        return new InlineKeyboardMarkup(
+//                new InlineKeyboardButton(RULES_OF_ACQUAINTANCE.getCommandText()).callbackData(RULES_OF_ACQUAINTANCE.getCommandText()))
+//                .addRow(new InlineKeyboardButton(TRANSPORT_RECOMMENDATIONS.getCommandText()).callbackData(TRANSPORT_RECOMMENDATIONS.getCommandText()))
+//                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText()))
+//                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText()))
+//                .addRow(new InlineKeyboardButton(RECOMMENDATIONS_FOR_INVALID_HOUSE.getCommandText()).callbackData(RECOMMENDATIONS_FOR_INVALID_HOUSE.getCommandText()))
+//                .addRow(new InlineKeyboardButton(REASONS_FOR_REJECTION.getCommandText()).callbackData(REASONS_FOR_REJECTION.getCommandText()))
+//                .addRow(new InlineKeyboardButton(DOCUMENTS.getCommandText()).switchInlineQuery(DOCUMENTS.getCommandText()));
+//    }
 //    public Keyboard keyboardGetCatRecommendation() {
 //        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 //        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(RULES_OF_ACQUAINTANCE.getCommandText()).callbackData(RULES_OF_ACQUAINTANCE.getCommandText()));
@@ -132,35 +132,42 @@ public class ButtonService {
 
     public Keyboard takeCatMenu() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(RULES_OF_ACQUAINTANCE.getCommandText())
-                        .callbackData(RULES_OF_ACQUAINTANCE.getCommandText())
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(TRANSPORT_RECOMMENDATIONS.getCommandText())
-                        .callbackData(TRANSPORT_RECOMMENDATIONS.getCommandText())
-
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText())
-                        .callbackData(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText())
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText())
-                        .callbackData(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText())
-        );
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton(RULES_OF_ACQUAINTANCE.getCommandText())
+//                        .callbackData(RULES_OF_ACQUAINTANCE.getCommandText())
+//        );
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton(TRANSPORT_RECOMMENDATIONS.getCommandText())
+//                        .callbackData(TRANSPORT_RECOMMENDATIONS.getCommandText())
+//
+//        );
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText())
+//                        .callbackData(RECOMMENDATIONS_FOR_KID_HOUSE.getCommandText())
+//        );
+//        inlineKeyboardMarkup.addRow(
+//                new InlineKeyboardButton(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText())
+//                        .callbackData(RECOMMENDATIONS_FOR_ADULT_HOUSE.getCommandText())
+//        );
         return inlineKeyboardMarkup;
+    }
+
+    public Keyboard paginationButton() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("<--назад").callbackData("/back"),
+                new InlineKeyboardButton("вперед-->").callbackData("/next")
+        );
     }
 
 
     /**
      * кнопки получить рекомендации как взять кошку/собаку
      * */
-    public Keyboard takePetMenu() {
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(TAKE_CAT.getCommandText()).callbackData(TAKE_CAT.getCommandText()));
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(TAKE_DOG.getCommandText()).callbackData(TAKE_DOG.getCommandText()));
-        return inlineKeyboardMarkup;
-    }
+//    public Keyboard takePetMenu() {
+//        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+//       // inlineKeyboardMarkup.addRow(new InlineKeyboardButton(TAKE_CAT.getCommandText()).callbackData(TAKE_CAT.getCommandText()));
+//       // inlineKeyboardMarkup.addRow(new InlineKeyboardButton(TAKE_DOG.getCommandText()).callbackData(TAKE_DOG.getCommandText()));
+//        return inlineKeyboardMarkup;
+//    }
 
 }

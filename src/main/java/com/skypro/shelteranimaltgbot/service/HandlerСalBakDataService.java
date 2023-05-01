@@ -37,6 +37,8 @@ public class HandlerСalBakDataService {
 
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
+    private final String NEXT = "/next";
+    private final String BACK = "/back";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
@@ -65,17 +67,23 @@ public class HandlerСalBakDataService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n" + "МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
+            case NEXT:
+            case BACK:
                 //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
                 //TODO создать Service и Repository класса takePetFromShelter
                 //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
-                messages.add(new SendMessage(chatIdFromCallBackData, "Здравствуйте, выберите:").replyMarkup(buttonService.takePetMenu()));
+                commandButtonService.takePet(callBackData.data(), chatIdFromCallBackData, messages);
+
+                // messages.add(new SendMessage(chatIdFromCallBackData, "Здравствуйте, выберите:").replyMarkup(buttonService.takePetMenu()));
+
+                //messages.add(new SendMessage(chatIdFromCallBackData, commandButtonService.takePet()));
                 break;
-            case TAKE_CAT:
-                messages.add(new SendMessage(chatIdFromCallBackData, "Вас интересует кошка:").replyMarkup(buttonService.takeCatMenu()));
-                break;
-            case TAKE_DOG:
-                messages.add(new SendMessage(chatIdFromCallBackData, "Вас интересует собака:"));//.replyMarkup(buttonService.keyboardGetCatRecommendation()));
-                break;
+//            case TAKE_CAT:
+//                messages.add(new SendMessage(chatIdFromCallBackData, "Вас интересует кошка:").replyMarkup(buttonService.takeCatMenu()));
+//                break;
+//            case TAKE_DOG:
+//                messages.add(new SendMessage(chatIdFromCallBackData, "Вас интересует собака:"));//.replyMarkup(buttonService.keyboardGetCatRecommendation()));
+//                break;
 //            case RULES_OF_ACQUAINTANCE:
 //                messages.add(new SendMessage(chatIdFromCallBackData, takePetFromShelterService.getDescription(1L)));
 //                break;
@@ -141,9 +149,9 @@ public class HandlerСalBakDataService {
     }
 
 
-     /**
-     * метод проверяет
-     * */
+    /**
+     * метод проверяет если выбор животного то возврат true
+     */
     private boolean checkCallbackDataPet(String data) {
         String[] dataSplit = data.split(" ");
         Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));

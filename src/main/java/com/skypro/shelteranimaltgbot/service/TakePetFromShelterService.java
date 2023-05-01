@@ -88,4 +88,5 @@ public class TakePetFromShelterService {
         takePetFromShelterRepository.deleteById(id);
     }
 
+
 }
