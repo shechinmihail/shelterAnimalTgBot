@@ -6,6 +6,7 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "type_pet")
 public class TypePet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
