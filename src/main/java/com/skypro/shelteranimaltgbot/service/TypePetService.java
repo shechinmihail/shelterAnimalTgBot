@@ -19,18 +19,27 @@ public class TypePetService {
         this.typePetRepository = typePetRepository;
     }
 
+    /**
+     * метод возвращает все типы животных
+     */
     public Set<TypePet> getAllTypePet() {
         Set<TypePet> typePets = new HashSet<>(typePetRepository.findAll());
         return typePets;
     }
 
-
+    /**
+     * метод возвращает все типы животных по странично
+     */
     public List<TypePet> findAllByPagination(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         return typePetRepository.findAll(pageRequest).getContent();
     }
 
+
+    /**
+     * метод возвращает тип животного по наименованию типа
+     */
     public TypePet findPetByType(String text) {
-        return typePetRepository.findTypePetByType(text);
+        return typePetRepository.findTypePetByTypeOrderById(text);
     }
 }
