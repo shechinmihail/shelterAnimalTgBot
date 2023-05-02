@@ -5,11 +5,18 @@ import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 
 /**
@@ -18,6 +25,9 @@ import java.util.Collection;
  */
 @Service
 public class PetService {
+
+    @Value("${path.to.avatars.folder}")
+    private String avatarsDir;
 
 
     /**
@@ -114,5 +124,61 @@ public class PetService {
 
     }
 
+    /*
+    * public void uploadAvatar(long studentId, MultipartFile avatarFile) throws IOException {
+        logger.info("Was invoked method for upload avatar");
+        Student student = studentService.getStudent(studentId);
+        Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = avatarFile.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+        Avatar avatar = findAvatar(studentId);
+        avatar.setStudent(student);
+        avatar.setFilePath(filePath.toString());
+        avatar.setFileSize(avatarFile.getSize());
+        avatar.setMediaType(avatarFile.getContentType());
+        avatar.setData(avatarFile.getBytes());
+        avatarRepository.save(avatar);
+    }
+    * */
 
+
+    /**
+     * добавляем фото питомца
+     */
+    public void uploadAvatar(Long petId, MultipartFile avatar) throws IOException {
+        logger.info("Вызван метод загрузки фото");
+        Pet pet = petRepository.findPetById(petId);
+        Path filePath = Path.of(avatarsDir, pet.getId() + "_" + pet.getName() + "." + getExtensions(avatar.getOriginalFilename()));
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = avatar.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
+        ) {
+            bis.transferTo(bos);
+        }
+
+        pet.setFilePath(filePath.toString());
+        petRepository.save(pet);
+
+
+    }
+
+    /**
+     * получаем расширение файла
+     */
+    private String getExtensions(String fileName) {
+        logger.info("Вызван метод для получения расширений");
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
 }

@@ -3,8 +3,10 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ public class HandlerСalBakDataService {
     @Autowired
     TakePetFromShelterService takePetFromShelterService;
 
+    private final String DESIGN = "Design";
+
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String NEXT = "/next";
@@ -44,15 +48,17 @@ public class HandlerСalBakDataService {
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
     private final String VIEW_ALL_ANIMALS = "Посмотреть список животных";
+    private final String BACK_ON = "Back";
+    @Autowired
+    UserService userService;
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
     private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
 
-
     public List<SendMessage> handlerСalBakData(CallbackQuery callBackData, List<SendMessage> messages) {
         Long chatIdFromCallBackData = callBackData.message().chat().id();
         switch (callBackData.data()) {
-            case ABOUT:
+            case ABOUT, BACK_ON:
                 messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n" + "МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
@@ -84,16 +90,45 @@ public class HandlerСalBakDataService {
                 if (checkCallbackDataTypePet(callBackData.data())) {
                     messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(buttonService.viewPets(callBackData.data())));
                 } else if (checkCallbackDataPet(callBackData.data())) {
-                    messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
-                    viewInfoAboutPet(callBackData.data());
+                    sendPetPhoto(callBackData.data(), chatIdFromCallBackData);
+                    messages.add(viewPetInfo(chatIdFromCallBackData, callBackData));
+                } else if (checkCallBackDataDesign(callBackData.data())) {// если нажата кнопка оформить
+                    String[] callBack = callBackData.data().split(" ");
+                    Long petId = Long.valueOf(callBack[1]);
+                    String petName = callBack[2];
+                    messages.add(new SendMessage(chatIdFromCallBackData, petService.findPet(petId).getTypePet().getDocumentsList().toString()));
+                    // отправили Пользователю список документов
+                    List<User> volunteers = userService.checkUsersByRole(RoleEnum.VOLUNTEER);
+                    for (User user : volunteers) { // отправили всем волонтерам уведомление что животное, хотят забрать
+                        messages.add(new SendMessage(user.getUserTelegramId(), userService.findUser(chatIdFromCallBackData).getFirstName() + " хочет оформить " + petName));
+                    }
                 }
                 break;
         }
         return messages;
     }
 
-    private void viewInfoAboutPet(String data) {
-        //TODO доработать метод, вывести его фотографию (фото с хранилища "/petPhoto" не из БД!), вывести всю информацию о животном, + 1) кнопку взять/оформить питомца 2) вновь показать список питомцев(?)
+    /**
+     * метод отправки фотографии животного
+     * берет ссылку из БД, а ссылка указывает на локальный адрес фото
+     */
+    private void sendPetPhoto(String data, Long chatId) {
+        String[] callBack = data.split(" ");
+        Pet pet = petService.findPet(Long.valueOf(callBack[0]));
+        String pathOfPhoto = pet.getFilePath();
+        commandButtonService.sendPhoto(pathOfPhoto, chatId);
+    }
+
+    /**
+     * метод предоставления информации о животном
+     * и вывода кнопок: "Оформить" и "Назад"
+     */
+    private SendMessage viewPetInfo(Long chatId, CallbackQuery callbackQuery) {
+        String[] callBack = callbackQuery.data().split(" ");
+        String petInfo = callBack[1] + " возраст: " + callBack[2];
+        SendMessage sendMessage = new SendMessage(chatId, petInfo);
+        sendMessage.replyMarkup(buttonService.designOrBack(callbackQuery));
+        return sendMessage;
     }
 
     /**
@@ -115,7 +150,14 @@ public class HandlerСalBakDataService {
         });
     }
 
-
+    /**
+     * метод проверяет если нажата кнопка оформить то возврат true
+     */
+    private boolean checkCallBackDataDesign(String data) {
+        String[] dataSplit = data.split(" ");
+        String string = dataSplit[0];
+        return string.equals(DESIGN);
+    }
 
 
 }
