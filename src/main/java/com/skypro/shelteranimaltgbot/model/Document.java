@@ -2,7 +2,6 @@ package com.skypro.shelteranimaltgbot.model;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "documents")
@@ -14,7 +13,7 @@ public class Document {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "type_pet_id")
-    private TypePet typePet;
+    private TypePet typePetDoc;
 
     public Document() {
     }

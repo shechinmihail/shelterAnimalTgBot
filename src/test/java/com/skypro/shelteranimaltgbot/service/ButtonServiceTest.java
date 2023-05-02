@@ -96,7 +96,7 @@ class ButtonServiceTest {
     void viewPets() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<Pet> pets = new ArrayList<>();
-        pets.add(new Pet("Шарик", 2, new TypePet("Собаки", null), StatusPet.FREE));
+        pets.add(new Pet("Шарик", 2, new TypePet("Собаки", null, null), StatusPet.FREE));
         pets.stream()
                 .sorted(Comparator.comparing(Pet::getName))
                 .forEach(pet -> {

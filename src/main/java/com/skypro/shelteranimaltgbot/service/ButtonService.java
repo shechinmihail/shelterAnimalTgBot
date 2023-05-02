@@ -26,7 +26,6 @@ public class ButtonService {
      * основное меню + позвать волонтера, поделится контактом
      */
 
-
     public Keyboard keyboardMenu() {
 
         return new ReplyKeyboardMarkup(
@@ -94,5 +93,16 @@ public class ButtonService {
                 });
         return inlineKeyboardMarkup;
     }
+
+    /**
+     * кнопки получить для перелистывания страниц
+     */
+    public InlineKeyboardMarkup paginationButton() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("<--назад").callbackData("/back"),
+                new InlineKeyboardButton("вперед-->").callbackData("/next")
+        );
+    }
+
 
 }

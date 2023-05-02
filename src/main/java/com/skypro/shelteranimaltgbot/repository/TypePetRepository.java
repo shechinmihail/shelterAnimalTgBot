@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TypePetRepository extends JpaRepository<TypePet, Long> {
 
+    TypePet findTypePetByTypeOrderById(String text);
 }
 

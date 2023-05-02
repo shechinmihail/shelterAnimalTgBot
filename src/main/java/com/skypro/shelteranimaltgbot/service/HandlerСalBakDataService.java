@@ -32,8 +32,13 @@ public class HandlerСalBakDataService {
     @Autowired
     CommandButtonService commandButtonService;
 
+    @Autowired
+    TakePetFromShelterService takePetFromShelterService;
+
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
+    private final String NEXT = "/next";
+    private final String BACK = "/back";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
@@ -51,10 +56,10 @@ public class HandlerСalBakDataService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n" + "МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
-                //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
-                //TODO создать Service и Repository класса takePetFromShelter
-                //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
-                messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
+                commandButtonService.takePet(callBackData.data(), chatIdFromCallBackData, messages);
+            case NEXT:
+            case BACK:
+                commandButtonService.editTakePet(callBackData);
                 break;
             case REPORT:
                 //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
@@ -87,16 +92,13 @@ public class HandlerСalBakDataService {
         return messages;
     }
 
-
-
     private void viewInfoAboutPet(String data) {
         //TODO доработать метод, вывести его фотографию (фото с хранилища "/petPhoto" не из БД!), вывести всю информацию о животном, + 1) кнопку взять/оформить питомца 2) вновь показать список питомцев(?)
     }
 
-
-     /**
-     * метод проверяет
-     * */
+    /**
+     * метод проверяет если выбор животного то возврат true
+     */
     private boolean checkCallbackDataPet(String data) {
         String[] dataSplit = data.split(" ");
         Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));

@@ -167,6 +167,4 @@ public class PetController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO добавить метод
-
 }

@@ -6,15 +6,33 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "type_pet")
 public class TypePet {
+
+    /**
+     * идентификатор типа животного
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * тип животного
+     */
     private String type;
 
-    @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
+    /**
+     * список документов для типа животного
+     */
+    @OneToMany(mappedBy = "typePetDoc", cascade = CascadeType.ALL)
     private Set<Document> documentsList;
+
+    /**
+     * список правил/рекомендаций для типа животного
+     */
+    @OneToMany(mappedBy = "typePetRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<TakePetFromShelter> takePetFromShelters;
+
     public TypePet() {
     }
 
@@ -22,9 +40,10 @@ public class TypePet {
         this.type = type;
     }
 
-    public TypePet(String type, Set<Document> documents) {
+    public TypePet(String type, Set<Document> documents, Set<TakePetFromShelter> takePetFromShelters) {
         this.type = type;
         this.documentsList = documents;
+        this.takePetFromShelters = takePetFromShelters;
     }
 
     public Long getId() {
@@ -47,6 +66,14 @@ public class TypePet {
         this.type = type;
     }
 
+    public Set<TakePetFromShelter> getTakePetFromShelters() {
+        return takePetFromShelters;
+    }
+
+    public void setTakePetFromShelters(Set<TakePetFromShelter> takePetFromShelters) {
+        this.takePetFromShelters = takePetFromShelters;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,6 +93,7 @@ public class TypePet {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", documentsList=" + documentsList +
+                ", takePetFromShelters=" + takePetFromShelters +
                 '}';
     }
 }
