@@ -100,7 +100,7 @@ public class ButtonService {
      */
     public InlineKeyboardMarkup paginationButton() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("<--назад").callbackData("/back"),
+                new InlineKeyboardButton("<--назад").callbackData("/prev"),
                 new InlineKeyboardButton("вперед-->").callbackData("/next")
         );
     }
@@ -111,9 +111,10 @@ public class ButtonService {
      */
     public Keyboard designOrBack(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.data().split(" ");
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Оформить").callbackData("Design " + data[0] + " " + data[1] + " " + data[2]));
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Назад").callbackData("Back"));
-        return inlineKeyboardMarkup;
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Оформить").callbackData("Design " + data[0] + " " + data[1] + " " + data[2]),
+                new InlineKeyboardButton("Назад").callbackData("Back")
+        );
+
     }
 }

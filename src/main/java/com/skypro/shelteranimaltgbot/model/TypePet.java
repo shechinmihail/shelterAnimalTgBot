@@ -24,7 +24,7 @@ public class TypePet {
     /**
      * список документов для типа животного
      */
-    @OneToMany(mappedBy = "typePetDoc", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "typePetDoc", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Document> documentsList;
 
     /**

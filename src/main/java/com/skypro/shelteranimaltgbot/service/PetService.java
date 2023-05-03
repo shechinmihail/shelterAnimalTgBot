@@ -124,31 +124,6 @@ public class PetService {
 
     }
 
-    /*
-    * public void uploadAvatar(long studentId, MultipartFile avatarFile) throws IOException {
-        logger.info("Was invoked method for upload avatar");
-        Student student = studentService.getStudent(studentId);
-        Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (
-                InputStream is = avatarFile.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-        ) {
-            bis.transferTo(bos);
-        }
-        Avatar avatar = findAvatar(studentId);
-        avatar.setStudent(student);
-        avatar.setFilePath(filePath.toString());
-        avatar.setFileSize(avatarFile.getSize());
-        avatar.setMediaType(avatarFile.getContentType());
-        avatar.setData(avatarFile.getBytes());
-        avatarRepository.save(avatar);
-    }
-    * */
-
 
     /**
      * добавляем фото питомца
