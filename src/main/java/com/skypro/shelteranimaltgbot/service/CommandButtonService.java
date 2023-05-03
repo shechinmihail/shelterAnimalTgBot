@@ -45,7 +45,7 @@ public class CommandButtonService {
     private Integer rule = 1;
     private final Integer SIZE = 1;
     private final String NEXT = "/next";
-    private final String BACK = "/back";
+    private final String PREV = "/prev";
 
     @Autowired
     private TypePetRepository typePetRepository;
@@ -105,7 +105,6 @@ public class CommandButtonService {
     /**
      * закрытие соединения с клиентом
      */
-
     public List<SendMessage> closeСonnection(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
@@ -209,7 +208,7 @@ public class CommandButtonService {
         if (text.equals(NEXT)) {
             rule = rulePage(text);
             editMessageText = new EditMessageText(chatId, messageId, returnedText(rule)).parseMode(ParseMode.HTML).replyMarkup(buttonService.paginationButton());
-        } else if (text.equals(BACK)) {
+        } else if (text.equals(PREV)) {
             rule = rulePage(text);
             editMessageText = new EditMessageText(chatId, messageId, returnedText(rule)).parseMode(ParseMode.HTML).replyMarkup(buttonService.paginationButton());
         }
@@ -242,7 +241,7 @@ public class CommandButtonService {
     private Integer rulePage(String text) {
         if (text != null && text.equals(NEXT) && rule < typePetRepository.findAll().size()) {
             rule++;
-        } else if (text != null && text.equals("/back") && rule > 1) {
+        } else if (text != null && text.equals(PREV) && rule > 1) {
             rule--;
         }
         return rule;

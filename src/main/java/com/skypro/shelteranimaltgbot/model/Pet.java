@@ -160,6 +160,7 @@ public class Pet {
                 ", age=" + age +
                 ", statusPet=" + statusPet +
                 ", filePath='" + filePath + '\'' +
+                ", shelter=" + shelter +
                 '}';
     }
 }

@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -164,6 +166,33 @@ public class PetController {
     public ResponseEntity<Void> deletePet(@Parameter(description = "Ввод id домашнего питомца", name = "ID домашнего питомца")
                                           @PathVariable Long id) {
         petService.deletePet(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "Добавление фото питомца по идентификатору (id)",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Фото питомца добавлено",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Домашний питомец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class))
+                    )
+            }
+    )
+    @PostMapping(value = "{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long petId, @RequestParam MultipartFile avatar) throws IOException {
+        petService.uploadAvatar(petId, avatar);
         return ResponseEntity.ok().build();
     }
 
