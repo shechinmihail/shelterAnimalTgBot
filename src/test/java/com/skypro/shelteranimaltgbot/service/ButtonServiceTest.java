@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 import static org.mockito.Mockito.when;
@@ -78,7 +79,7 @@ class ButtonServiceTest {
             inlineKeyboardMarkup.addRow(new InlineKeyboardButton(typePet.getType()).callbackData(typePet.getType()));
         }
 
-        when(typePetService.getAllTypePet()).thenReturn(typePetsList);
+        when(typePetService.getAllTypePet()).thenReturn((Set<TypePet>) typePetsList);
         Assertions.assertEquals(inlineKeyboardMarkup, buttonService.viewAllTypePet());
     }
 

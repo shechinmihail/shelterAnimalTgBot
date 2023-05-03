@@ -30,14 +30,6 @@ public class Document {
         return document;
     }
 
-    public TypePet getTypePet() {
-        return typePet;
-    }
-
-    public void setTypePets(TypePet typePet) {
-        this.typePet = typePet;
-    }
-
     public void setDocument(String document) {
         this.document = document;
     }
@@ -60,7 +52,7 @@ public class Document {
         return "Document{" +
                 "id=" + id +
                 ", document='" + document + '\'' +
-                ", typePet=" + typePet +
+                ", typePet=" + typePetDoc +
                 '}';
     }
 }

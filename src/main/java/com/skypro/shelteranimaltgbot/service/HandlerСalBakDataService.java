@@ -120,8 +120,8 @@ public class HandlerСalBakDataService {
     }
 
     /**
-     * метод отправки фотографии животного
-     * берет ссылку из БД, а ссылка указывает на локальный адрес фото
+     * Метод отправки фотографии животного
+     * Берет ссылку из БД, а ссылка указывает на локальный адрес фото
      */
     private void sendPetPhoto(String data, Long chatId) {
         String[] callBack = data.split(" ");
@@ -131,7 +131,7 @@ public class HandlerСalBakDataService {
     }
 
     /**
-     * метод предоставления информации о животном
+     * Метод предоставления информации о животном
      * и вывода кнопок: "Оформить" и "Назад"
      */
     private SendMessage viewPetInfo(Long chatId, CallbackQuery callbackQuery) {
@@ -167,7 +167,7 @@ public class HandlerСalBakDataService {
     }
 
     /**
-     * метод проверяет если нажата кнопка оформить то возврат true
+     * Метод проверяет если нажата кнопка оформить то возврат true
      */
     private boolean checkCallBackDataDesign(String data) {
         String[] dataSplit = data.split(" ");

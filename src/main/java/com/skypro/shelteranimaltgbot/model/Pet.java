@@ -84,6 +84,9 @@ public class Pet {
     public Pet() {
     }
 
+    public Pet(String name, Integer age, TypePet typePet) {
+    }
+
     public Shelter getShelter() {
         return shelter;
     }
