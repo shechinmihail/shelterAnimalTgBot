@@ -4,13 +4,13 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
-import com.skypro.shelteranimaltgbot.model.Enum.CommandButton;
+import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.Report;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
@@ -27,13 +27,11 @@ import java.util.regex.Pattern;
 @Service
 public class SendReportService {
 
-    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
     private static final Pattern REPORT_PATTERN = Pattern.compile(
             "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
                     "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
                     "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)");
-
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final TelegramBot telegramBot;
     private final ReportService reportService;
     private final ReportRepository reportRepository;
@@ -50,38 +48,18 @@ public class SendReportService {
         this.petRepository = petRepository;
     }
 
-    public SendMessage reportMenu(Update update) {
-        SendMessage report = new SendMessage(update.callbackQuery().message().chat().id(), "Отправить отчет");
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(CommandButton.REPORT.getDescription())
-                        .callbackData(CommandButton.REPORT.getCallbackData())
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(CommandButton.CALL_VOLUNTEER.getDescription())
-                        .callbackData(CommandButton.CALL_VOLUNTEER.getCallbackData())
-
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(CommandButton.BACK.getDescription())
-                        .callbackData(CommandButton.BACK.getCallbackData())
-        );
-
-        report.replyMarkup(inlineKeyboardMarkup);
-
-        return report;
-    }
-
-    public SendMessage reportForm(Update update) {
+    public SendMessage reportForm(Long id) {
         logger.info("Вызван метод отправляющий образец отчета для пользователя");
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "ЗАГРУЗИТЕ ОТЧЕТ СОГЛАСНО ОБРАЗЦА: \n \n" +
-                        "Рацион питания домашнего питомца \n" +
-                        "Информация о общем самочувствии и привыкание к новому месту  \n" +
-                        "Данные об изменении поведения и привычек домашнего питомца \n" +
-                        "Фото домашнего питомца.");
+        SendMessage message = new SendMessage(id,
+                "ШАБЛОН ЗАПОЛНЕНИЯ ОТЧЕТА: \n \n" +
+                        "Фото домашнего питомца. \n" +
+                        "Рацион: XXXX XXXX XXXX \n" +
+                        "Самочувствие: XXXX XXXX XXXX \n" +
+                        "Поведение: XXXX XXXX XXXX \n"
+        );
         return message;
     }
+
     //TODO поправить все недочеты
     public void saveReport(Update update) {
         logger.info("Вызван метод сохранения отчета из чата телеграм");
@@ -101,14 +79,24 @@ public class SendReportService {
 
                 String photo = Arrays.toString(telegramBot.getFileContent(file));
                 LocalDate date = LocalDate.now();
-//                            if (userRepository.findById(Long.valueOf(id)) != null &&
-//                        userRepository.findById(String.valueOf(chatId)).getStatus() != StatusEnum.ADOPTER) {
-//                    reportService.saveReport(userTelegramId, diet, petInfo,
-//                            changeInPetBehavior, photo, LocalDate.from(date.atStartOfDay()));
-//                    telegramBot.execute(new SendMessage(chatId, "Отчет принят!"));
-//                } else {
-//                    telegramBot.execute(new SendMessage(chatId, "Вы еще не усыновили домашнего питомца!"));
-//                }
+
+                if (userRepository.findAllByUserTelegramId(update.message().from().id()) != null &&
+                        userRepository.findAllByUserTelegramId(update.message().from().id()).getStatus() != StatusEnum.ADOPTER) {
+
+                    Report report = new Report();
+                    report.setDate(LocalDate.from(date.atStartOfDay()));
+                    report.setReportStatus(ReportStatus.POSTED);
+                    report.setDiet(diet);
+                    report.setPhoto(photo);
+                    report.setChangeInPetBehavior(changeInPetBehavior);
+                    report.setPetInfo(petInfo);
+                    report.setUserTelegramId(update.message().from().id());
+                    reportRepository.save(report);
+                    telegramBot.execute(new SendMessage(chatId, "Отчет принят!"));
+                } else {
+                    telegramBot.execute(new SendMessage(chatId, "Вы еще не усыновили домашнего питомца!"));
+
+                }
             } catch (IOException e) {
                 logger.error("Ошибка при загрузке фотографии");
                 telegramBot.execute(new SendMessage(chatId,

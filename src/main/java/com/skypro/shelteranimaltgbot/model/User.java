@@ -26,7 +26,7 @@ public class User {
      */
     private String firstName;
 
-    //TODO сделать поле lastName, phone @Nullable, убрать setter Id (Выполнено, можно убирать)
+    //TODO  убрать setter Id <--пока давайте оставим, сеттер используется в тестах
     /**
      * Фамилия пользователя
      */
@@ -119,6 +119,10 @@ public class User {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {

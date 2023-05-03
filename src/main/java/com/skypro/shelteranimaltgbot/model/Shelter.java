@@ -13,8 +13,10 @@ public class Shelter {
     private String name;
     private String userName;
 
-    //TODO добавить поле Set<Pet> pets со связью Один приют ко многим животным (Выполнено, можно убирать)
-    @OneToMany(mappedBy = "typePet", cascade = CascadeType.ALL)
+    /**
+     * коллекция животных
+     */
+    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
     private Set<Pet> pets;
 
     @Column(columnDefinition = "text")
@@ -27,6 +29,10 @@ public class Shelter {
         this.name = name;
         this.userName = userName;
         this.about = about;
+    }
+
+    public Set<Pet> getPets() {
+        return pets;
     }
 
     public Long getId() {

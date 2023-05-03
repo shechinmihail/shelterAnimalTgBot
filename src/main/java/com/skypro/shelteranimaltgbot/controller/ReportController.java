@@ -67,9 +67,9 @@ public class ReportController {
             }
     )
     @GetMapping("/{id}")  //GET http://localhost:8080/report/{id}
-    public ResponseEntity<Report> findReport(@PathVariable Long id){
+    public ResponseEntity<Report> findReport(@PathVariable Long id) {
         Report report = reportService.findReport(id);
-        if (report == null){
+        if (report == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(report);
@@ -98,9 +98,9 @@ public class ReportController {
     @PutMapping    //PUT http://ocalhost:8080/report
     public ResponseEntity<Report> updateReport(@RequestBody Report report,
                                                @Parameter(description = "Статус отчета", example = "ACCEPTED")
-                                               @RequestParam(name = "Status")ReportStatus reportStatus){
+                                               @RequestParam(name = "Status") ReportStatus reportStatus) {
         Report reportPet = reportService.updateReport(report, reportStatus);
-        if (reportPet == null){
+        if (reportPet == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(reportPet);
@@ -127,7 +127,7 @@ public class ReportController {
             }
     )
     @DeleteMapping("/{id}")    //DELETE http://localhost:8080/report/{id}
-    public ResponseEntity<Void> deleteReport(@PathVariable Long id){
+    public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
         reportService.deleteReport(id);
         return ResponseEntity.ok().build();
     }
@@ -146,7 +146,7 @@ public class ReportController {
             }
     )
     @GetMapping(path = "all")   //GET http://localhost:8080/report/all
-    public ResponseEntity<Collection<Report>> getAllReport(){
+    public ResponseEntity<Collection<Report>> getAllReport() {
         return ResponseEntity.ok(reportService.getAllReport());
     }
 

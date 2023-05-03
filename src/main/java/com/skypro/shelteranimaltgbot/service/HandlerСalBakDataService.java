@@ -2,10 +2,12 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.skypro.shelteranimaltgbot.model.Document;
+import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,15 +37,27 @@ public class HandlerСalBakDataService {
     CommandButtonService commandButtonService;
 
     @Autowired
+    TakePetFromShelterService takePetFromShelterService;
+
+    @Autowired
+    ReportService reportService;
+    @Autowired
     SendReportService sendReportService;
+    @Autowired
+    UserService userService;
+
+    private final String PREV = "/prev";
+
+    private final String DESIGN = "Design";
 
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
+    private final String NEXT = "/next";
+    private final String BACK = "Back";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
     private final String OPERATING_MODE = "Режим работы/Адрес";
     private final String SAFETY = "Техника безопасности";
-    private final String VIEW_ALL_ANIMALS = "Посмотреть список животных";
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
     private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
@@ -56,17 +70,14 @@ public class HandlerСalBakDataService {
                 messages.add(new SendMessage(chatIdFromCallBackData, "Приют для животных" + "\n" + "МИЛЫЕ ПУШИСТИКИ").replyMarkup(buttonService.keyboardChatInfoShelterMenu()));
                 break;
             case TAKE_PET:
-                //TODO создать Entity класс takePetFromShelter с полями id (автоматическое заполнение), поле text с описанием как взять животное, добавить в insert_into.sql заполнение таблицы
-                //TODO создать Service и Repository класса takePetFromShelter
-                //TODO сделать метод обработки запроса как взять питомца (получение из репозитория информации и вывод ее в чат)
-                messages.add(new SendMessage(chatIdFromCallBackData, "В разработке"));
+                commandButtonService.takePet(callBackData.data(), chatIdFromCallBackData, messages);
+            case NEXT, PREV:
+                commandButtonService.editTakePet(callBackData);
                 break;
             case REPORT:
-                //TODO сделать метод по обработке запроса подать отчет, создать Entity класс Report в соответствии с таблицей БД + добавить поле Pet (после оформления должен измениться статус Pet на BUSY, обновление статуса должно быть реализовано через контроллер)
-
-                messages.add(new SendMessage(chatIdFromCallBackData, "В разработке"));
+                messages.add(sendReportService.reportForm(chatIdFromCallBackData));
                 break;
-            case ABOUT_SHELTER:
+            case ABOUT_SHELTER, BACK:
                 String shelter = callBackData.message().from().username();
                 messages.add(new SendMessage(chatIdFromCallBackData, shelterService.getAbout(shelter)));
                 messages.add(new SendMessage(chatIdFromCallBackData, "Посмотреть каталог животных ").replyMarkup(buttonService.viewAllTypePet()));
@@ -78,34 +89,71 @@ public class HandlerСalBakDataService {
                 commandButtonService.sendPhoto(SAFETY_CAT, chatIdFromCallBackData);
                 commandButtonService.sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
-            case VIEW_ALL_ANIMALS:
-                break;
             default:
+
                 if (checkCallbackDataTypePet(callBackData.data())) {
                     messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(buttonService.viewPets(callBackData.data())));
                 } else if (checkCallbackDataPet(callBackData.data())) {
-                    messages.add(new SendMessage(chatIdFromCallBackData, "в разработке"));
-                    viewInfoAboutPet(callBackData.data());
+                    sendPetPhoto(callBackData.data(), chatIdFromCallBackData);
+                    messages.add(viewPetInfo(chatIdFromCallBackData, callBackData));
+                } else if (checkCallBackDataDesign(callBackData.data())) {// если нажата кнопка оформить
+                    String[] callBack = callBackData.data().split(" ");
+                    Long petId = Long.valueOf(callBack[1]);
+                    String petName = callBack[2];
+                    StringBuilder text = new StringBuilder();
+                    text.append("Документы для оформления питомца \n\n");
+                    for (Document doc : petService.findPet(petId).getTypePet().getDocumentsList()) {
+                        text.append(doc.getDocument() + "\n");
+                    }
+                    text.append("\n\n Спасибо за ваш отклик " + callBackData.message().chat().firstName() + " оставьте свой номер телефона, в ближайшее время с Вами свяжется волонтер");
+                    messages.add(new SendMessage(chatIdFromCallBackData, text.toString()));
+                    // отправили Пользователю список документов
+                    List<User> volunteers = userService.checkUsersByRole(RoleEnum.VOLUNTEER);
+                    for (User user : volunteers) { // отправили всем волонтерам уведомление что животное, хотят забрать
+                        messages.add(new SendMessage(user.getUserTelegramId(), callBackData.message().chat().firstName() + " " + callBackData.message().chat().username() + " хочет оформить " + petName));
+                    }
                 }
+
                 break;
         }
         return messages;
     }
 
-
-
-    private void viewInfoAboutPet(String data) {
-        //TODO доработать метод, вывести его фотографию (фото с хранилища "/petPhoto" не из БД!), вывести всю информацию о животном, + 1) кнопку взять/оформить питомца 2) вновь показать список питомцев(?)
+    /**
+     * метод отправки фотографии животного
+     * берет ссылку из БД, а ссылка указывает на локальный адрес фото
+     */
+    private void sendPetPhoto(String data, Long chatId) {
+        String[] callBack = data.split(" ");
+        Pet pet = petService.findPet(Long.valueOf(callBack[0]));
+        String pathOfPhoto = pet.getFilePath();
+        commandButtonService.sendPhoto(pathOfPhoto, chatId);
     }
 
+    /**
+     * метод предоставления информации о животном
+     * и вывода кнопок: "Оформить" и "Назад"
+     */
+    private SendMessage viewPetInfo(Long chatId, CallbackQuery callbackQuery) {
+        String[] callBack = callbackQuery.data().split(" ");
+        String petInfo = callBack[1] + " возраст: " + callBack[2];
+        SendMessage sendMessage = new SendMessage(chatId, petInfo);
+        sendMessage.replyMarkup(buttonService.designOrBack(callbackQuery));
+        return sendMessage;
+    }
 
      /**
      * Метод проверяет
      * */
     private boolean checkCallbackDataPet(String data) {
         String[] dataSplit = data.split(" ");
-        Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));
-        return pet.getName().equals(dataSplit[1]) && pet.getAge() == Integer.valueOf(dataSplit[2]);
+        try {
+            Pet pet = petService.findPet(Long.valueOf(dataSplit[0]));
+            return pet.getName().equals(dataSplit[1]) && pet.getAge() == Integer.valueOf(dataSplit[2]);
+        } catch (NumberFormatException e) {
+            e.getMessage();
+        }
+        return false;
     }
 
     /**
@@ -118,7 +166,14 @@ public class HandlerСalBakDataService {
         });
     }
 
-
+    /**
+     * метод проверяет если нажата кнопка оформить то возврат true
+     */
+    private boolean checkCallBackDataDesign(String data) {
+        String[] dataSplit = data.split(" ");
+        String string = dataSplit[0];
+        return string.equals(DESIGN);
+    }
 
 
 }

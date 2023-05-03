@@ -55,6 +55,7 @@ public class Report {
 
     /**
      * Поле: статус отчета
+     *
      * @see ReportStatus
      */
     @Enumerated(EnumType.STRING)

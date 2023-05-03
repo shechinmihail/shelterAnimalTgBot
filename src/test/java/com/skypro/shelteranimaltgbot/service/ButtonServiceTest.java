@@ -1,7 +1,6 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.request.*;
-import com.skypro.shelteranimaltgbot.model.Document;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 import static org.mockito.Mockito.when;
@@ -97,7 +95,7 @@ class ButtonServiceTest {
     void viewPets() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<Pet> pets = new ArrayList<>();
-        pets.add(new Pet("Шарик", 2, new TypePet("Собаки", (Set<Document>) null), StatusPet.FREE));
+        pets.add(new Pet("Шарик", 2, new TypePet("Собаки", null, null), StatusPet.FREE));
         pets.stream()
                 .sorted(Comparator.comparing(Pet::getName))
                 .forEach(pet -> {

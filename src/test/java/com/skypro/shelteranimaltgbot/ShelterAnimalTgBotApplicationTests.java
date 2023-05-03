@@ -1,6 +1,5 @@
 package com.skypro.shelteranimaltgbot;
 
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,10 +59,7 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         put("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
-
-        mockMvc.
-                perform
-                        (get("/users/all"))
+        mockMvc.perform(get("/users/all"))
                 .andExpectAll(
                         jsonPath("$.size()").value(1),
                         status().isOk(),
@@ -139,6 +134,7 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$.size()").value(1),
                         status().isOk()
                 );
+
 
     }
 }

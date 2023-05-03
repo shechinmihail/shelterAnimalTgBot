@@ -56,17 +56,12 @@ public class Pet {
     private String filePath;
 
     /**
-     * Конструктор для создания объекта домашний питомец
-     *
-     * @param name      имя домашнего питомца
-     * @param age       возраст домашнего питомца
-     * @param typePet   вид домашнего питомца
+     * приют
      */
-    public Pet(String name, Integer age, TypePet typePet) {
-        this.name = name;
-        this.age = age;
-        this.typePet = typePet;
-    }
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
+
 
     /**
      * Конструктор для создания объекта домашний питомец
@@ -87,6 +82,14 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public TypePet getTypePet() {
@@ -155,6 +158,7 @@ public class Pet {
                 ", age=" + age +
                 ", statusPet=" + statusPet +
                 ", filePath='" + filePath + '\'' +
+                ", shelter=" + shelter +
                 '}';
     }
 }

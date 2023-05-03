@@ -1,5 +1,6 @@
 package com.skypro.shelteranimaltgbot.service;
 
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.request.*;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
@@ -25,7 +26,6 @@ public class ButtonService {
     /**
      * основное меню + позвать волонтера, поделится контактом
      */
-
 
     public Keyboard keyboardMenu() {
 
@@ -95,4 +95,26 @@ public class ButtonService {
         return inlineKeyboardMarkup;
     }
 
+    /**
+     * кнопки получить для перелистывания страниц
+     */
+    public InlineKeyboardMarkup paginationButton() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("<--назад").callbackData("/prev"),
+                new InlineKeyboardButton("вперед-->").callbackData("/next")
+        );
+    }
+
+
+    /**
+     * кнопки Оформить или Назад
+     */
+    public Keyboard designOrBack(CallbackQuery callbackQuery) {
+        String[] data = callbackQuery.data().split(" ");
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Оформить").callbackData("Design " + data[0] + " " + data[1] + " " + data[2]),
+                new InlineKeyboardButton("Назад").callbackData("Back")
+        );
+
+    }
 }
