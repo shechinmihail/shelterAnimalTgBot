@@ -21,7 +21,6 @@ public class Pet {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     /**
      * Вид домашнего питомца
      */
@@ -52,7 +51,7 @@ public class Pet {
     private StatusPet statusPet;
 
     /**
-     * фото питомца
+     * Фото питомца
      */
     @Column(name = "photo")
     private String filePath;

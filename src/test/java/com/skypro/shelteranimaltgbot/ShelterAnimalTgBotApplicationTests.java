@@ -127,6 +127,13 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         delete("/pet/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
                 .andExpect(status().isOk());
+        mockMvc
+                .perform(
+                        get("/pet/typePet"))
+                .andExpectAll(
+                        jsonPath("$.size()").value(1),
+                        status().isOk()
+                );
 
 
     }
