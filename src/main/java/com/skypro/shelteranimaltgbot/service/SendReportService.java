@@ -16,10 +16,10 @@ import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,9 +28,12 @@ import java.util.regex.Pattern;
 public class SendReportService {
 
     private static final Pattern REPORT_PATTERN = Pattern.compile(
-            "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
+            "([А-яA-z\\s\\d\\D]+):[0-9]" +
+                    "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
                     "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
                     "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)");
+    @Value("${path.to.avatars.from.report.folder}")
+    private String reportPhotoDir;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final TelegramBot telegramBot;
     private final ReportService reportService;
@@ -53,6 +56,7 @@ public class SendReportService {
         SendMessage message = new SendMessage(id,
                 "ШАБЛОН ЗАПОЛНЕНИЯ ОТЧЕТА: \n \n" +
                         "Фото домашнего питомца. \n" +
+                        "Id питомца: ХХХ \n" +
                         "Рацион: XXXX XXXX XXXX \n" +
                         "Самочувствие: XXXX XXXX XXXX \n" +
                         "Поведение: XXXX XXXX XXXX \n"
@@ -60,16 +64,18 @@ public class SendReportService {
         return message;
     }
 
-    //TODO поправить все недочеты
+    //TODO поправить все недочеты изменить метод сохранения фотографии в локальную папку с сохранением ссылки на нее в БД
+    //TODO добавить метод проверки принадлежности питомца опекуну
     public void saveReport(Update update) {
         logger.info("Вызван метод сохранения отчета из чата телеграм");
         String text = update.message().caption();
         Matcher matcher = REPORT_PATTERN.matcher(text);
         Long chatId = update.message().chat().id();
         if (matcher.matches()) {
-            String diet = matcher.group(3);
-            String petInfo = matcher.group(6);
-            String changeInPetBehavior = matcher.group(9);
+            Long petId = Long.valueOf(matcher.group(3));
+            String diet = matcher.group(6);
+            String petInfo = matcher.group(9);
+            String changeInPetBehavior = matcher.group(12);
 
             GetFile getFileRequest = new GetFile(update.message().photo()[1].fileId());
             GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
@@ -78,13 +84,12 @@ public class SendReportService {
                 file.fileSize();
 
                 String photo = Arrays.toString(telegramBot.getFileContent(file));
-                LocalDate date = LocalDate.now();
+
 
                 if (userRepository.findAllByUserTelegramId(update.message().from().id()) != null &&
                         userRepository.findAllByUserTelegramId(update.message().from().id()).getStatus() != StatusEnum.ADOPTER) {
 
                     Report report = new Report();
-                    report.setDate(LocalDate.from(date.atStartOfDay()));
                     report.setReportStatus(ReportStatus.POSTED);
                     report.setDiet(diet);
                     report.setPhoto(photo);
