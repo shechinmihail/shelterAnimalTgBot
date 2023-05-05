@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
 import com.skypro.shelteranimaltgbot.model.Adoption;
+import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.AdoptionRepository;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 //TODO Создать AdoptionController
@@ -20,6 +22,10 @@ public class AdoptionService {
     private static final Logger logger = LoggerFactory.getLogger(User.class);
     @Autowired
     private AdoptionRepository adoptionRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private PetService petService;
 
     /**
      * Добавление нового записи усыновления и сохранение ее в базе данных
@@ -40,7 +46,7 @@ public class AdoptionService {
      * @return найденная запись
      * @throws EntityNotFoundException если запись с указанным id не была найден в базе данных
      */
-    public Adoption findAdoption(Long id) {
+    public Adoption findAdoption(@NotNull Long id) {
         logger.info("Вызван метод поиска записи усыновления по идентификатору (id)");
         return adoptionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
@@ -53,7 +59,7 @@ public class AdoptionService {
      * @return отредактированная запись усыновления
      * @throws UserNotFoundException если запись не найдена
      */
-    public Adoption updateUser(Adoption adoption) {
+    public Adoption updateAdoption(Adoption adoption) {
         logger.info("Вызван метод редактирования записи усыновления в базе данных");
         if (adoption.getId() != null) {
             if (adoptionRepository.findAdoptionById(adoption.getId())) {
@@ -98,4 +104,15 @@ public class AdoptionService {
     }
 
 
+    public Adoption createRecord(Long userId, Long petId, Integer trialPeriod) {
+        Adoption adoption = new Adoption();
+        User user = userService.findUser(userId);
+        Pet pet = petService.findPet(petId);
+        adoption.setUser(user);
+        adoption.setPet(pet);
+        adoption.setTrialPeriod(trialPeriod);
+        adoptionRepository.save(adoption);
+        return adoption;
+
+    }
 }

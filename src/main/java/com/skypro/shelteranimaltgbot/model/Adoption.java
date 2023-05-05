@@ -27,14 +27,14 @@ public class Adoption {
     /**
      * усыновитель
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     /**
      * питомец
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
@@ -49,19 +49,23 @@ public class Adoption {
      */
     @OneToMany(mappedBy = "adoption", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Report> reports;
-    private Integer countDayAdoption;
+
+    /**
+     * количество дней испытательного срока
+     */
+    private Integer trialPeriod;
 
     public Adoption() {
         this.date = LocalDate.now();
     }
 
 
-    public Adoption(User user, Pet pet, Set<Report> reports, Integer countDayAdoption) {
+    public Adoption(User user, Pet pet, Set<Report> reports, Integer trialPeriod) {
         this.user = user;
         this.pet = pet;
         this.date = LocalDate.now();
         this.reports = reports;
-        this.countDayAdoption = countDayAdoption;
+        this.trialPeriod = trialPeriod;
     }
 
     public Pet getPet() {
@@ -97,12 +101,12 @@ public class Adoption {
         this.reports = reports;
     }
 
-    public Integer getCountDayAdoption() {
-        return countDayAdoption;
+    public Integer getTrialPeriod() {
+        return trialPeriod;
     }
 
-    public void setCountDayAdoption(Integer countDayAdoption) {
-        this.countDayAdoption = countDayAdoption;
+    public void setTrialPeriod(Integer trialPeriod) {
+        this.trialPeriod = trialPeriod;
     }
 
     @Override
@@ -122,11 +126,11 @@ public class Adoption {
     public String toString() {
         return "Adoption{" +
                 "id=" + id +
-                ", user=" + user +
-                ", pet=" + pet +
+                //     ", user=" + user +
+                //     ", pet=" + pet +
                 ", date=" + date +
-                ", reports=" + reports +
-                ", countDayAdoption=" + countDayAdoption +
+                //      ", reports=" + reports +
+                ", countDayAdoption=" + trialPeriod +
                 '}';
     }
 }
