@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class ShelterService {
 
     @Autowired
-    ShelterRepository shelterRepository;
+    private ShelterRepository shelterRepository;
 
 
     public String getAbout(String userNameShelter) {

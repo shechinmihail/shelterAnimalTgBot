@@ -17,10 +17,10 @@ public class ForwardListenerService {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
-    HandlerСalBakDataService handlerСalBakDataService;
+    private HandlerСalBakDataService handlerСalBakDataService;
 
     @Autowired
-    HandlerMessageDataService handlerMessageDataService;
+    private HandlerMessageDataService handlerMessageDataService;
 
     public List<SendMessage> messages(Update update) {
         List<SendMessage> messages = new ArrayList<>();

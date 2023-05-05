@@ -54,7 +54,7 @@ public class Report {
     private LocalDate date;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reports")
+    @JoinColumn(name = "adoption")
     private Adoption adoption;
 
     /**

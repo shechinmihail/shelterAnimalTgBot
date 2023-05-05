@@ -17,10 +17,10 @@ import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
 public class ButtonService {
 
     @Autowired
-    PetService petService;
+    private PetService petService;
 
     @Autowired
-    TypePetService typePetService;
+    private TypePetService typePetService;
 
 
     /**
