@@ -125,16 +125,8 @@ public class AdoptionService {
     }
 
     public Adoption findAdoptionByPet(Long petId, Update update, ProbationPeriod passing) {
-//        Pet pet = petService.findPet(petId);
-//        User user = userService.findAByUserTelegramId(update);
-//        List<Adoption> adoptions = adoptionRepository.findAll();
-//        AtomicReference<Adoption> adoptionNew;
-//        adoptions.stream()
-//                .forEach(adoption -> {
-//                    if (adoption.getPet().equals(pet) && adoption.getUser().equals(user) && adoption.getProbationPeriod() == passing) {
-//                        adoptionNew.set(adoption);
-//                    }
-//                }).ma;
-        return null;
+        Pet pet = petService.findPet(petId);
+        User user = userService.findAByUserTelegramId(update);
+        return adoptionRepository.findAdoptionByPetAndUserAndProbationPeriod(pet, user, passing);
     }
 }

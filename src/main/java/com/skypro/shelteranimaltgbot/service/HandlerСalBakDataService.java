@@ -47,12 +47,14 @@ public class HandlerСalBakDataService {
     private UserService userService;
 
     private final String PREV = "/prev";
+    private final String NEXT = "/next";
+    private final String GOOD_REPORT = "/goodreport";
+    private final String BAD_REPORT = "/badreport";
 
     private final String DESIGN = "Design";
 
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
-    private final String NEXT = "/next";
     private final String BACK = "Back";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
@@ -91,6 +93,9 @@ public class HandlerСalBakDataService {
                 commandButtonService.sendPhoto(SAFETY_DOG, chatIdFromCallBackData);
                 break;
             default:
+                if (callBackData.data().contains(GOOD_REPORT) || callBackData.data().contains(BAD_REPORT)) {
+                    commandButtonService.volunteerResponseToReport(callBackData);
+                }
 
                 if (checkCallbackDataTypePet(callBackData.data())) {
                     messages.add(new SendMessage(chatIdFromCallBackData, callBackData.data()).replyMarkup(buttonService.viewPets(callBackData.data())));

@@ -8,13 +8,12 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
-import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
+import com.skypro.shelteranimaltgbot.model.*;
+import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
-import com.skypro.shelteranimaltgbot.model.TakePetFromShelter;
-import com.skypro.shelteranimaltgbot.model.TypePet;
-import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +48,10 @@ public class CommandButtonService {
     private final Integer SIZE = 1;
     private final String NEXT = "/next";
     private final String PREV = "/prev";
-
+    private final String GOOD_REPORT = "/goodreport";
+    private final String BAD_REPORT = "/badreport";
+    @Autowired
+    private ReportRepository reportRepository;
 
 
     /**
@@ -248,5 +250,28 @@ public class CommandButtonService {
         return rule;
     }
 
+    /**
+     * ответное сообщение от волонтера о результате проверки отчета, обновление статуса отчета, ответное сообщение если отчет уже обработан
+     */
+    public void volunteerResponseToReport(CallbackQuery callbackQuery) {
+        String[] dataText = callbackQuery.data().split(" ");
+        Report report = reportRepository.findById(Long.valueOf(dataText[2])).orElseThrow(NullPointerException::new);
+        if (checkStatusReport(report)) {
+            if (dataText[0].equals(GOOD_REPORT)) {
+                telegramBot.execute(new SendMessage(Long.valueOf(dataText[1]), "Спасибо, волонтер принял Ваш отчет"));
+                report.setReportStatus(ReportStatus.ACCEPTED);
+                reportRepository.save(report);
+            } else {
+                telegramBot.execute(new SendMessage(Long.valueOf(dataText[1]), "Волонтер не принял отчет"));
+                report.setReportStatus(ReportStatus.NOT_ACCEPTED);
+                reportRepository.save(report);
+            }
+        } else {
+            telegramBot.execute(new SendMessage(callbackQuery.message().from().id(), "Отчет уже был обработан.."));
+        }
+    }
 
+    private boolean checkStatusReport(Report report) {
+        return report.getReportStatus() == ReportStatus.POSTED;
+    }
 }

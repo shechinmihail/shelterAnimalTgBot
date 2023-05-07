@@ -54,7 +54,7 @@ public class Report {
     private LocalDate date;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "adoption")
     private Adoption adoption;
 
