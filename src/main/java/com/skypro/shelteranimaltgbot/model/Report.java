@@ -53,6 +53,11 @@ public class Report {
     @NonNull
     private LocalDate date;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "adoption")
+    private Adoption adoption;
+
     /**
      * Поле: статус отчета
      *
@@ -69,17 +74,17 @@ public class Report {
 //    private Pet pet;
 
     public Report(Long userTelegramId, String photo, String diet,
-                  String petInfo, String changeInPetBehavior, LocalDate date) {
+                  String petInfo, String changeInPetBehavior) {
         this.userTelegramId = userTelegramId;
         this.photo = photo;
         this.diet = diet;
         this.petInfo = petInfo;
         this.changeInPetBehavior = changeInPetBehavior;
-        this.date = date;
+        this.date = LocalDate.now();
     }
 
     public Report() {
-
+        this.date = LocalDate.now();
     }
 
     public Long getId() {
@@ -130,16 +135,20 @@ public class Report {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public ReportStatus getReportStatus() {
         return reportStatus;
     }
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    public Adoption getAdoption() {
+        return adoption;
+    }
+
+    public void setAdoption(Adoption adoption) {
+        this.adoption = adoption;
     }
 
     @Override

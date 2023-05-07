@@ -138,7 +138,7 @@ public class UserController {
                             description = "Отредактированный пользователь",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = User.class)
+                                    schema = @Schema(implementation = Pet.class)
                             )
                     ),
                     @ApiResponse(

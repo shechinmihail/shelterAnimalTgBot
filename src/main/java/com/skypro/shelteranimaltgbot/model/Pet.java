@@ -58,7 +58,7 @@ public class Pet {
     /**
      * приют
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
@@ -156,12 +156,12 @@ public class Pet {
     public String toString() {
         return "Pet{" +
                 "id=" + id +
-                ", typePet=" + typePet +
+                //  ", typePet=" + typePet +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", statusPet=" + statusPet +
                 ", filePath='" + filePath + '\'' +
-                ", shelter=" + shelter +
+                // ", shelter=" + shelter +
                 '}';
     }
 }

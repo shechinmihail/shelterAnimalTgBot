@@ -66,7 +66,7 @@ public class PetController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Найденый домашний питомец",
+                            description = "Найденный домашний питомец",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Pet.class)

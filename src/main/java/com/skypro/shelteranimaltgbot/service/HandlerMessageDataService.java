@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,45 +27,48 @@ public class HandlerMessageDataService {
     @Autowired
     private CommandButtonService commandButtonService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private TelegramBot telegramBot;
     @Autowired
     private ChatSessionWithVolunteerService chatSessionService;
     @Autowired
     private SendReportService sendReportService;
+    @Autowired
+    private UserService userService;
 
-
-    //TODO убрать message userId
-    private Message message;
-    private Long userId;
-
+    /**
+     * метод обрабатывает входящие сообщения от юзера, отвечает на вызовы кнопок основного меню клавиатуры, а также проверяет отправлен отчет о питомце или пользователь поделился контактом
+     */
     public List<SendMessage> handlerMessageData(Update update, List<SendMessage> messages) {
-        message = update.message();
-        userId = message.from().id();
+        Message message = update.message();
+        Long userId = message.from().id();
         String text = update.message().text();
         var contact = update.message().contact();
-        if (update.message().caption() != null) {
+
+        if (update.message().photo() != null
+                && update.message().caption() != null &&
+                userService.checkUserStatus(userId) == StatusEnum.ADOPTER) {
             sendReportService.saveReport(update);
         } else if (contact != null) {
             commandButtonService.setContact(update);
             messages.add(new SendMessage(userId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             commandButtonService.sendNotification(update, messages);
-
         } else {
             switch (text) {
                 case START -> commandButtonService.mainMenu(update, messages);
                 case CALL_VOLUNTEER -> commandButtonService.callVolunteer(update, messages);
                 case OPEN -> commandButtonService.openСonnection(messages);
                 case CLOSE -> commandButtonService.closeСonnection(update, messages);
-                default -> chatWithVolunteer(userId);
+                default -> chatWithVolunteer(message, userId);
             }
         }
         return messages;
 
     }
 
-    private void chatWithVolunteer(Long userId) {
+    /**
+     * метод проверяет если соединение с волонтером установлено, то сообщения пересылаются от юзера волонтеру и от волонтера юзеру
+     */
+    private void chatWithVolunteer(Message message, Long userId) {
         Long idSessionForConnect = chatSessionService.getLastId(userId);
         Long userTelegramId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdUser();
         Long volunteerChatId = chatSessionService.getChatUser(idSessionForConnect).getTelegramIdVolunteer();
@@ -76,15 +80,5 @@ public class HandlerMessageDataService {
             SendResponse response = telegramBot.execute(forwardMessage);
         }
     }
-
-
-
-
-
-
-
-
-
-
 
 }

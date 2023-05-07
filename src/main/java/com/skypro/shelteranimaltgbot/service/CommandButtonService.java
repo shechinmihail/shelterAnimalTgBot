@@ -32,13 +32,16 @@ public class CommandButtonService {
     private ChatSessionWithVolunteerService chatSessionService;
 
     @Autowired
-    ButtonService buttonService;
+    private ButtonService buttonService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    TypePetService typePetService;
+    private TypePetService typePetService;
+
+    @Autowired
+    private TypePetRepository typePetRepository;
 
     private Message message;
     private Long userId;
@@ -47,8 +50,6 @@ public class CommandButtonService {
     private final String NEXT = "/next";
     private final String PREV = "/prev";
 
-    @Autowired
-    private TypePetRepository typePetRepository;
 
 
     /**

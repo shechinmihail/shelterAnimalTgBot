@@ -3,6 +3,7 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class UserService {
      */
     public User addUser(User user) {
         logger.info("Вызван метод добавления пользователя");
-        if (userRepository.findAllByUserTelegramId(user.getUserTelegramId()) == null) {
+        if (userRepository.findAByUserTelegramId(user.getUserTelegramId()) == null) {
             userRepository.save(user);
             logger.info("Пользователь добавлен {}", user.getFirstName() + " " + user.getLastName());
         }
@@ -106,7 +107,7 @@ public class UserService {
         logger.info("Вызван метод добавления номера телефона в БД");
         var phone = update.message().contact().phoneNumber();
         var userTelegramId = update.message().from().id();
-        User u = userRepository.findAllByUserTelegramId(userTelegramId);
+        User u = userRepository.findAByUserTelegramId(userTelegramId);
         u.setPhone(phone);
         userRepository.save(u);
     }
@@ -114,18 +115,22 @@ public class UserService {
     /**
      * поиск юзера по айди
      */
-    public User findUserByChatId(Update update) {
-        User findUser = userRepository.findAllByUserTelegramId(update.message().chat().id());
+    public User findAByUserTelegramId(Update update) {
+        User findUser = userRepository.findAByUserTelegramId(update.message().chat().id());
         return findUser;
     }
 
 
     /**
      * вернуть всех юзеров по определенной роли
-     * */
+     */
     public List<User> checkUsersByRole(RoleEnum role) {
         logger.info("Вызван метод получения всех пользователе с ролью {}", role);
         return new ArrayList<>(userRepository.findAllByRole(role));
+    }
+
+    public StatusEnum checkUserStatus(Long userId) {
+        return userRepository.findAByUserTelegramId(userId).getStatus();
     }
 
 }

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 @Service
@@ -25,7 +24,7 @@ public class ReportService {
     }
 
     public Report saveReport(Long userTelegramId, String photo, String diet,
-                             String petInfo, String changeInPetBehavior, LocalDate date) {
+                             String petInfo, String changeInPetBehavior) {
         logger.info("Вызван метод сохранения отчета в БД");
         Report report = new Report();
         report.setUserTelegramId(userTelegramId);
@@ -33,7 +32,6 @@ public class ReportService {
         report.setDiet(diet);
         report.setPetInfo(petInfo);
         report.setChangeInPetBehavior(changeInPetBehavior);
-        report.setDate(date);
 
         return reportRepository.save(report);
     }

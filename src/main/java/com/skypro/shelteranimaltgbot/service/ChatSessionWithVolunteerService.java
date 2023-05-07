@@ -14,7 +14,7 @@ public class ChatSessionWithVolunteerService {
 
 
     @Autowired
-    ChatSessionWithVolunteerRepository chatSessionRepository;
+    private ChatSessionWithVolunteerRepository chatSessionRepository;
 
 
     /**

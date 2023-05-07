@@ -31,20 +31,20 @@ public class HandlerСalBakDataService {
     private TelegramBot telegramBot;
 
     @Autowired
-    ShelterService shelterService;
+    private ShelterService shelterService;
 
     @Autowired
-    CommandButtonService commandButtonService;
+    private CommandButtonService commandButtonService;
 
     @Autowired
-    TakePetFromShelterService takePetFromShelterService;
+    private TakePetFromShelterService takePetFromShelterService;
 
     @Autowired
-    ReportService reportService;
+    private ReportService reportService;
     @Autowired
-    SendReportService sendReportService;
+    private SendReportService sendReportService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     private final String PREV = "/prev";
 
@@ -75,7 +75,8 @@ public class HandlerСalBakDataService {
                 commandButtonService.editTakePet(callBackData);
                 break;
             case REPORT:
-                messages.add(sendReportService.reportForm(chatIdFromCallBackData));
+                sendReportService.reportForm(chatIdFromCallBackData, messages);
+                //messages.add(sendReportService.reportForm(chatIdFromCallBackData));
                 break;
             case ABOUT_SHELTER, BACK:
                 String shelter = callBackData.message().from().username();

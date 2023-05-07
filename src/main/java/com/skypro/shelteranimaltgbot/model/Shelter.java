@@ -16,7 +16,8 @@ public class Shelter {
     /**
      * коллекция животных
      */
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "shelter")
     private Set<Pet> pets;
 
     @Column(columnDefinition = "text")
