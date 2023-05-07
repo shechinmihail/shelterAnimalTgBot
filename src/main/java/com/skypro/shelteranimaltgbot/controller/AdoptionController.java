@@ -3,7 +3,6 @@ package com.skypro.shelteranimaltgbot.controller;
 import com.skypro.shelteranimaltgbot.model.Adoption;
 import com.skypro.shelteranimaltgbot.service.AdoptionService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -86,8 +85,7 @@ public class AdoptionController {
     )
 
     @GetMapping(path = "/{id}")    //GET http://localhost:8080/adoption/{id}
-    public ResponseEntity<Adoption> getAdoption(@Parameter(description = "Ввод id записи усыновления", name = "ID записи усыновления")
-                                                @PathVariable Long id) {
+    public ResponseEntity<Adoption> getAdoption(@PathVariable Long id) {
         Adoption adoption = adoptionService.findAdoption(id);
         if (adoption == null) {
             return ResponseEntity.notFound().build();
@@ -153,8 +151,7 @@ public class AdoptionController {
             }
     )
     @DeleteMapping(path = "{id}") //DELETE http://localhost:8080/adoption/{id}
-    public ResponseEntity<Adoption> deleteAdoption(@Parameter(description = "Ввод id записи усыновления", name = "ID записи усыновления")
-                                                   @PathVariable Long id) {
+    public ResponseEntity<Adoption> deleteAdoption(@PathVariable Long id) {
         adoptionService.deleteAdoption(id);
         return ResponseEntity.ok().build();
     }
@@ -183,7 +180,26 @@ public class AdoptionController {
         return ResponseEntity.ok(adoptionService.getAll());
     }
 
+    /**
+     * Создание записи в журнал усыновления питомцев
+     * После подписания всех документов, Волонтер создает запись усыновления питомца и назаначает количество дней испытательного срока
+     *
+     * @param userId      - id усыновителя
+     * @param petId       - id питомца
+     * @param trialPeriod - количество дней испытательного срока
+     * @return запись в журнале усыновлений
+     **/
 
+    @Operation(
+            summary = "Добавление записи усыновления питомца в базу данных с параметрами",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Добавление записи усыновления с параметрами",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Adoption.class)
+                    )
+            )
+    )
     @PostMapping(path = "create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
     //POST http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(

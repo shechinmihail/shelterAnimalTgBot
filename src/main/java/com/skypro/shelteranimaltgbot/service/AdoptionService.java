@@ -1,7 +1,11 @@
 package com.skypro.shelteranimaltgbot.service;
 
+import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
 import com.skypro.shelteranimaltgbot.model.Adoption;
+import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.AdoptionRepository;
@@ -103,16 +107,34 @@ public class AdoptionService {
         //TODO написать метод отправки сообщения пользователю из swagger
     }
 
-
-    public Adoption createRecord(Long userId, Long petId, Integer trialPeriod) {
+    /**
+     * Метод добавления записи в журнал усыновления питомцев
+     */
+    public Adoption createRecord(@NotNull Long userId, @NotNull Long petId, @NotNull Integer trialPeriod) {
         Adoption adoption = new Adoption();
         User user = userService.findUser(userId);
+        user.setStatus(StatusEnum.ADOPTER);
         Pet pet = petService.findPet(petId);
+        pet.setStatusPet(StatusPet.BUSY);
         adoption.setUser(user);
         adoption.setPet(pet);
         adoption.setTrialPeriod(trialPeriod);
         adoptionRepository.save(adoption);
         return adoption;
 
+    }
+
+    public Adoption findAdoptionByPet(Long petId, Update update, ProbationPeriod passing) {
+//        Pet pet = petService.findPet(petId);
+//        User user = userService.findAByUserTelegramId(update);
+//        List<Adoption> adoptions = adoptionRepository.findAll();
+//        AtomicReference<Adoption> adoptionNew;
+//        adoptions.stream()
+//                .forEach(adoption -> {
+//                    if (adoption.getPet().equals(pet) && adoption.getUser().equals(user) && adoption.getProbationPeriod() == passing) {
+//                        adoptionNew.set(adoption);
+//                    }
+//                }).ma;
+        return null;
     }
 }

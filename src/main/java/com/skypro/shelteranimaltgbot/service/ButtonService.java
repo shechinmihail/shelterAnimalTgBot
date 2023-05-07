@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.request.*;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,7 @@ public class ButtonService {
         Set<Pet> pets = new HashSet<>(petService.getAllPetByTypePet(data));
         pets.stream()
                 .filter(p -> p.getTypePet().getType().equals(data))
+                .filter(p -> p.getStatusPet() == StatusPet.FREE)
                 .sorted(Comparator.comparing(Pet::getName))
                 .forEach(pet -> {
                     inlineKeyboardMarkup.addRow(new InlineKeyboardButton("Имя " + pet.getName() + " Возраст " + pet.getAge() + " года")

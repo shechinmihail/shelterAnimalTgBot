@@ -1,5 +1,6 @@
 package com.skypro.shelteranimaltgbot.model;
 
+import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -55,17 +56,24 @@ public class Adoption {
      */
     private Integer trialPeriod;
 
+
+    /***
+     * Статус испытательного срока
+     * */
+    private ProbationPeriod probationPeriod;
+
     public Adoption() {
+        this.probationPeriod = ProbationPeriod.PASSING;
         this.date = LocalDate.now();
     }
 
 
-    public Adoption(User user, Pet pet, Set<Report> reports, Integer trialPeriod) {
+    public Adoption(User user, Pet pet, Integer trialPeriod) {
         this.user = user;
         this.pet = pet;
         this.date = LocalDate.now();
-        this.reports = reports;
         this.trialPeriod = trialPeriod;
+        this.probationPeriod = ProbationPeriod.PASSING;
     }
 
     public Pet getPet() {
@@ -109,6 +117,14 @@ public class Adoption {
         this.trialPeriod = trialPeriod;
     }
 
+    public ProbationPeriod getProbationPeriod() {
+        return probationPeriod;
+    }
+
+    public void setProbationPeriod(ProbationPeriod probationPeriod) {
+        this.probationPeriod = probationPeriod;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -126,10 +142,7 @@ public class Adoption {
     public String toString() {
         return "Adoption{" +
                 "id=" + id +
-                //     ", user=" + user +
-                //     ", pet=" + pet +
                 ", date=" + date +
-                //      ", reports=" + reports +
                 ", countDayAdoption=" + trialPeriod +
                 '}';
     }
