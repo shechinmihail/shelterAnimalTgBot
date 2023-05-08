@@ -49,6 +49,7 @@ public class CommandButtonService {
     private final String PREV = "/prev";
     private final String GOOD_REPORT = "/goodreport";
     private final String BAD_REPORT = "/badreport";
+
     @Autowired
     private ReportRepository reportRepository;
 
@@ -264,7 +265,7 @@ public class CommandButtonService {
                 telegramBot.execute(new SendMessage(Long.valueOf(dataText[1]), "Спасибо, волонтер принял Ваш отчет"));
                 report.setReportStatus(ReportStatus.ACCEPTED);
                 reportRepository.save(report);
-            } else {
+            } else if (dataText[0].equals(BAD_REPORT)) {
                 telegramBot.execute(new SendMessage(Long.valueOf(dataText[1]), "Волонтер не принял отчет"));
                 report.setReportStatus(ReportStatus.NOT_ACCEPTED);
                 reportRepository.save(report);
