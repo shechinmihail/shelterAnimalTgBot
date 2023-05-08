@@ -53,7 +53,8 @@ public class Report {
     @NonNull
     private LocalDate date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "adoption")
     private Adoption adoption;
 
@@ -139,6 +140,14 @@ public class Report {
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    public Adoption getAdoption() {
+        return adoption;
+    }
+
+    public void setAdoption(Adoption adoption) {
+        this.adoption = adoption;
     }
 
     @Override

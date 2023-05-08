@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,8 @@ public class HandlerMessageDataService {
     private ChatSessionWithVolunteerService chatSessionService;
     @Autowired
     private SendReportService sendReportService;
+    @Autowired
+    private UserService userService;
 
     /**
      * метод обрабатывает входящие сообщения от юзера, отвечает на вызовы кнопок основного меню клавиатуры, а также проверяет отправлен отчет о питомце или пользователь поделился контактом
@@ -40,13 +43,15 @@ public class HandlerMessageDataService {
         Long userId = message.from().id();
         String text = update.message().text();
         var contact = update.message().contact();
-        if (update.message().photo() != null && update.message().caption() != null) {
+
+        if (update.message().photo() != null
+                && update.message().caption() != null &&
+                userService.checkUserStatus(userId) == StatusEnum.ADOPTER) {
             sendReportService.saveReport(update);
         } else if (contact != null) {
             commandButtonService.setContact(update);
             messages.add(new SendMessage(userId, message.from().firstName() + " спасибо, мы свяжемся с вами в ближайшее время"));
             commandButtonService.sendNotification(update, messages);
-
         } else {
             switch (text) {
                 case START -> commandButtonService.mainMenu(update, messages);

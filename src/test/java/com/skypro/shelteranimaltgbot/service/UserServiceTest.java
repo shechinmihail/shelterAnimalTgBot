@@ -54,13 +54,13 @@ public class UserServiceTest {
 
 
         User user = new User();
-        user.setId(id);
+       // user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
 
         User updateUser = new User();
-        updateUser.setId(id);
+        // updateUser.setId(id);
         updateUser.setFirstName(newFirstName);
         updateUser.setLastName(newLastName);
         updateUser.setRole(newRoleEnum);
@@ -96,7 +96,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
-        user.setId(id);
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
@@ -131,7 +131,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
-        user.setId(id);
+        // user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
@@ -157,13 +157,13 @@ public class UserServiceTest {
         final RoleEnum newRoleEnum = RoleEnum.ADMIN;
 
         User user = new User();
-        user.setId(id);
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
 
         User updateUser = new User();
-        updateUser.setId(id);
+        //    updateUser.setId(id);
         updateUser.setFirstName(newFirstName);
         updateUser.setLastName(newLastName);
         updateUser.setRole(newRoleEnum);
@@ -188,7 +188,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
-        user.setId(id);
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
