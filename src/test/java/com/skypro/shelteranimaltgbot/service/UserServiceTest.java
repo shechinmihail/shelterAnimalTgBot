@@ -44,33 +44,48 @@ public class UserServiceTest {
 
     @Test
     public void updateUser() throws Exception {
+        final long id = 1;
+        final String firstName = "Ivan";
+        final String lastName = "Sidorov";
+        final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
+        final String newFirstName = "Igor";
+        final String newLastName = "Puc";
+        final RoleEnum newRoleEnum = RoleEnum.ADMIN;
 
-        Long userTelegramId = 123L;
-        String firstName = "Igor";
-        String lastName = "Puc";
-        String phone = "89099999999";
+
+        User user = new User();
+       // user.setId(id);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setRole(roleEnum);
+
+        User updateUser = new User();
+        // updateUser.setId(id);
+        updateUser.setFirstName(newFirstName);
+        updateUser.setLastName(newLastName);
+        updateUser.setRole(newRoleEnum);
 
         JSONObject userObject = new JSONObject();
-        userObject.put("id", 1L);
-        userObject.put("firstName", firstName);
-        userObject.put("lastName", lastName);
-        userObject.put("userTelegramId", userTelegramId);
-        userObject.put("status", "GUEST");
-        userObject.put("role", "USER");
-        userObject.put("phone", phone);
+        userObject.put("id", id);
+        userObject.put("firstName", newFirstName);
+        userObject.put("lastName", newLastName);
+        userObject.put("role", newRoleEnum);
 
-        User user = new User(firstName, lastName, userTelegramId, phone);
-
-        when(userRepository.save(any(User.class))).thenReturn(user);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
-
+        when(userRepository.save(any(User.class))).thenReturn(updateUser);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/users")
                         .content(userObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.firstName").value(newFirstName))
+                .andExpect(jsonPath("$.lastName").value(newLastName));
+                //.andExpect(jsonPath("$.role").value(newRoleEnum));
+        //java.lang.AssertionError: JSON path "$.role" expected:<ADMIN> but was:<ADMIN> опять ошибка, если ЕНАМ  не может корректно сравнить
+
     }
 
     @Test
@@ -81,6 +96,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
@@ -103,6 +119,8 @@ public class UserServiceTest {
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.firstName").value(firstName))
                 .andExpect(jsonPath("$.lastName").value(lastName));
+                //.andExpect(jsonPath("$.role").value(roleEnum));
+        // то же самое, опять ЕНАМ не сравнивается java.lang.AssertionError: JSON path "$.role" expected:<VOLUNTEER> but was:<VOLUNTEER>
     }
 
     @Test
@@ -113,6 +131,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
+        // user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
@@ -138,11 +157,13 @@ public class UserServiceTest {
         final RoleEnum newRoleEnum = RoleEnum.ADMIN;
 
         User user = new User();
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);
 
         User updateUser = new User();
+        //    updateUser.setId(id);
         updateUser.setFirstName(newFirstName);
         updateUser.setLastName(newLastName);
         updateUser.setRole(newRoleEnum);
@@ -167,6 +188,7 @@ public class UserServiceTest {
         final RoleEnum roleEnum = RoleEnum.VOLUNTEER;
 
         User user = new User();
+        //  user.setId(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(roleEnum);

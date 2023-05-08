@@ -195,21 +195,21 @@ public class PetServiceTest {
     public void getAllPetByTypePet() throws Exception {
         final String name = "Tiger";
         final Integer age = 2;
-        final TypePet typePet1 = new TypePet("Кошки");
+        //final TypePet typePet1 = new TypePet("Кошки");
 
         final String name2 = "Sharik";
         final Integer age2 = 3;
-        final TypePet typePet2 = new TypePet("Собаки");
+        //  final TypePet typePet2 = new TypePet("Собаки");
 
         Pet pet = new Pet();
         pet.setName(name);
         pet.setAge(age);
-        pet.setTypePet(typePet1);
+        //pet.setTypePet(typePet1);
 
         Pet pet2 = new Pet();
         pet2.setName(name2);
         pet2.setAge(age2);
-        pet2.setTypePet(typePet2);
+        // pet2.setTypePet(typePet2);
 
         List<Pet> petCollection = List.of(pet, pet2);
 

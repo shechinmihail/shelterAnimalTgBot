@@ -1,9 +1,11 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.Report;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,7 +111,7 @@ public class ButtonService {
 
 
     /**
-     * кнопки Оформить или Назад
+     * кнопки Оформить питомца или Назад
      */
     public Keyboard designOrBack(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.data().split(" ");
@@ -118,5 +120,19 @@ public class ButtonService {
                 new InlineKeyboardButton("Назад").callbackData("Back")
         );
 
+    }
+
+
+    /***
+     * кнопки принять отчет или отклонить отчет
+     * */
+    public Keyboard buttonForVolunteerOfReport(Update update, Report report) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(update.message().from().id()); // получает id отправителя
+        stringBuilder.append(" " + report.getId());
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("Принять отчет").callbackData("/goodreport " + stringBuilder),
+                new InlineKeyboardButton("Отклонить отчет").callbackData("/badreport " + stringBuilder)
+        );
     }
 }

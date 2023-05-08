@@ -5,11 +5,16 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
+import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
+import com.skypro.shelteranimaltgbot.model.Adoption;
+import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
 import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.Report;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
@@ -41,10 +46,10 @@ public class SendReportService {
             "3) <i>Вставьте скопированный шаблон в описание к фото</i> \n" +
             "4) <i>Замените ХХХ своими комментариями</i>";
 
-    private final String TEMPLATE = "Id: ХХХ \n" +
-            "Рацион: XXXX XXXX XXXX \n" +
-            "Самочувствие: XXXX XXXX XXXX \n" +
-            "Поведение: XXXX XXXX XXXX \n";
+    private final String TEMPLATE = "Id: ХХХX \n" +
+            "Рацион: XXXX \n" +
+            "Самочувствие: XXXX \n" +
+            "Поведение: XXXX \n";
 
     @Value("${path.to.avatars.from.report.folder}")
     private String reportPhotoDir;
@@ -57,11 +62,12 @@ public class SendReportService {
     private final PetRepository petRepository;
     private final UserService userService;
     private final AdoptionService adoptionService;
+    private final ButtonService buttonService;
 
 
     public SendReportService(TelegramBot telegramBot, ReportService reportService,
                              ReportRepository reportRepository, UserRepository userRepository,
-                             PetRepository petRepository, UserService userService, AdoptionService adoptionService) {
+                             PetRepository petRepository, UserService userService, AdoptionService adoptionService, ButtonService buttonService) {
         this.telegramBot = telegramBot;
         this.reportService = reportService;
         this.reportRepository = reportRepository;
@@ -69,6 +75,7 @@ public class SendReportService {
         this.petRepository = petRepository;
         this.userService = userService;
         this.adoptionService = adoptionService;
+        this.buttonService = buttonService;
     }
 
     public List<SendMessage> reportForm(Long id, List<SendMessage> messages) {
@@ -99,20 +106,31 @@ public class SendReportService {
                 String photo = Arrays.toString(telegramBot.getFileContent(file));
                 if (userRepository.findAByUserTelegramId(update.message().from().id()) != null &&
                         userService.checkUserStatus(chatId) == StatusEnum.ADOPTER) {
+                    Adoption adoption = adoptionService.findAdoptionByPet(petId, update, ProbationPeriod.PASSING);
+                    if (adoption == null) {
+                        telegramBot.execute(new SendMessage(chatId, "Неверно указан номер питомца"));
+                    } else {
+                        Report report = new Report();
+                        report.setReportStatus(ReportStatus.POSTED);
+                        report.setDiet(diet);
+                        report.setPhoto(photo);
+                        report.setChangeInPetBehavior(changeInPetBehavior);
+                        report.setPetInfo(petInfo);
+                        report.setUserTelegramId(update.message().from().id());
+                        report.setAdoption(adoption);
+                        reportRepository.save(report);
+                        telegramBot.execute(new SendMessage(chatId, "Отчет принят на рассмотрение!"));
+                        userService.checkUsersByRole(RoleEnum.VOLUNTEER).stream()
+                                .forEach(user -> {
+                                    ForwardMessage forwardMessage = new ForwardMessage(user.getUserTelegramId(), chatId, update.message().messageId());
+                                    SendResponse response = telegramBot.execute(forwardMessage);
+                                    telegramBot.execute(new SendMessage(user.getUserTelegramId(),
+                                            "<b>ПРИШЕЛ НОЫЙ ОТЧЕТ № " +
+                                                    report.getId() + " " + report.getDate() + "</b> \n"
+                                    ).replyMarkup(buttonService.buttonForVolunteerOfReport(update, report)).parseMode(ParseMode.HTML));
+                                });
+                    }
 
-                    Report report = new Report();
-                    report.setReportStatus(ReportStatus.POSTED);
-                    report.setDiet(diet);
-                    report.setPhoto(photo);
-                    report.setChangeInPetBehavior(changeInPetBehavior);
-                    report.setPetInfo(petInfo);
-                    report.setUserTelegramId(update.message().from().id());
-                    //Adoption adoption = adoptionService.findAdoptionByPet(petId, update, ProbationPeriod.PASSING);
-                    //report.setAdoption(adoption);
-
-
-                    reportRepository.save(report);
-                    telegramBot.execute(new SendMessage(chatId, "Отчет принят!"));
                 } else {
                     telegramBot.execute(new SendMessage(chatId, "Вы еще не усыновили домашнего питомца!"));
 
