@@ -46,10 +46,10 @@ public class SendReportService {
             "3) <i>Вставьте скопированный шаблон в описание к фото</i> \n" +
             "4) <i>Замените ХХХ своими комментариями</i>";
 
-    private final String TEMPLATE = "Id: ХХХ \n" +
-            "Рацион: XXXX XXXX XXXX \n" +
-            "Самочувствие: XXXX XXXX XXXX \n" +
-            "Поведение: XXXX XXXX XXXX \n";
+    private final String TEMPLATE = "Id: ХХХX \n" +
+            "Рацион: XXXX \n" +
+            "Самочувствие: XXXX \n" +
+            "Поведение: XXXX \n";
 
     @Value("${path.to.avatars.from.report.folder}")
     private String reportPhotoDir;

@@ -12,7 +12,6 @@ import com.skypro.shelteranimaltgbot.model.*;
 import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
 import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +59,14 @@ public class CommandButtonService {
     public List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        User user = new User(message.from().firstName(), message.from().lastName(), message.from().id(), StatusEnum.GUEST, RoleEnum.USER);
+        User user = userService.findAByUserTelegramId(update);
         userService.addUser(user);
-        messages.add(new SendMessage(userId, "Здравствуйте " + user.getFirstName()).replyMarkup(buttonService.keyboardMenu()));
-        messages.add(new SendMessage(userId, "Выберете пункт меню:").replyMarkup(buttonService.keyboardChatMenu()));
+        if (user.getRole() == RoleEnum.VOLUNTEER) {
+            messages.add(new SendMessage(userId, "Привет, " + user.getFirstName()).replyMarkup(buttonService.keyboardForChatSession()));
+        } else {
+            messages.add(new SendMessage(userId, "Здравствуйте " + user.getFirstName()).replyMarkup(buttonService.keyboardMenu()));
+            messages.add(new SendMessage(userId, "Выберете пункт меню:").replyMarkup(buttonService.keyboardChatMenu()));
+        }
         return messages;
     }
 
@@ -267,7 +270,7 @@ public class CommandButtonService {
                 reportRepository.save(report);
             }
         } else {
-            telegramBot.execute(new SendMessage(callbackQuery.message().from().id(), "Отчет уже был обработан.."));
+            telegramBot.execute(new SendMessage(callbackQuery.from().id(), "Отчет уже был обработан.."));
         }
     }
 
