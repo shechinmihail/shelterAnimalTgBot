@@ -40,19 +40,19 @@ public class Adoption {
     private Pet pet;
 
     /**
-     * дата усыновления
+     * Дата усыновления
      */
     @NonNull
     private LocalDate date;
 
     /**
-     * список отчетов по усыновлению
+     * Список отчетов по усыновлению
      */
     @OneToMany(mappedBy = "adoption", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Report> reports;
 
     /**
-     * количество дней испытательного срока
+     * Количество дней испытательного срока
      */
     private Integer trialPeriod;
 

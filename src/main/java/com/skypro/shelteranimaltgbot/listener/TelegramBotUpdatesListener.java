@@ -39,7 +39,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing updatePhone: {}", update);
-              forwardListenerService.messages(update).stream()
+            forwardListenerService.messages(update).stream()
                     .forEach(sendMessage -> {
                         SendResponse response = telegramBot.execute(sendMessage); // залогировать отправилось сообщение или нет
                         if (response.isOk()) {
@@ -47,10 +47,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         } else {
                             logger.error("Message was not sent because of " + response.errorCode());
                         }
-
                     });
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
+
 
 }

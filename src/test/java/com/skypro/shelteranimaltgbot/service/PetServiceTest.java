@@ -2,12 +2,10 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.shelteranimaltgbot.controller.PetController;
-import com.skypro.shelteranimaltgbot.model.Document;
 import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
-import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,10 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -216,13 +212,17 @@ public class PetServiceTest {
         Mockito.when(petRepository.findAll()).thenReturn(petCollection);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/pet/typePet"))
+                        .get("/pet/all"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
                 .andExpect(content().json(objectMapper.writeValueAsString(petCollection)));
     }
 
+    @Test
+    public void uploadAvatarTest() throws Exception {
+        
+    }
 
 }
 
