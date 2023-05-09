@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
+import java.util.List;
 
 //TODO Создать AdoptionController
 
@@ -80,7 +80,7 @@ public class AdoptionService {
      *
      * @return список(коллекцию) записей усыновления
      */
-    public Collection<Adoption> getAll() {
+    public List<Adoption> getAll() {
         logger.info("Вызван метод получения всех записей усыновления");
         return adoptionRepository.findAll();
     }
