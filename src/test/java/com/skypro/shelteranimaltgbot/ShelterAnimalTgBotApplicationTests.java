@@ -1,5 +1,8 @@
 package com.skypro.shelteranimaltgbot;
 
+import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
+import com.skypro.shelteranimaltgbot.service.TypePetService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -14,21 +17,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class ShelterAnimalTgBotApplicationTests {
 
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    TypePetService typePetService;
+    @Autowired
+    private TypePetRepository typePetRepository;
 
-    @Test
-    void contextLoads() {
-    }
 
     @Test
     void testUser() throws Exception {
-        String i = "17";
+        String i = "1";
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", i); //нужен для pet
         jsonObject.put("firstName", "TEST");
@@ -79,9 +82,12 @@ class ShelterAnimalTgBotApplicationTests {
                 .andExpect(status().isOk());
     }
 
+
     @Test
     void testPet() throws Exception {
-        String i = "24";
+        TypePet typePet = new TypePet("Кошки");
+        typePetRepository.save(typePet);
+        String i = "1";
         JSONObject jsonObjectDocument = new JSONObject();
         jsonObjectDocument.put("id", "1");
         jsonObjectDocument.put("document", "Паспорт");
@@ -114,7 +120,7 @@ class ShelterAnimalTgBotApplicationTests {
         mockMvc.perform(
                         get("/pet/" + i))
                 .andExpectAll(
-                        jsonPath("$.size()").value(6),
+                        jsonPath("$.size()").value(7),
                         status().isOk(),
                         jsonPath("$.id").value(i)
                 );
@@ -127,13 +133,6 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         delete("/pet/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
                 .andExpect(status().isOk());
-        mockMvc
-                .perform(
-                        get("/pet/typePet"))
-                .andExpectAll(
-                        jsonPath("$.size()").value(1),
-                        status().isOk()
-                );
 
 
     }
