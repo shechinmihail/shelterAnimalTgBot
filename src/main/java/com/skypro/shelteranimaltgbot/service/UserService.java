@@ -116,8 +116,8 @@ public class UserService {
      * поиск юзера по айди
      */
     public User findAByUserTelegramId(Update update) {
-        User findUser = userRepository.findAByUserTelegramId(update.message().chat().id());
-        return findUser;
+        return userRepository.findAByUserTelegramId(update.message().from().id());
+
     }
 
 

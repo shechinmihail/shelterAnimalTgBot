@@ -1,6 +1,5 @@
 package com.skypro.shelteranimaltgbot.controller;
 
-import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.User;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import com.skypro.shelteranimaltgbot.service.UserService;
@@ -138,7 +137,7 @@ public class UserController {
                             description = "Отредактированный пользователь",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                     ),
                     @ApiResponse(
@@ -146,7 +145,7 @@ public class UserController {
                             description = "Пользователь не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Pet.class))
+                                    schema = @Schema(implementation = User.class))
                     )
             }
     )

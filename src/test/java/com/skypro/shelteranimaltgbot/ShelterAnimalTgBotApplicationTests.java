@@ -9,9 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +66,7 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$.userTelegramId").value("1")
 
                 );
+
         mockMvc
                 .perform(
                         put("/users").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
@@ -74,19 +82,18 @@ class ShelterAnimalTgBotApplicationTests {
                         jsonPath("$[0].role").value("USER"),
                         jsonPath("$[0].status").value("GUEST"),
                         jsonPath("$[0].userTelegramId").value("1")
-
                 );
+
         mockMvc
                 .perform(
                         delete("/users/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
     }
 
-
     @Test
     void testPet() throws Exception {
-        TypePet typePet = new TypePet("Кошки");
-        typePetRepository.save(typePet);
+        typePetRepository.save(new TypePet("Кошки"));
+
         String i = "1";
         JSONObject jsonObjectDocument = new JSONObject();
         jsonObjectDocument.put("id", "1");
@@ -100,14 +107,12 @@ class ShelterAnimalTgBotApplicationTests {
         jsonObjectTypePet.put("type", "Кошки");
         jsonObjectTypePet.put("documentsList", jsonArray);
 
-
         JSONObject jsonObjectPet = new JSONObject();
         jsonObjectPet.put("id", i);
         jsonObjectPet.put("name", "test");
         jsonObjectPet.put("age", "1");
         jsonObjectPet.put("typePet", jsonObjectTypePet);
         jsonObjectPet.put("statusPet", "FREE");
-
 
         mockMvc
                 .perform(
@@ -134,6 +139,69 @@ class ShelterAnimalTgBotApplicationTests {
                         delete("/pet/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObjectPet.toString()))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    void AdoptionTest() throws Exception {
+        String i = "1";
+        Long userId = 1L;
+        Long petId = 2L;
+        Integer trialPeriod = 7;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", i);
+        jsonObject.put("userId", userId);
+        jsonObject.put("petId", petId);
+        jsonObject.put("trialPeriod", trialPeriod);
+
+        mockMvc
+                .perform(
+                        post("/adoption").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
+        mockMvc
+                .perform(
+                        put("/adoption")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonObject.toString()))
+                .andExpect(status().isOk()); // не проходит проверка, редактирования записи
+        mockMvc.perform(
+                        get("/adoption/" + i))
+                .andExpectAll(
+                        jsonPath("$.size()").value(7),
+                        status().isOk(),
+                        jsonPath("$.id").value(i)
+                );
+        mockMvc.perform(
+                        get("/adoption/all"))
+                .andExpectAll(
+                        jsonPath("$.size()").value(1),
+                        status().isOk()
+                );
+
+
+        mockMvc
+                .perform(
+                        delete("/adoption/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
+                .andExpect(status().isOk());
 
     }
+
+    @Test
+    public void createRecordTest() {
+        Long userId = 1L;
+        Long petId = 2L;
+        Integer trialPeriod = 7;
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .messageConverters(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter())
+                .build();
+        String port = String.valueOf(8081);
+        String url = "http://localhost:" + port + "/adoption/create-an-adoption-record/" + userId + "/" + petId + "/" + trialPeriod;
+
+        ResponseEntity response = restTemplate.postForEntity(url, null, ResponseEntity.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
+
 }
+

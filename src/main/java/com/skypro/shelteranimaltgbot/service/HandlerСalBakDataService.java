@@ -1,6 +1,5 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.skypro.shelteranimaltgbot.model.Document;
@@ -20,27 +19,14 @@ import java.util.Set;
 public class HandlerСalBakDataService {
     @Autowired
     private ButtonService buttonService;
-
     @Autowired
     private TypePetService typePetService;
-
     @Autowired
     private PetService petService;
-
-    @Autowired
-    private TelegramBot telegramBot;
-
     @Autowired
     private ShelterService shelterService;
-
     @Autowired
     private CommandButtonService commandButtonService;
-
-    @Autowired
-    private TakePetFromShelterService takePetFromShelterService;
-
-    @Autowired
-    private ReportService reportService;
     @Autowired
     private SendReportService sendReportService;
     @Autowired
@@ -50,15 +36,13 @@ public class HandlerСalBakDataService {
     private final String NEXT = "/next";
     private final String GOOD_REPORT = "/goodreport";
     private final String BAD_REPORT = "/badreport";
-
     private final String DESIGN = "Design";
-
     private final String ABOUT = "О приюте";
     private final String TAKE_PET = "Как взять питомца из приюта";
     private final String BACK = "Back";
     private final String REPORT = "Прислать отчет о питомце";
     private final String ABOUT_SHELTER = "О приюте подробнее";
-    private final String OPERATING_MODE = "Режим работы/Адрес";
+    private final String OPERATING_MODE = "Режим работы/адрес";
     private final String SAFETY = "Техника безопасности";
     private final String SAFETY_CAT = "src/main/resources/static/cat_safety.jpg";
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
@@ -78,7 +62,6 @@ public class HandlerСalBakDataService {
                 break;
             case REPORT:
                 sendReportService.reportForm(chatIdFromCallBackData, messages);
-                //messages.add(sendReportService.reportForm(chatIdFromCallBackData));
                 break;
             case ABOUT_SHELTER, BACK:
                 String shelter = callBackData.message().from().username();
