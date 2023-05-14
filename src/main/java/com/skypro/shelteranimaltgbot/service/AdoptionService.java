@@ -66,7 +66,7 @@ public class AdoptionService {
     public Adoption updateAdoption(Adoption adoption) {
         logger.info("Вызван метод редактирования записи усыновления в базе данных");
         if (adoption.getId() != null) {
-            if (adoptionRepository.findAdoptionById(adoption.getId())) {
+            if (adoptionRepository.findAdoptionById(adoption.getId()) != null) {
                 return adoptionRepository.save(adoption);
             }
         }

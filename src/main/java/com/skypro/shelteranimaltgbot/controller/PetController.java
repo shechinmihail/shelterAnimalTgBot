@@ -189,7 +189,7 @@ public class PetController {
                     )
             }
     )
-    @PostMapping(value = "{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long petId, @RequestParam MultipartFile avatar) throws IOException {
         petService.uploadAvatar(petId, avatar);
         return ResponseEntity.ok().build();
