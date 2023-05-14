@@ -76,7 +76,7 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Найденый пользователь",
+                            description = "Найденный пользователь",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = User.class)
@@ -101,7 +101,7 @@ public class UserController {
     }
 
     /**
-     * Функция получения всех пользователей, хранящихся в базе данныех
+     * Функция получения всех пользователей, хранящихся в базе данных
      *
      * @return возвращает всех пользователей
      */

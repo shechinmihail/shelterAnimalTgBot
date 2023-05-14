@@ -1,20 +1,26 @@
 package com.skypro.shelteranimaltgbot;
 
+
 import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.repository.AdoptionRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import com.skypro.shelteranimaltgbot.service.TypePetService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,8 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class ShelterAnimalTgBotApplicationTests {
 
@@ -33,7 +39,7 @@ class ShelterAnimalTgBotApplicationTests {
     @Autowired
     TypePetService typePetService;
     @Autowired
-    private TypePetRepository typePetRepository;
+    TypePetRepository typePetRepository;
 
 
     @Test
@@ -162,48 +168,17 @@ class ShelterAnimalTgBotApplicationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonObject.toString()))
                 .andExpect(status().isOk()); // не проходит проверка, редактирования записи
-        mockMvc.perform(
+        mockMvc
+                .perform(
                         get("/adoption/" + i))
                 .andExpectAll(
                         jsonPath("$.size()").value(7),
                         status().isOk(),
                         jsonPath("$.id").value(i)
                 );
-        mockMvc.perform(
-                        get("/adoption/all"))
-                        get("/pet/{petId}"))
-                .andExpectAll(
-                        jsonPath("$.size()").value(1),
-                        status().isOk()
-                );
-    }
-
-    @Test
-    void AdoptionTest() throws Exception{
-        String i = "1";
-        Long userId = 1L;
-        Long petId = 2L;
-        Integer trialPeriod = 7;
-        boolean LocalDate = false;
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", i);
-        jsonObject.put("userId", userId);
-        jsonObject.put("petId", petId);
-        jsonObject.put("date", LocalDate);
-        jsonObject.put("trialPeriod",trialPeriod);
-
         mockMvc
                 .perform(
-                        post("/adoption").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/adoption/" + i))
-                .andExpectAll(
-                        jsonPath("$.size()").value(7),
-                        status().isOk(),
-                        jsonPath("$.id").value(i)
-                );
-        mockMvc.perform(get("/adoption/all"))
+                        get("/adoption/all"))
                 .andExpectAll(
                         jsonPath("$.size()").value(1),
                         status().isOk()
@@ -212,49 +187,28 @@ class ShelterAnimalTgBotApplicationTests {
                 .perform(
                         delete("/adoption/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
                 .andExpect(status().isOk());
-        mockMvc
-                .perform(
-                        put("/adoption/").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-                .andExpect(status().isOk()); // не проходит проверка, редактирования записи
     }
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     @Test
     public void createRecordTest() {
-        Long userId = 1L;
-        Long petId = 2L;
-        Integer trialPeriod = 7;
+        Long userId = 3L;
+        Long petId = 1L;
+        Integer trialPeriod = 1;
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .messageConverters(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter())
                 .build();
-        String port = String.valueOf(8082);
+        //String port = String.valueOf(8081);
         String url = "http://localhost:" + port + "/adoption/create-an-adoption-record/" + userId + "/" + petId + "/" + trialPeriod;
 
            ResponseEntity response = restTemplate.postForEntity(url, null, ResponseEntity.class);
-
-        mockMvc
-                .perform(
-                        delete("/adoption/" + i).contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-                .andExpect(status().isOk());
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    public void createRecordTest() {
-        Long userId = 1L;
-        Long petId = 2L;
-        Integer trialPeriod = 7;
-        RestTemplate restTemplate = new RestTemplateBuilder()
-                .messageConverters(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter())
-                .build();
-        String port = String.valueOf(8081);
-        String url = "http://localhost:" + port + "/adoption/create-an-adoption-record/" + userId + "/" + petId + "/" + trialPeriod;
-
-        ResponseEntity response = restTemplate.postForEntity(url, null, ResponseEntity.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
-
-
 }
 

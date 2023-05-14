@@ -30,6 +30,9 @@ public class AdoptionController {
     @Autowired
     AdoptionService adoptionService;
 
+    public AdoptionController(AdoptionService adoptionService) {
+    }
+
     /**
      * Функция добавления новую запись усыновления{@link AdoptionService#addAdoption(Adoption)}
      *

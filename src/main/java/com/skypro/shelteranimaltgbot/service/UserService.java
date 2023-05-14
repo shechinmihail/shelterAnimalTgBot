@@ -51,7 +51,7 @@ public class UserService {
      *
      * @param id идентификатор пользователя, не может быть null
      * @return найденый пользователь
-     * @throws EntityNotFoundException если пользователь с указаным id не был найден в базе данных
+     * @throws EntityNotFoundException если пользователь с указанным id не был найден в базе данных
      */
     public User findUser(Long id) {
         logger.info("Вызван метод поиска пользователя по идентификатору (id)");

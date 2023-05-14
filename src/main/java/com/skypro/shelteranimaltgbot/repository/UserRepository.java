@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     /**
-     * метод возвращает сотрудников по роли (User / Volunteer)
+     * Метод возвращает сотрудников по роли (User / Volunteer)
      */
 
     List<User> findAllByRole(RoleEnum role);
