@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,10 +29,6 @@ public class AdoptionController {
      */
     @Autowired
     AdoptionService adoptionService;
-
-    public AdoptionController(AdoptionService adoptionService) {
-        this.adoptionService = adoptionService;
-    }
 
     /**
      * Функция добавления новую запись усыновления{@link AdoptionService#addAdoption(Adoption)}
@@ -120,9 +115,14 @@ public class AdoptionController {
             }
     )
 
-    @PutMapping  //PUT http://localhost:8080/adoption
+    @PutMapping  //PUT http://localhost:8080/adoption/
     public ResponseEntity<Adoption> updateAdoption(@RequestBody Adoption adoption) {
-        return ResponseEntity.ok(adoptionService.updateAdoption(adoption));
+        Adoption adoption1 = adoptionService.updateAdoption(adoption);
+        if (adoption1 == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(adoption1);
+
     }
 
     /**
@@ -200,7 +200,7 @@ public class AdoptionController {
                     )
             )
     )
-    @PostMapping(path = "create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
+    @PostMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
     //POST http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(
             @PathVariable Long userId,

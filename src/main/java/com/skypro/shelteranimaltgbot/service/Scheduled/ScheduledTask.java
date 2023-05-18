@@ -79,22 +79,26 @@ public class ScheduledTask {
     private void checkLastDateReport(Adoption adoption) {
         log.info("Вызван метод выявления просроченных отчетов");
         List<Report> reports = new ArrayList<>(adoption.getReports());
-        Report lastReport = reports.stream().max(Comparator.comparing(Report::getDate)).orElse(null);
-        if (lastReport.getDate().isBefore(LocalDate.now().minusDays(1))) {
-            List<User> volunteers = userService.checkUsersByRole(RoleEnum.VOLUNTEER);
-            for (User volunteer : volunteers) {
-                String textToVolunteer = "Отчёт о животном: (ID=" + adoption.getPet().getId() + ") " + adoption.getPet().getName() +
-                        " от усыновителя: (ID =" + adoption.getUser().getId() + ") " + adoption.getUser().getFirstName() +
-                        " не поступал больше 2-х дней." + "\n" +
-                        "Дата последнего отчета: " + lastReport.getDate();
-                telegramBot.execute(new SendMessage(volunteer.getUserTelegramId(), textToVolunteer));
+        try {
+            Report lastReport = reports.stream().max(Comparator.comparing(Report::getDate)).orElse(null);
+            if (lastReport.getDate().isBefore(LocalDate.now().minusDays(1))) {
+                List<User> volunteers = userService.checkUsersByRole(RoleEnum.VOLUNTEER);
+                for (User volunteer : volunteers) {
+                    String textToVolunteer = "Отчёт о животном: (ID=" + adoption.getPet().getId() + ") " + adoption.getPet().getName() +
+                            " от усыновителя: (ID =" + adoption.getUser().getId() + ") " + adoption.getUser().getFirstName() +
+                            " не поступал больше 2-х дней." + "\n" +
+                            "Дата последнего отчета: " + lastReport.getDate();
+                    telegramBot.execute(new SendMessage(volunteer.getUserTelegramId(), textToVolunteer));
+                }
             }
-        }
 
-        if (lastReport.getDate().equals(LocalDate.now().minusDays(1))) {
-            String textToUser = "Уважаемый " + adoption.getUser().getFirstName() + " не забудьте сегодня отправить отчет";
-            SendMessage messageToUser = new SendMessage(lastReport.getUserTelegramId(), textToUser);
-            telegramBot.execute(messageToUser);
+            if (lastReport.getDate().equals(LocalDate.now().minusDays(1))) {
+                String textToUser = "Уважаемый " + adoption.getUser().getFirstName() + " не забудьте сегодня отправить отчет";
+                SendMessage messageToUser = new SendMessage(lastReport.getUserTelegramId(), textToUser);
+                telegramBot.execute(messageToUser);
+            }
+        } catch (NullPointerException e) {
+            e.getMessage();
         }
 
 
@@ -146,7 +150,7 @@ public class ScheduledTask {
      * метод возвращает процент плохих отчетов
      */
     private double getPercentageRatio(Integer countAllReports, Integer countBadReports) {
-        log.info("Вызван метод возвращения плохих отчетов");
+        log.info("Вызван метод возвращения количества плохих отчетов");
         return countBadReports * 100 / countAllReports;
     }
 

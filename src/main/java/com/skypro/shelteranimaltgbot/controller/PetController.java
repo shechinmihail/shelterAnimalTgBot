@@ -162,7 +162,7 @@ public class PetController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/pet/{id}
+    @DeleteMapping(path = "/{id}")   //DELETE http://localhost:8080/pet/{id}
     public ResponseEntity<Void> deletePet(@Parameter(description = "Ввод id домашнего питомца", name = "ID домашнего питомца")
                                           @PathVariable Long id) {
         petService.deletePet(id);
@@ -190,7 +190,7 @@ public class PetController {
                     )
             }
     )
-    @PostMapping(value = "{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long petId, @RequestParam MultipartFile avatar) throws IOException {
         petService.uploadAvatar(petId, avatar);
         return ResponseEntity.ok().build();
