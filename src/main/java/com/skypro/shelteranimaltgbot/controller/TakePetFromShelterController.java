@@ -78,7 +78,7 @@ public class TakePetFromShelterController {
                                     schema = @Schema(implementation = TakePetFromShelter.class)
                             )
                     )})
-    @GetMapping(path = "{id}")   //GET http://localhost:8080/take_pet/{id}
+    @GetMapping(path = "/{id}")   //GET http://localhost:8080/take_pet/{id}
     public ResponseEntity<TakePetFromShelter> findDescription(@Parameter(description = "Ввод id рекомендации", name = "ID рекомендации")
                                          @PathVariable Long id) {
         TakePetFromShelter takePetFromShelter = takePetFromShelterService.findDescription(id);
@@ -172,7 +172,7 @@ public class TakePetFromShelterController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/take_pet/{id}
+    @DeleteMapping(path = "/{id}")   //DELETE http://localhost:8080/take_pet/{id}
     public ResponseEntity<Void> deleteRecomendation(@Parameter(description = "Ввод id рекомендации", name = "ID рекомендации")
                                            @PathVariable Long id) {
         takePetFromShelterService.deleteRecomendation(id);

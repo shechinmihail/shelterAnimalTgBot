@@ -18,7 +18,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-//TODO Создать AdoptionController
 
 @Service
 public class AdoptionService {

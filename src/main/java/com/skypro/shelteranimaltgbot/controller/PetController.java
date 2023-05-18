@@ -162,7 +162,7 @@ public class PetController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/pet/{id}
+    @DeleteMapping(path = "/{id}")   //DELETE http://localhost:8080/pet/{id}
     public ResponseEntity<Void> deletePet(@Parameter(description = "Ввод id домашнего питомца", name = "ID домашнего питомца")
                                           @PathVariable Long id) {
         petService.deletePet(id);
