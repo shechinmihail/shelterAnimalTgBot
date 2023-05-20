@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -12,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -221,20 +224,20 @@ public class HandlerСalBakDataServiceTest {
 
     @Test
     public void testOperatingMode() {
-       String path = "/path/to/photo.jpg";
-       String expectedData = OPERATING_MODE;
-       File photoMock = mock(File.class);
-       CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        String path = "/path/to/photo.jpg";
+        String expectedData = OPERATING_MODE;
+        File photoMock = mock(File.class);
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
 
-       when(callbackQuery.data()).thenReturn(expectedData);
-       when(photoMock.filePath()).thenReturn(path);
-       doNothing().when(commandButtonService).sendPhoto(path, chatId);
+        when(callbackQuery.data()).thenReturn(expectedData);
+        when(photoMock.filePath()).thenReturn(path);
+        doNothing().when(commandButtonService).sendPhoto(path, chatId);
 
-       commandButtonService.sendPhoto(path, chatId);
+        commandButtonService.sendPhoto(path, chatId);
 
-       verify(commandButtonService).sendPhoto(path, chatId);
-       assertEquals(photoMock.filePath(), path);
-       assertEquals(callbackQuery.data(), expectedData);
+        verify(commandButtonService).sendPhoto(path, chatId);
+        assertEquals(photoMock.filePath(), path);
+        assertEquals(callbackQuery.data(), expectedData);
     }
 
     @Test
@@ -255,4 +258,28 @@ public class HandlerСalBakDataServiceTest {
         assertEquals(photoMock.filePath(), path);
         assertEquals(callbackQuery.data(), expectedData);
     }
+
+    @Test
+    public void testViewPets() {
+        String data = "Dog";
+        TypePet typePet = new TypePet("Dog");
+        Set<TypePet> set = new HashSet<>();
+        set.add(typePet);
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        Message message = mock(Message.class);
+        Chat chat = mock(Chat.class);
+        ReplyKeyboardMarkup replyKeyboardMarkup = mock(ReplyKeyboardMarkup.class);
+
+        when(callbackQuery.data()).thenReturn(data);
+        when(typePetService.getAllTypePet()).thenReturn(set);
+        when(callbackQuery.message()).thenReturn(message);
+        when(callbackQuery.message().chat()).thenReturn(chat);
+        when(callbackQuery.message().chat().id()).thenReturn(chatId);
+        when(buttonService.viewPets(callbackQuery.data())).thenReturn(replyKeyboardMarkup);
+
+        handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
+
+        verify(buttonService).viewPets(data);
+    }
+
 }
