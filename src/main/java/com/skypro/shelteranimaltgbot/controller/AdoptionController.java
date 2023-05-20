@@ -203,7 +203,7 @@ public class AdoptionController {
                     )
             )
     )
-    @PostMapping(path = "create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
+    @PostMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
     //POST http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(
             @PathVariable Long userId,
