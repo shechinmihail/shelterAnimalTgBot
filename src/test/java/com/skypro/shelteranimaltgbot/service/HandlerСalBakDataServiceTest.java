@@ -1,9 +1,11 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.pengrad.telegrambot.TelegramBot;
+import com.skypro.shelteranimaltgbot.model.Document;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,19 +34,11 @@ public class HandlerСalBakDataServiceTest {
     private PetService petService;
 
     @Mock
-    private TelegramBot telegramBot;
-
-    @Mock
     private ShelterService shelterService;
 
     @Mock
     private CommandButtonService commandButtonService;
 
-    @Mock
-    private TakePetFromShelterService takePetFromShelterService;
-
-    @Mock
-    private ReportService reportService;
     @Mock
     private SendReportService sendReportService;
     @Mock
@@ -314,5 +308,72 @@ public class HandlerСalBakDataServiceTest {
         handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
 
         verify(commandButtonService).volunteerResponseToReport(callbackQuery);
+    }
+
+    @Test
+    public void testViewPetInfo() {
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        Message message = mock(Message.class);
+        Chat chat = mock(Chat.class);
+        String path = "/path/to/photo.jpg";
+        String data = "1 Alex 3";
+        String actual = "Alex возраст: 3";
+        Pet alex = mock(Pet.class);
+        ReplyKeyboardMarkup replyKeyboardMarkup = mock(ReplyKeyboardMarkup.class);
+
+        when(buttonService.designOrBack(callbackQuery)).thenReturn(replyKeyboardMarkup);
+        when(alex.getName()).thenReturn("Alex");
+        when(alex.getAge()).thenReturn(3);
+        when(alex.getFilePath()).thenReturn(path);
+        when(petService.findPet(anyLong())).thenReturn(alex);
+        when(callbackQuery.data()).thenReturn(data);
+        when(callbackQuery.message()).thenReturn(message);
+        when(callbackQuery.message().chat()).thenReturn(chat);
+        when(callbackQuery.message().chat().id()).thenReturn(chatId);
+        doNothing().when(commandButtonService).sendPhoto(path, chatId);
+
+        List<SendMessage> result = handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
+        SendMessage sendMessage = result.get(0);
+        String expectedText = (String) sendMessage.getParameters().get("text");
+
+        verify(commandButtonService).sendPhoto(path, chatId);
+        verify(buttonService).designOrBack(callbackQuery);
+        assertEquals(expectedText, actual);
+    }
+
+    @Test
+    public void testDesign() {
+        RoleEnum roleEnum = RoleEnum.VOLUNTEER;
+        com.skypro.shelteranimaltgbot.model.User user = mock(com.skypro.shelteranimaltgbot.model.User.class);
+        List<com.skypro.shelteranimaltgbot.model.User> list = new ArrayList<>();
+        list.add(user);
+
+
+        String data = DESIGN + " 1 Alex";
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        Message message = mock(Message.class);
+        Chat chat = mock(Chat.class);
+        TypePet typePet = mock(TypePet.class);
+        Pet pet = mock(Pet.class);
+        Document document1 = mock(Document.class);
+
+        Set<Document> documents = new HashSet<>();
+        documents.add(document1);
+
+        when(user.getUserTelegramId()).thenReturn(1L);
+        when(userService.checkUsersByRole(roleEnum)).thenReturn(list);
+        when(callbackQuery.data()).thenReturn(data);
+        when(callbackQuery.message()).thenReturn(message);
+        when(callbackQuery.message().chat()).thenReturn(chat);
+        when(callbackQuery.message().chat().firstName()).thenReturn("John");
+        when(callbackQuery.message().chat().username()).thenReturn("john123");
+        when(petService.findPet(anyLong())).thenReturn(pet);
+        when(pet.getTypePet()).thenReturn(typePet);
+        when(typePet.getDocumentsList()).thenReturn(documents);
+
+
+        handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
+
+        assertEquals(2, messages.size());
     }
 }
