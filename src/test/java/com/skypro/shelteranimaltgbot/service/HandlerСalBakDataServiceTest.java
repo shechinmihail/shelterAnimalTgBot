@@ -282,4 +282,37 @@ public class HandlerСalBakDataServiceTest {
         verify(buttonService).viewPets(data);
     }
 
+    @Test
+    public void testGoodReport() {
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        Message message = mock(Message.class);
+        Chat chat = mock(Chat.class);
+
+        when(callbackQuery.data()).thenReturn(GOOD_REPORT);
+        when(callbackQuery.message()).thenReturn(message);
+        when(callbackQuery.message().chat()).thenReturn(chat);
+        when(callbackQuery.message().chat().id()).thenReturn(chatId);
+        doNothing().when(commandButtonService).volunteerResponseToReport(callbackQuery);
+
+        handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
+
+        verify(commandButtonService).volunteerResponseToReport(callbackQuery);
+    }
+
+    @Test
+    public void testBadReport() {
+        CallbackQuery callbackQuery = mock(CallbackQuery.class);
+        Message message = mock(Message.class);
+        Chat chat = mock(Chat.class);
+
+        when(callbackQuery.data()).thenReturn(BAD_REPORT);
+        when(callbackQuery.message()).thenReturn(message);
+        when(callbackQuery.message().chat()).thenReturn(chat);
+        when(callbackQuery.message().chat().id()).thenReturn(chatId);
+        doNothing().when(commandButtonService).volunteerResponseToReport(callbackQuery);
+
+        handlerСalBakDataService.handlerСalBakData(callbackQuery, messages);
+
+        verify(commandButtonService).volunteerResponseToReport(callbackQuery);
+    }
 }
