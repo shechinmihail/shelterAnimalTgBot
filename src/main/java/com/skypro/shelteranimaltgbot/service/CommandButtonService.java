@@ -237,11 +237,11 @@ public class CommandButtonService {
         List<TypePet> pets = typePetService.findAllByPagination(i, SIZE);
         pets.stream()
                 .forEach(typePet -> {
-                    takePetsRule.append("<b>" + typePet.getType() + "</b>" + "\n\n");
+                    takePetsRule.append("<b>Рекомендации для типа животных " + typePet.getType() + "</b>" + "\n\n");
                     typePet.getTakePetFromShelters().stream()
                             .sorted(Comparator.comparing(TakePetFromShelter::getId))
                             .forEach(takePetFromShelter -> {
-                                takePetsRule.append("<b>" + takePetFromShelter.getDescription() + "</b>" + "\n" + "<i>" + takePetFromShelter.getNameRule() + "</i>" + "\n");
+                                takePetsRule.append("<b><u>" + takePetFromShelter.getDescription() + "</u></b>" + "\n" + "<i>" + takePetFromShelter.getNameRule() + "</i>" + "\n\n");
                             });
                 });
         return takePetsRule.toString();

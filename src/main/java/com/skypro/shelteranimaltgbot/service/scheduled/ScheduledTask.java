@@ -50,7 +50,7 @@ public class ScheduledTask {
 
     //@Scheduled(cron = "0 0 20 * * *")
     @Scheduled(cron = "0 0/1 * * * *")
-    public void runReportCheck() {
+    private void runReportCheck() {
         List<Adoption> adoptions = new ArrayList<>(getAdoptions());
         adoptions.stream()
                 .forEach(adoption -> {
@@ -198,5 +198,6 @@ public class ScheduledTask {
         log.info("Вызван метод получения количества дней испытательного срока");
         return adoption.getTrialPeriod();
     }
+
 
 }

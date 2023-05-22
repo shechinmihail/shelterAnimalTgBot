@@ -46,10 +46,10 @@ public class SendReportService {
             "3) <i>Вставьте скопированный шаблон в описание к фото</i> \n" +
             "4) <i>Замените ХХХ своими комментариями</i>";
 
-    private final String TEMPLATE = "Id: ХХХX \n" +
-            "Рацион: XXXX \n" +
-            "Самочувствие: XXXX \n" +
-            "Поведение: XXXX \n";
+    private final String TEMPLATE = "Id: ХХХ \n" +
+            "Рацион: XXX \n" +
+            "Самочувствие: XXX \n" +
+            "Поведение: XXX \n";
 
     @Value("${path.to.avatars.from.report.folder}")
     private String reportPhotoDir;
@@ -91,7 +91,7 @@ public class SendReportService {
         Matcher matcher = REPORT_PATTERN.matcher(text);
         Long chatId = update.message().chat().id();
         if (matcher.matches()) {
-            Long petId = Long.valueOf(matcher.group(3));
+            Long petId = Long.valueOf(matcher.group(3).replaceAll(" ", ""));
             String diet = matcher.group(6);
             String petInfo = matcher.group(9);
             String changeInPetBehavior = matcher.group(12);
