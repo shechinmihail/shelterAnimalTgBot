@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.model;
 
 
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -39,6 +39,25 @@ public class Pet {
      */
     @Column(name = "age", nullable = false)
     private Integer age;
+
+    /**
+     * Рост домашнего питомца
+     */
+    @Column(name = "height")
+    private Integer height;
+
+    /**
+     * Описание домашнего питомца
+     */
+    @Column(name = "description")
+    private String description;
+
+
+    /**
+     * характер домашнего питомца
+     */
+    @Column(name = "personality")
+    private String personality;
 
 
     /**
@@ -83,6 +102,30 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPersonality() {
+        return personality;
+    }
+
+    public void setPersonality(String personality) {
+        this.personality = personality;
     }
 
     public Shelter getShelter() {

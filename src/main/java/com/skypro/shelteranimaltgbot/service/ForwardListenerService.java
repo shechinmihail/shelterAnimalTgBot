@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +15,14 @@ public class ForwardListenerService {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    @Autowired
-    private HandlerСalBakDataService handlerСalBakDataService;
+    private final HandlerСalBakDataService handlerСalBakDataService;
+    private final HandlerMessageDataService handlerMessageDataService;
 
-    @Autowired
-    private HandlerMessageDataService handlerMessageDataService;
+
+    public ForwardListenerService(HandlerСalBakDataService handlerСalBakDataService, HandlerMessageDataService handlerMessageDataService) {
+        this.handlerСalBakDataService = handlerСalBakDataService;
+        this.handlerMessageDataService = handlerMessageDataService;
+    }
 
     public List<SendMessage> messages(Update update) {
         List<SendMessage> messages = new ArrayList<>();
@@ -31,7 +33,7 @@ public class ForwardListenerService {
             } else if (callBackData == null && update.message() != null) {
                 handlerMessageDataService.handlerMessageData(update, messages);
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             logger.info("не обрабатываемые данные.. ");
             e.getMessage();
         }

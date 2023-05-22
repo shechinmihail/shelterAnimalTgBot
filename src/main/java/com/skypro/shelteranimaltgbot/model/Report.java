@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.model;
 
 
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;

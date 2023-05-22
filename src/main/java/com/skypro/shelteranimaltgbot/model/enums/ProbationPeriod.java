@@ -1,4 +1,4 @@
-package com.skypro.shelteranimaltgbot.model.Enum;
+package com.skypro.shelteranimaltgbot.model.enums;
 
 public enum ProbationPeriod {
     PASSING,

@@ -1,9 +1,8 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
-import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.enums.SessionEnum;
 import com.skypro.shelteranimaltgbot.repository.ChatSessionWithVolunteerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.List;
 public class ChatSessionWithVolunteerService {
 
 
-    @Autowired
-    private ChatSessionWithVolunteerRepository chatSessionRepository;
+    private final ChatSessionWithVolunteerRepository chatSessionRepository;
+
+    public ChatSessionWithVolunteerService(ChatSessionWithVolunteerRepository chatSessionRepository) {
+        this.chatSessionRepository = chatSessionRepository;
+    }
 
 
     /**

@@ -2,15 +2,17 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.skypro.shelteranimaltgbot.model.Shelter;
 import com.skypro.shelteranimaltgbot.repository.ShelterRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ShelterService {
 
-    @Autowired
-    private ShelterRepository shelterRepository;
 
+    private final ShelterRepository shelterRepository;
+
+    public ShelterService(ShelterRepository shelterRepository) {
+        this.shelterRepository = shelterRepository;
+    }
 
     public String getAbout(String userNameShelter) {
         Shelter shelter = shelterRepository.findByUserName(userNameShelter);

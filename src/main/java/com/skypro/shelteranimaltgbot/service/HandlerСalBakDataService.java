@@ -3,11 +3,10 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.skypro.shelteranimaltgbot.model.Document;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,22 +16,17 @@ import java.util.Set;
 
 @Service
 public class HandlerСalBakDataService {
-    @Autowired
-    private ButtonService buttonService;
-    @Autowired
-    private TypePetService typePetService;
-    @Autowired
-    private PetService petService;
-    @Autowired
-    private ShelterService shelterService;
-    @Autowired
-    private CommandButtonService commandButtonService;
-    @Autowired
-    private SendReportService sendReportService;
-    @Autowired
-    private UserService userService;
+
+    private final ButtonService buttonService;
+    private final TypePetService typePetService;
+    private final PetService petService;
+    private final ShelterService shelterService;
+    private final CommandButtonService commandButtonService;
+    private final SendReportService sendReportService;
+    private final UserService userService;
 
     private final String PREV = "/prev";
+
     private final String NEXT = "/next";
     private final String GOOD_REPORT = "/goodreport";
     private final String BAD_REPORT = "/badreport";
@@ -48,6 +42,17 @@ public class HandlerСalBakDataService {
     private final String SAFETY_DOG = "src/main/resources/static/dog_safety.jpg";
     private final String PATH_ADRESS = "src/main/resources/static/adress.jpg";
 
+    public HandlerСalBakDataService(ButtonService buttonService, TypePetService typePetService,
+                                    PetService petService, ShelterService shelterService,
+                                    CommandButtonService commandButtonService, SendReportService sendReportService, UserService userService) {
+        this.buttonService = buttonService;
+        this.typePetService = typePetService;
+        this.petService = petService;
+        this.shelterService = shelterService;
+        this.commandButtonService = commandButtonService;
+        this.sendReportService = sendReportService;
+        this.userService = userService;
+    }
 
     public List<SendMessage> handlerСalBakData(CallbackQuery callBackData, List<SendMessage> messages) {
         Long chatIdFromCallBackData = callBackData.message().chat().id();
@@ -125,8 +130,13 @@ public class HandlerСalBakDataService {
      */
     private SendMessage viewPetInfo(Long chatId, CallbackQuery callbackQuery) {
         String[] callBack = callbackQuery.data().split(" ");
-        String petInfo = callBack[1] + " возраст: " + callBack[2];
-        SendMessage sendMessage = new SendMessage(chatId, petInfo);
+        Pet pet = petService.findPet(Long.valueOf(callBack[0]));
+        String stringBuilder = "Имя: " + pet.getName() + "\n" +
+                "Возраст: " + pet.getAge() + "\n" +
+                "Рост: " + pet.getHeight() + " см" + "\n" +
+                "Характер: " + pet.getPersonality() + "\n\n" +
+                pet.getDescription();
+        SendMessage sendMessage = new SendMessage(chatId, stringBuilder);
         sendMessage.replyMarkup(buttonService.designOrBack(callbackQuery));
         return sendMessage;
     }

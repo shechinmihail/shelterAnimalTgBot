@@ -1,6 +1,6 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.enums.SessionEnum;
 
 import javax.persistence.*;
 import java.util.Objects;

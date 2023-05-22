@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;

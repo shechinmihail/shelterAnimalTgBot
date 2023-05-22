@@ -1,21 +1,20 @@
-package com.skypro.shelteranimaltgbot.service.Scheduled;
+package com.skypro.shelteranimaltgbot.service.scheduled;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.skypro.shelteranimaltgbot.model.Adoption;
-import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.Report;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.AdoptionRepository;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import com.skypro.shelteranimaltgbot.service.AdoptionService;
 import com.skypro.shelteranimaltgbot.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -29,23 +28,25 @@ public class ScheduledTask {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
 
-    private final String notification = "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного";
+    private final String NOTIFICATION = "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного";
 
-    @Autowired
-    private AdoptionService adoptionService;
-
-    @Autowired
-    private TelegramBot telegramBot;
+    private final AdoptionService adoptionService;
+    private final TelegramBot telegramBot;
+    private final UserService userService;
+    private final AdoptionRepository adoptionRepository;
+    private final UserRepository userRepository;
 
     private final double PERCENT1 = 30.00;
     private final double PERCENT2 = 50.00;
     private final double PERCENT3 = 5.00;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AdoptionRepository adoptionRepository;
-    @Autowired
-    private UserRepository userRepository;
+
+    public ScheduledTask(AdoptionService adoptionService, TelegramBot telegramBot, UserService userService, AdoptionRepository adoptionRepository, UserRepository userRepository) {
+        this.adoptionService = adoptionService;
+        this.telegramBot = telegramBot;
+        this.userService = userService;
+        this.adoptionRepository = adoptionRepository;
+        this.userRepository = userRepository;
+    }
 
     //@Scheduled(cron = "0 0 20 * * *")
     @Scheduled(cron = "0 0/1 * * * *")
@@ -54,20 +55,22 @@ public class ScheduledTask {
         adoptions.stream()
                 .forEach(adoption -> {
                     checkLastDateReport(adoption);
-                    double percent = getPercentageRatio(adoption.getReports().size(), getBadReports(adoption).size());
-                    if (percent > PERCENT2 && adoption.getReports().size() >= 21) {
-                        log.info("> 50 проц после замены срок 21 дн");
-                        setAdoptionStatus(adoption, ProbationPeriod.NOT_PASSED);
-                    } else if (percent > PERCENT2 && adoption.getReports().size() >= 14) {
-                        log.info("> 50 проц + замена 40 дн");
-                        setAdoptionTrialPeriod(adoption, 40);
-                    } else if (percent > PERCENT1 && adoption.getReports().size() >= 7) {
-                        log.info("> 30 проц");
-                        telegramBot.execute(new SendMessage(adoption.getUser().getUserTelegramId(), notification));
-                    } else if (percent < PERCENT3 && adoption.getReports().size() >= 14) {
-                        log.info("< 5 проц замена до 20 дн");
-                        setAdoptionTrialPeriod(adoption, 20);
-                        setAdoptionStatus(adoption, ProbationPeriod.PASSED);
+                    if (adoption.getReports().size() > 0) {
+                        double percent = getPercentageRatio(adoption.getReports().size(), getBadReports(adoption).size());
+                        if (percent > PERCENT2 && adoption.getReports().size() >= 21) {
+                            log.info("> 50 проц после замены срок 21 дн");
+                            setAdoptionStatus(adoption, ProbationPeriod.NOT_PASSED);
+                        } else if (percent > PERCENT2 && adoption.getReports().size() >= 14) {
+                            log.info("> 50 проц + замена 40 дн");
+                            setAdoptionTrialPeriod(adoption, 40);
+                        } else if (percent > PERCENT1 && adoption.getReports().size() >= 7) {
+                            log.info("> 30 проц");
+                            telegramBot.execute(new SendMessage(adoption.getUser().getUserTelegramId(), NOTIFICATION));
+                        } else if (percent < PERCENT3 && adoption.getReports().size() >= 14) {
+                            log.info("< 5 проц замена до 20 дн");
+                            setAdoptionTrialPeriod(adoption, 20);
+                            setAdoptionStatus(adoption, ProbationPeriod.PASSED);
+                        }
                     }
                 });
     }
@@ -98,7 +101,10 @@ public class ScheduledTask {
                 telegramBot.execute(messageToUser);
             }
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.info("Опекун " + adoption.getUser().getFirstName() + " (id:" + adoption.getUser().getId() + ") не прислал ни один отчет!");
+            if (adoption.getDate().isBefore(LocalDate.now())) {
+                telegramBot.execute(new SendMessage(adoption.getUser().getUserTelegramId(), "Пришлите отчет о питомце"));
+            }
         }
 
 
@@ -149,9 +155,14 @@ public class ScheduledTask {
     /**
      * метод возвращает процент плохих отчетов
      */
-    private double getPercentageRatio(Integer countAllReports, Integer countBadReports) {
+    private Double getPercentageRatio(Integer countAllReports, Integer countBadReports) {
         log.info("Вызван метод возвращения количества плохих отчетов");
-        return countBadReports * 100 / countAllReports;
+        try {
+            return Double.valueOf(countBadReports * 100 / countAllReports);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return null;
     }
 
     /**

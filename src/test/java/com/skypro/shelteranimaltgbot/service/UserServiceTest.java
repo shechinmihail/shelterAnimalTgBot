@@ -2,8 +2,8 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.shelteranimaltgbot.controller.UserController;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;

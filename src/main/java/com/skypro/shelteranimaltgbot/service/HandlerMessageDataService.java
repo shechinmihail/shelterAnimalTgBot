@@ -6,8 +6,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +13,13 @@ import java.util.List;
 
 @Service
 public class HandlerMessageDataService {
+
+
+    private final CommandButtonService commandButtonService;
+    private final TelegramBot telegramBot;
+    private final ChatSessionWithVolunteerService chatSessionService;
+    private final SendReportService sendReportService;
+    private final UserService userService;
 
     /**
      * команды
@@ -24,16 +29,16 @@ public class HandlerMessageDataService {
     private final String OPEN = "Принять";
     private final String CLOSE = "Закрыть/Отклонить";
 
-    @Autowired
-    private CommandButtonService commandButtonService;
-    @Autowired
-    private TelegramBot telegramBot;
-    @Autowired
-    private ChatSessionWithVolunteerService chatSessionService;
-    @Autowired
-    private SendReportService sendReportService;
-    @Autowired
-    private UserService userService;
+
+    public HandlerMessageDataService(CommandButtonService commandButtonService,
+                                     TelegramBot telegramBot, ChatSessionWithVolunteerService chatSessionService,
+                                     SendReportService sendReportService, UserService userService) {
+        this.commandButtonService = commandButtonService;
+        this.telegramBot = telegramBot;
+        this.chatSessionService = chatSessionService;
+        this.sendReportService = sendReportService;
+        this.userService = userService;
+    }
 
     /**
      * метод обрабатывает входящие сообщения от юзера, отвечает на вызовы кнопок основного меню клавиатуры, а также проверяет отправлен отчет о питомце или пользователь поделился контактом
@@ -45,8 +50,7 @@ public class HandlerMessageDataService {
         var contact = update.message().contact();
 
         if (update.message().photo() != null
-                && update.message().caption() != null &&
-                userService.checkUserStatus(userId) == StatusEnum.ADOPTER) {
+                && update.message().caption() != null) {
             sendReportService.saveReport(update);
         } else if (contact != null) {
             commandButtonService.setContact(update);

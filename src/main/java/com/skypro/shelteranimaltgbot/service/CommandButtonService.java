@@ -9,13 +9,12 @@ import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import com.skypro.shelteranimaltgbot.model.*;
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,23 +23,27 @@ import java.util.*;
 @Service
 public class CommandButtonService {
 
-    @Autowired
-    private TelegramBot telegramBot;
 
-    @Autowired
-    private ChatSessionWithVolunteerService chatSessionService;
+    private final TelegramBot telegramBot;
+    private final ChatSessionWithVolunteerService chatSessionService;
+    private final ButtonService buttonService;
+    private final UserService userService;
+    private final TypePetService typePetService;
+    private final TypePetRepository typePetRepository;
+    private final ReportRepository reportRepository;
 
-    @Autowired
-    private ButtonService buttonService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TypePetService typePetService;
-
-    @Autowired
-    private TypePetRepository typePetRepository;
+    public CommandButtonService(TelegramBot telegramBot, ChatSessionWithVolunteerService chatSessionService,
+                                ButtonService buttonService, UserService userService,
+                                TypePetService typePetService, TypePetRepository typePetRepository,
+                                ReportRepository reportRepository) {
+        this.telegramBot = telegramBot;
+        this.chatSessionService = chatSessionService;
+        this.buttonService = buttonService;
+        this.userService = userService;
+        this.typePetService = typePetService;
+        this.typePetRepository = typePetRepository;
+        this.reportRepository = reportRepository;
+    }
 
     private Message message;
     private Long userId;
@@ -51,8 +54,6 @@ public class CommandButtonService {
     private final String GOOD_REPORT = "/goodreport";
     private final String BAD_REPORT = "/badreport";
 
-    @Autowired
-    private ReportRepository reportRepository;
 
 
     /**
@@ -61,8 +62,11 @@ public class CommandButtonService {
     public List<SendMessage> mainMenu(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        User user = new User(message.from().firstName(), message.from().lastName(), userId, StatusEnum.GUEST, RoleEnum.USER);
-        userService.addUser(user);
+        User user = userService.findAByUserTelegramId(update);
+        if (user == null) {
+            user = new User(message.from().firstName(), message.from().lastName(), userId, StatusEnum.GUEST, RoleEnum.USER);
+            userService.addUser(user);
+        }
         if (user.getRole() == RoleEnum.VOLUNTEER) {
             messages.add(new SendMessage(userId, "Привет, " + user.getFirstName()).replyMarkup(buttonService.keyboardForChatSession()));
         } else {

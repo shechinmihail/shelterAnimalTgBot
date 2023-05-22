@@ -1,9 +1,9 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.request.*;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
+import static com.skypro.shelteranimaltgbot.model.enums.CommandButton.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

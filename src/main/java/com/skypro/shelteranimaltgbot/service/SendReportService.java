@@ -12,11 +12,11 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import com.skypro.shelteranimaltgbot.model.Adoption;
-import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.Report;
+import com.skypro.shelteranimaltgbot.model.enums.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
@@ -85,9 +85,6 @@ public class SendReportService {
         return messages;
     }
 
-
-    //TODO поправить все недочеты изменить метод сохранения фотографии в локальную папку с сохранением ссылки на нее в БД
-    //TODO добавить метод проверки принадлежности питомца опекуну
     public void saveReport(Update update) {
         logger.info("Вызван метод сохранения отчета из чата телеграм");
         String text = update.message().caption();
