@@ -83,19 +83,18 @@ public class CommandButtonService {
     public List<SendMessage> callVolunteer(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        try {
-            getFreeVolunteer().stream()
+        ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer();
+        newSession.setTelegramIdUser(message.from().id());
+        List<User> freeVolunteers = getFreeVolunteer();
+        if (freeVolunteers != null) {
+            freeVolunteers.stream()
                     .forEach(user -> {
-                        //отправили сообщение всем волонтерам и кнопки принять / отклонить, открыли сессию в статусе ожидания
                         messages.add(new SendMessage(user.getUserTelegramId(), "нужна помощь " + " для " + message.from().firstName()).replyMarkup(buttonService.keyboardForChatSession()));
-                        ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(user.getUserTelegramId(), message.from().id(), SessionEnum.STANDBY);
-                        chatSessionService.createSession(newSession);
+                        newSession.setTelegramIdVolunteer(user.getUserTelegramId());
                     });
-            messages.add(new SendMessage(userId, "Соединение устанавливается.."));
-        } catch (NullPointerException e) {
-            e.getMessage();
-            messages.add(new SendMessage(userId, "Пока все волонтеры заняты "));
         }
+        chatSessionService.createSession(newSession);
+        messages.add(new SendMessage(userId, "Соединение устанавливается.."));
         return messages;
     }
 
