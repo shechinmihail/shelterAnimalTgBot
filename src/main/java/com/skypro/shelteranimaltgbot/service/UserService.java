@@ -136,4 +136,14 @@ public class UserService {
         return userRepository.findAByUserTelegramId(userId).getStatus();
     }
 
+
+    /**
+     * изменяет роль пользователю
+     */
+    public User updateUserRole(Long idUser, RoleEnum roleEnum) {
+        logger.info("Вызван метод изменения роли пользователя {}", roleEnum);
+        User user = findUser(idUser);
+        user.setRole(roleEnum);
+        return updateUser(user);
+    }
 }

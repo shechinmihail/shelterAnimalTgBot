@@ -1,6 +1,7 @@
 package com.skypro.shelteranimaltgbot.controller;
 
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import com.skypro.shelteranimaltgbot.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -180,6 +181,12 @@ public class UserController {
                                            @PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(path = "/update-user-role/{id}/{role}")
+    // PATCH http://localhost:8080/users//update-user-role/{id}/{role}
+    public ResponseEntity<User> updateUserRole(@PathVariable("id") Long idUser, @PathVariable("role") RoleEnum roleEnum) {
+        return ResponseEntity.ok(userService.updateUserRole(idUser, roleEnum));
     }
 
 }

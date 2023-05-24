@@ -204,12 +204,16 @@ public class AdoptionController {
                     )
             )
     )
+
+    /**
+     *
+     * */
     @PatchMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
-    //POST http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
+    //Patch http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(
-            @PathVariable Long userId,
-            @PathVariable Long petId,
-            @PathVariable Integer trialPeriod
+            @PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId,
+            @PathVariable("trialPeriod") Integer trialPeriod
     ) {
         return ResponseEntity.ok(adoptionService.createRecord(userId, petId, trialPeriod));
     }
