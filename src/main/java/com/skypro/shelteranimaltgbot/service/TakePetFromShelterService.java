@@ -11,7 +11,9 @@ import java.util.Optional;
 
 @Service
 public class TakePetFromShelterService {
+
     private final TakePetFromShelterRepository takePetFromShelterRepository;
+
     private final Logger logger = LoggerFactory.getLogger(PetService.class);
 
     public TakePetFromShelterService(TakePetFromShelterRepository takePetFromShelterRepository) {

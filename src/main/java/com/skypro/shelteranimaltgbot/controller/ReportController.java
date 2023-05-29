@@ -1,8 +1,8 @@
 package com.skypro.shelteranimaltgbot.controller;
 
 
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
 import com.skypro.shelteranimaltgbot.model.Report;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
 import com.skypro.shelteranimaltgbot.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

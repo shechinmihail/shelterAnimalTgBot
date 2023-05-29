@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.service;
 
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
-import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.enums.SessionEnum;
 import com.skypro.shelteranimaltgbot.repository.ChatSessionWithVolunteerRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

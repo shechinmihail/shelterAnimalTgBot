@@ -3,15 +3,14 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
 import com.skypro.shelteranimaltgbot.model.Adoption;
-import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import com.skypro.shelteranimaltgbot.repository.AdoptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,12 +22,16 @@ import java.util.List;
 public class AdoptionService {
 
     private static final Logger logger = LoggerFactory.getLogger(User.class);
-    @Autowired
-    private AdoptionRepository adoptionRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PetService petService;
+
+    private final AdoptionRepository adoptionRepository;
+    private final UserService userService;
+    private final PetService petService;
+
+    public AdoptionService(AdoptionRepository adoptionRepository, UserService userService, PetService petService) {
+        this.adoptionRepository = adoptionRepository;
+        this.userService = userService;
+        this.petService = petService;
+    }
 
     /**
      * Добавление нового записи усыновления и сохранение ее в базе данных

@@ -2,13 +2,12 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,12 +22,16 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
+
     /**
      * Поле репозитория пользователя
      */
-    @Autowired
-    private UserRepository userRepository;
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Добавление нового пользователя и сохранение его в базе данных
@@ -133,4 +136,14 @@ public class UserService {
         return userRepository.findAByUserTelegramId(userId).getStatus();
     }
 
+
+    /**
+     * изменяет роль пользователю
+     */
+    public User updateUserRole(Long idUser, RoleEnum roleEnum) {
+        logger.info("Вызван метод изменения роли пользователя {}", roleEnum);
+        User user = findUser(idUser);
+        user.setRole(roleEnum);
+        return updateUser(user);
+    }
 }

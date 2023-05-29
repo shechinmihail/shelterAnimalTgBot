@@ -12,11 +12,11 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.listener.TelegramBotUpdatesListener;
 import com.skypro.shelteranimaltgbot.model.Adoption;
-import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
 import com.skypro.shelteranimaltgbot.model.Report;
+import com.skypro.shelteranimaltgbot.model.enums.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
@@ -46,10 +46,10 @@ public class SendReportService {
             "3) <i>Вставьте скопированный шаблон в описание к фото</i> \n" +
             "4) <i>Замените ХХХ своими комментариями</i>";
 
-    private final String TEMPLATE = "Id: ХХХX \n" +
-            "Рацион: XXXX \n" +
-            "Самочувствие: XXXX \n" +
-            "Поведение: XXXX \n";
+    private final String TEMPLATE = "Id: ХХХ \n" +
+            "Рацион: XXX \n" +
+            "Самочувствие: XXX \n" +
+            "Поведение: XXX \n";
 
     @Value("${path.to.avatars.from.report.folder}")
     private String reportPhotoDir;
@@ -85,16 +85,13 @@ public class SendReportService {
         return messages;
     }
 
-
-    //TODO поправить все недочеты изменить метод сохранения фотографии в локальную папку с сохранением ссылки на нее в БД
-    //TODO добавить метод проверки принадлежности питомца опекуну
     public void saveReport(Update update) {
         logger.info("Вызван метод сохранения отчета из чата телеграм");
         String text = update.message().caption();
         Matcher matcher = REPORT_PATTERN.matcher(text);
         Long chatId = update.message().chat().id();
         if (matcher.matches()) {
-            Long petId = Long.valueOf(matcher.group(3));
+            Long petId = Long.valueOf(matcher.group(3).replaceAll(" ", ""));
             String diet = matcher.group(6);
             String petInfo = matcher.group(9);
             String changeInPetBehavior = matcher.group(12);

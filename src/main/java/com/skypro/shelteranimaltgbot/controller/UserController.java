@@ -1,15 +1,14 @@
 package com.skypro.shelteranimaltgbot.controller;
 
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import com.skypro.shelteranimaltgbot.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,6 @@ public class UserController {
     /**
      * Поле сервиса пользователя
      */
-    @Autowired
     private final UserService userService;
 
     /**
@@ -91,7 +89,7 @@ public class UserController {
                             )
                     )})
     @GetMapping(path = "{id}")   //GET http://localhost:8080/users/{id}
-    public ResponseEntity<User> findUser(@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
+    public ResponseEntity<User> findUser(//@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
                                          @PathVariable Long id) {
         User user = userService.findUser(id);
         if (user == null) {
@@ -118,7 +116,7 @@ public class UserController {
                     )
             }
     )
-    @GetMapping(path = "all")   //GET http://localhost:8080/users/all
+    @GetMapping(path = "/all")   //GET http://localhost:8080/users/all
     public ResponseEntity<Collection<User>> getAll() {
         return ResponseEntity.ok(userService.getAll());
     }
@@ -178,11 +176,17 @@ public class UserController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/users/{id}
-    public ResponseEntity<Void> deleteUser(@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
+    @DeleteMapping(path = "/{id}")   //DELETE http://localhost:8080/users/{id}
+    public ResponseEntity<Void> deleteUser(//@Parameter(description = "Ввод id пользователя", name = "ID пользователя")
                                            @PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(path = "/update-user-role/{id}/{role}")
+    // PATCH http://localhost:8080/users//update-user-role/{id}/{role}
+    public ResponseEntity<User> updateUserRole(@PathVariable("id") Long idUser, @PathVariable("role") RoleEnum roleEnum) {
+        return ResponseEntity.ok(userService.updateUserRole(idUser, roleEnum));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import com.skypro.shelteranimaltgbot.model.Enum.ProbationPeriod;
+import com.skypro.shelteranimaltgbot.model.enums.ProbationPeriod;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -22,7 +22,6 @@ public class Adoption {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "id", nullable = false)
     private Long id;
 
     /**

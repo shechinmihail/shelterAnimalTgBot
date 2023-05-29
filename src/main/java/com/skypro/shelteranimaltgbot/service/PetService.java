@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 public class PetService {
 
+    private final static Logger logger = LoggerFactory.getLogger(PetService.class);
+
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
@@ -33,11 +35,7 @@ public class PetService {
     /**
      * Поле репозитория домашнего питомца
      */
-
     private final PetRepository petRepository;
-
-
-    private final static Logger logger = LoggerFactory.getLogger(PetService.class);
 
     /**
      * Конструктор - создание нового объекта репозитория

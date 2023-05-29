@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import com.skypro.shelteranimaltgbot.model.ChatSessionWithVolunteer;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +33,7 @@ public class HandlerMessageDataServiceTest {
     @Mock
     private ChatSessionWithVolunteerService chatSessionService;
 
-    private ArrayList<SendMessage> messages = new ArrayList<>();
+    private final ArrayList<SendMessage> messages = new ArrayList<>();
     private final String START = "/start";
     private final String CALL_VOLUNTEER = "Позвать волонтера";
     private final String OPEN = "Принять";

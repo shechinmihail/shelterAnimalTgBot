@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.skypro.shelteranimaltgbot.model.Enum.ReportStatus;
 import com.skypro.shelteranimaltgbot.model.Report;
+import com.skypro.shelteranimaltgbot.model.enums.ReportStatus;
 import com.skypro.shelteranimaltgbot.repository.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import java.util.Collection;
 @Service
 public class ReportService {
     private static final Logger logger = LoggerFactory.getLogger(Report.class);
+
     private final ReportRepository reportRepository;
 
     public ReportService(ReportRepository reportRepository) {

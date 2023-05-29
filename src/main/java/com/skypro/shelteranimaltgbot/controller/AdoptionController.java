@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +26,13 @@ public class AdoptionController {
     /**
      * поле сервиса записи усыновления
      */
-    @Autowired
-    AdoptionService adoptionService;
+
+    private final AdoptionService adoptionService;
+
+    public AdoptionController(AdoptionService adoptionService) {
+        this.adoptionService = adoptionService;
+    }
+
 
     public AdoptionController(AdoptionService adoptionService) {
     }
@@ -203,12 +207,16 @@ public class AdoptionController {
                     )
             )
     )
-    @PostMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
-    //POST http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
+
+    /**
+     *
+     * */
+    @PatchMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
+    //Patch http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(
-            @PathVariable Long userId,
-            @PathVariable Long petId,
-            @PathVariable Integer trialPeriod
+            @PathVariable("userId") Long userId,
+            @PathVariable("petId") Long petId,
+            @PathVariable("trialPeriod") Integer trialPeriod
     ) {
         return ResponseEntity.ok(adoptionService.createRecord(userId, petId, trialPeriod));
     }

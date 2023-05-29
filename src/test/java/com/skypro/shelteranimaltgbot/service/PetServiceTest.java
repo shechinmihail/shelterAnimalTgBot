@@ -2,8 +2,8 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.shelteranimaltgbot.controller.PetController;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import com.skypro.shelteranimaltgbot.repository.PetRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

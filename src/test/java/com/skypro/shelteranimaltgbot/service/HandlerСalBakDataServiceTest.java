@@ -1,12 +1,12 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.skypro.shelteranimaltgbot.model.Document;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.Document;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.TypePet;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +47,7 @@ public class HandlerСalBakDataServiceTest {
     @InjectMocks
     private HandlerСalBakDataService handlerСalBakDataService;
 
-    private List<SendMessage> messages = new ArrayList<>();
+    private final List<SendMessage> messages = new ArrayList<>();
 
     private final String PREV = "/prev";
     private final String NEXT = "/next";

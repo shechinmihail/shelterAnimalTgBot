@@ -3,27 +3,30 @@ package com.skypro.shelteranimaltgbot.service;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.*;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
 import com.skypro.shelteranimaltgbot.model.Report;
 import com.skypro.shelteranimaltgbot.model.TypePet;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.skypro.shelteranimaltgbot.model.Enum.CommandButton.*;
+import static com.skypro.shelteranimaltgbot.model.enums.CommandButton.*;
 
 @Service
 public class ButtonService {
 
-    @Autowired
-    private PetService petService;
 
-    @Autowired
-    private TypePetService typePetService;
+    private final PetService petService;
+    private final TypePetService typePetService;
+
+
+    public ButtonService(PetService petService, TypePetService typePetService) {
+        this.petService = petService;
+        this.typePetService = typePetService;
+    }
 
 
     /**
