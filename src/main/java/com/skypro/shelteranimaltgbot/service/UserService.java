@@ -2,12 +2,12 @@ package com.skypro.shelteranimaltgbot.service;
 
 import com.pengrad.telegrambot.model.Update;
 import com.skypro.shelteranimaltgbot.exception.UserNotFoundException;
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
 import com.skypro.shelteranimaltgbot.model.User;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
 import com.skypro.shelteranimaltgbot.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,12 +22,16 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
+
     /**
      * Поле репозитория пользователя
      */
-    @Autowired
-    private UserRepository userRepository;
-    private static final Logger logger = LoggerFactory.getLogger(User.class);
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Добавление нового пользователя и сохранение его в базе данных
@@ -36,7 +40,7 @@ public class UserService {
      */
     public User addUser(User user) {
         logger.info("Вызван метод добавления пользователя");
-        if (userRepository.findAllByUserTelegramId(user.getUserTelegramId()) == null) {
+        if (userRepository.findAByUserTelegramId(user.getUserTelegramId()) == null) {
             userRepository.save(user);
             logger.info("Пользователь добавлен {}", user.getFirstName() + " " + user.getLastName());
         }
@@ -103,10 +107,10 @@ public class UserService {
      * метод добавления контакта в БД
      * */
     public void setContact(Update update) {
-        logger.info("Вызван метод добавлкения номера телефона в БД");
+        logger.info("Вызван метод добавления номера телефона в БД");
         var phone = update.message().contact().phoneNumber();
         var userTelegramId = update.message().from().id();
-        User u = userRepository.findAllByUserTelegramId(userTelegramId);
+        User u = userRepository.findAByUserTelegramId(userTelegramId);
         u.setPhone(phone);
         userRepository.save(u);
     }
@@ -114,18 +118,32 @@ public class UserService {
     /**
      * поиск юзера по айди
      */
-    public User findUserByChatId(Update update) {
-        User findUser = userRepository.findAllByUserTelegramId(update.message().chat().id());
-        return findUser;
+    public User findAByUserTelegramId(Update update) {
+        return userRepository.findAByUserTelegramId(update.message().from().id());
+
     }
 
 
     /**
      * вернуть всех юзеров по определенной роли
-     * */
+     */
     public List<User> checkUsersByRole(RoleEnum role) {
         logger.info("Вызван метод получения всех пользователе с ролью {}", role);
         return new ArrayList<>(userRepository.findAllByRole(role));
     }
 
+    public StatusEnum checkUserStatus(Long userId) {
+        return userRepository.findAByUserTelegramId(userId).getStatus();
+    }
+
+
+    /**
+     * изменяет роль пользователю
+     */
+    public User updateUserRole(Long idUser, RoleEnum roleEnum) {
+        logger.info("Вызван метод изменения роли пользователя {}", roleEnum);
+        User user = findUser(idUser);
+        user.setRole(roleEnum);
+        return updateUser(user);
+    }
 }

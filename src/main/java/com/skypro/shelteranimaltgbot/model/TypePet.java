@@ -6,22 +6,44 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "type_pet")
 public class TypePet {
+
+    /**
+     * идентификатор типа животного
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * тип животного
+     */
     private String type;
 
-    //@ManyToMany(fetch = FetchType.EAGER, mappedBy = "typePets", cascade = CascadeType.ALL)
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    /**
+     * список документов для типа животного
+     */
+    @OneToMany(mappedBy = "typePetDoc", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Document> documentsList;
+
+    /**
+     * список правил/рекомендаций для типа животного
+     */
+    @OneToMany(mappedBy = "typePetRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<TakePetFromShelter> takePetFromShelters;
 
     public TypePet() {
     }
 
-    public TypePet(String type, Document document) {
+    public TypePet(String type) {
         this.type = type;
+    }
+
+    public TypePet(String type, Set<Document> documents, Set<TakePetFromShelter> takePetFromShelters) {
+        this.type = type;
+        this.documentsList = documents;
+        this.takePetFromShelters = takePetFromShelters;
     }
 
     public Long getId() {
@@ -32,9 +54,24 @@ public class TypePet {
         return type;
     }
 
+    public Set<Document> getDocumentsList() {
+        return documentsList;
+    }
 
-    public void setDocuments(Set<Document> documents) {
-        this.documentsList = documents;
+    public void setDocumentsList(Set<Document> documentsList) {
+        this.documentsList = documentsList;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Set<TakePetFromShelter> getTakePetFromShelters() {
+        return takePetFromShelters;
+    }
+
+    public void setTakePetFromShelters(Set<TakePetFromShelter> takePetFromShelters) {
+        this.takePetFromShelters = takePetFromShelters;
     }
 
     @Override
@@ -56,6 +93,7 @@ public class TypePet {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", documentsList=" + documentsList +
+                ", takePetFromShelters=" + takePetFromShelters +
                 '}';
     }
 }

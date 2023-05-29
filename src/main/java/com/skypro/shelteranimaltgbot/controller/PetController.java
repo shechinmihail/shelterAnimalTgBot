@@ -1,8 +1,8 @@
 package com.skypro.shelteranimaltgbot.controller;
 
 
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
 import com.skypro.shelteranimaltgbot.model.Pet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 import com.skypro.shelteranimaltgbot.service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,11 +10,12 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -30,7 +31,7 @@ public class PetController {
     /**
      * Поле сервиса домашнего питомца
      */
-    @Autowired
+
     private final PetService petService;
 
     /**
@@ -44,7 +45,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Добавление омашнего питомца в базу данных",
+            summary = "Добавление домашнего питомца в базу данных",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Добавленный домашний питомец",
                     content = @Content(
@@ -53,19 +54,19 @@ public class PetController {
                     )
             )
     )
+
     @PostMapping    //POST http://localhost:8080/pet
-    public Pet addPet(@RequestBody Pet pet,
-                      @Parameter(description = "Установка статуса домашнего питомца", example = "BUSY")
-                      @RequestParam(name = "Статус") StatusPet statusPet) {
-        return petService.addPet(pet, statusPet);
+    public ResponseEntity<Pet> addPet(@RequestBody Pet pet) {
+        return ResponseEntity.ok(petService.addPet(pet));
     }
+
 
     @Operation(
             summary = "Функция получения домашнего питомца по идентификатору (id) из базы данных",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Найденый домашний питомец",
+                            description = "Найденный домашний питомец",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = Pet.class)
@@ -128,10 +129,11 @@ public class PetController {
                     )
             }
     )
+
     @PutMapping   //PUT http://ocalhost:8080/pet
     public ResponseEntity<Pet> updatePet(@RequestBody Pet pet,
                                          @Parameter(description = "Установка статуса домашнего питомца", example = "BUSY")
-                                         @RequestParam(name = "Статус") StatusPet statusPet) {
+                                         @RequestParam(name = "Status") StatusPet statusPet) {
         Pet foundPet = petService.updatePet(pet, statusPet);
         if (foundPet == null) {
             return ResponseEntity.notFound().build();
@@ -159,10 +161,37 @@ public class PetController {
                     )
             }
     )
-    @DeleteMapping(path = "{id}")   //DELETE http://localhost:8080/pet/{id}
+    @DeleteMapping(path = "/{id}")   //DELETE http://localhost:8080/pet/{id}
     public ResponseEntity<Void> deletePet(@Parameter(description = "Ввод id домашнего питомца", name = "ID домашнего питомца")
                                           @PathVariable Long id) {
         petService.deletePet(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "Добавление фото питомца по идентификатору (id)",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Фото питомца добавлено",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Домашний питомец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class))
+                    )
+            }
+    )
+    @PostMapping(value = "/{petId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long petId, @RequestParam MultipartFile avatar) throws IOException {
+        petService.uploadAvatar(petId, avatar);
         return ResponseEntity.ok().build();
     }
 

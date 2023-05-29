@@ -1,6 +1,5 @@
 package com.skypro.shelteranimaltgbot.service;
 
-import com.skypro.shelteranimaltgbot.model.Document;
 import com.skypro.shelteranimaltgbot.model.TypePet;
 import com.skypro.shelteranimaltgbot.repository.TypePetRepository;
 import org.junit.jupiter.api.Assertions;
@@ -32,16 +31,17 @@ class TypePetServiceTest {
 
     @BeforeEach
     void setUp() {
-        TypePet typePet = new TypePet("Собака", new Document("Паспорт"));
-        TypePet typePet1 = new TypePet("Кошка", new Document("Паспорт"));
-        typePets = List.of(typePet, typePet1);
+        TypePet typePet = new TypePet("Собака", null, null);
+        TypePet typePet1 = new TypePet("Кошка", null, null);
+        typePets.add(typePet);
+        typePets.add(typePet1);
         when(typePetRepository.findAll()).thenReturn(typePets);
     }
 
     @Test
     void getAllTypePet() {
-        TypePet tP = new TypePet("Собака", new Document("Паспорт"));
-        TypePet tP1 = new TypePet("Кошка", new Document("Паспорт"));
+        TypePet tP = new TypePet("Собака", null, null);
+        TypePet tP1 = new TypePet("Кошка", null, null);
         Set<TypePet> typePetsList = new HashSet<>(List.of(tP, tP1));
         Assertions.assertEquals(typePetsList, typePetService.getAllTypePet());
     }

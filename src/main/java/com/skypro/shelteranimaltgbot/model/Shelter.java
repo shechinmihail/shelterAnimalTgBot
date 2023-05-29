@@ -2,6 +2,7 @@ package com.skypro.shelteranimaltgbot.model;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Shelter {
@@ -11,6 +12,13 @@ public class Shelter {
 
     private String name;
     private String userName;
+
+    /**
+     * коллекция животных
+     */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "shelter_id")
+    private Set<Pet> pets;
 
     @Column(columnDefinition = "text")
     private String about;
@@ -24,6 +32,10 @@ public class Shelter {
         this.name = name;
         this.userName = userName;
         this.about = about;
+    }
+
+    public Set<Pet> getPets() {
+        return pets;
     }
 
     public Long getId() {

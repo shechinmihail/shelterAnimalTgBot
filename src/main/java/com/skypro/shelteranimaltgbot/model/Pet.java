@@ -1,7 +1,7 @@
 package com.skypro.shelteranimaltgbot.model;
 
 
-import com.skypro.shelteranimaltgbot.model.Enum.StatusPet;
+import com.skypro.shelteranimaltgbot.model.enums.StatusPet;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -20,7 +20,6 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
 
     /**
      * Вид домашнего питомца
@@ -41,6 +40,25 @@ public class Pet {
     @Column(name = "age", nullable = false)
     private Integer age;
 
+    /**
+     * Рост домашнего питомца
+     */
+    @Column(name = "height")
+    private Integer height;
+
+    /**
+     * Описание домашнего питомца
+     */
+    @Column(name = "description")
+    private String description;
+
+
+    /**
+     * характер домашнего питомца
+     */
+    @Column(name = "personality")
+    private String personality;
+
 
     /**
      * Статус домашнего питомца
@@ -52,10 +70,17 @@ public class Pet {
     private StatusPet statusPet;
 
     /**
-     * фото питомца
+     * Фото питомца
      */
     @Column(name = "photo")
     private String filePath;
+
+    /**
+     * приют
+     */
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
 
 
     /**
@@ -77,6 +102,38 @@ public class Pet {
      * Конструктор для создания объекта домашний питомец, без параметров
      */
     public Pet() {
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPersonality() {
+        return personality;
+    }
+
+    public void setPersonality(String personality) {
+        this.personality = personality;
+    }
+
+    public Shelter getShelter() {
+        return shelter;
+    }
+
+    public void setShelter(Shelter shelter) {
+        this.shelter = shelter;
     }
 
     public TypePet getTypePet() {
@@ -140,11 +197,12 @@ public class Pet {
     public String toString() {
         return "Pet{" +
                 "id=" + id +
-                ", typePet=" + typePet +
+                //  ", typePet=" + typePet +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", statusPet=" + statusPet +
                 ", filePath='" + filePath + '\'' +
+                // ", shelter=" + shelter +
                 '}';
     }
 }

@@ -1,7 +1,8 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import com.skypro.shelteranimaltgbot.model.Enum.RoleEnum;
-import com.skypro.shelteranimaltgbot.model.Enum.StatusEnum;
+import com.skypro.shelteranimaltgbot.model.enums.RoleEnum;
+import com.skypro.shelteranimaltgbot.model.enums.StatusEnum;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -20,14 +21,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     /**
      * Имя пользователя
      */
     private String firstName;
 
+    //TODO  убрать setter Id <--пока давайте оставим, сеттер используется в тестах
     /**
      * Фамилия пользователя
      */
+    @Nullable
     private String lastName;
 
     /**
@@ -44,6 +48,7 @@ public class User {
     /**
      * Номер телефона пользователя
      */
+    @Nullable
     private String phone;
 
     /**
@@ -63,7 +68,7 @@ public class User {
      * @param status         Статус пользователя
      * @param role           Роль пользователя
      */
-    public User(String firstName, String lastName, Long userTelegramId, Long userChatId, StatusEnum status, RoleEnum role) {
+    public User(String firstName, String lastName, Long userTelegramId, StatusEnum status, RoleEnum role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userTelegramId = userTelegramId;
@@ -111,6 +116,13 @@ public class User {
         this.status = status;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -125,5 +137,16 @@ public class User {
         return Objects.hash(id, firstName, lastName, userTelegramId, status, phone, role);
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userTelegramId=" + userTelegramId +
+                ", status=" + status +
+                ", phone='" + phone + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

@@ -1,6 +1,6 @@
 package com.skypro.shelteranimaltgbot.model;
 
-import com.skypro.shelteranimaltgbot.model.Enum.SessionEnum;
+import com.skypro.shelteranimaltgbot.model.enums.SessionEnum;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -18,12 +18,13 @@ public class ChatSessionWithVolunteer {
     private SessionEnum session;
 
     public ChatSessionWithVolunteer() {
+        this.session = SessionEnum.STANDBY;
     }
 
-    public ChatSessionWithVolunteer(Long telegramIdVolunteer, Long telegramIdUser, SessionEnum session) {
+    public ChatSessionWithVolunteer(Long telegramIdVolunteer, Long telegramIdUser) {
         this.telegramIdVolunteer = telegramIdVolunteer;
         this.telegramIdUser = telegramIdUser;
-        this.session = session;
+        this.session = SessionEnum.STANDBY;
     }
 
     public Long getId() {
@@ -45,6 +46,14 @@ public class ChatSessionWithVolunteer {
 
     public void setSession(SessionEnum session) {
         this.session = session;
+    }
+
+    public void setTelegramIdVolunteer(Long telegramIdVolunteer) {
+        this.telegramIdVolunteer = telegramIdVolunteer;
+    }
+
+    public void setTelegramIdUser(Long telegramIdUser) {
+        this.telegramIdUser = telegramIdUser;
     }
 
     @Override
