@@ -24,17 +24,13 @@ import java.util.Collection;
 public class AdoptionController {
 
     /**
-     * поле сервиса записи усыновления
+     * Поле сервиса записи усыновления
      */
 
     private final AdoptionService adoptionService;
 
     public AdoptionController(AdoptionService adoptionService) {
         this.adoptionService = adoptionService;
-    }
-
-
-    public AdoptionController(AdoptionService adoptionService) {
     }
 
     /**
