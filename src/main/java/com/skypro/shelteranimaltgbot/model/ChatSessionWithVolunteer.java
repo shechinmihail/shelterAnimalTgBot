@@ -17,7 +17,7 @@ public class ChatSessionWithVolunteer {
 
     private SessionEnum session;
 
-    public ChatSessionWithVolunteer() {
+    public ChatSessionWithVolunteer(long l, long l1, SessionEnum standby) {
         this.session = SessionEnum.STANDBY;
     }
 
@@ -25,6 +25,10 @@ public class ChatSessionWithVolunteer {
         this.telegramIdVolunteer = telegramIdVolunteer;
         this.telegramIdUser = telegramIdUser;
         this.session = SessionEnum.STANDBY;
+    }
+
+    public ChatSessionWithVolunteer() {
+
     }
 
     public Long getId() {

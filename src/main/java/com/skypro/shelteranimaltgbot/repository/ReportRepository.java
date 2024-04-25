@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Интерфейс ReportRepository
- * Интерфейс используется для работы с БД (для отчетов по домашним питомцам)
+ * Используется для работы с БД (для отчетов по домашним питомцам)
  */
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {

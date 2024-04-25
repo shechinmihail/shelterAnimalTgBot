@@ -4,13 +4,15 @@ import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
-
+/**
+ * Класс TypePet, представляет сущность типа животного
+ */
 @Entity
 @Table(name = "type_pet")
 public class TypePet {
 
     /**
-     * Идентификатор типа животного
+     * Идентификационный номер (id) типа животного
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +30,7 @@ public class TypePet {
     private Set<Document> documentsList;
 
     /**
-     * список правил/рекомендаций для типа животного
+     * Список правил/рекомендаций для типа животного
      */
     @OneToMany(mappedBy = "typePetRule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<TakePetFromShelter> takePetFromShelters;

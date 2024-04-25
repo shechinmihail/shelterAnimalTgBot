@@ -83,7 +83,7 @@ public class CommandButtonService {
     public List<SendMessage> callVolunteer(Update update, List<SendMessage> messages) {
         message = update.message();
         userId = message.from().id();
-        ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer();
+        ChatSessionWithVolunteer newSession = new ChatSessionWithVolunteer(1L, 1L, SessionEnum.STANDBY);
         newSession.setTelegramIdUser(message.from().id());
         List<User> freeVolunteers = getFreeVolunteer();
         if (freeVolunteers != null) {
