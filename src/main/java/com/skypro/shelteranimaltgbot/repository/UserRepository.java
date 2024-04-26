@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Интерфейс UserRepository
+ * для работы с БД (для работы с ролями пользователей)
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -17,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     /**
-     * Метод возвращает сотрудников по роли (User / Volunteer)
+     * Метод возвращает пользователя по роли (User / Volunteer)
      */
 
     List<User> findAllByRole(RoleEnum role);

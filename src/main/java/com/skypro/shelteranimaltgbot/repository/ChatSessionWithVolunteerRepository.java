@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatSessionWithVolunteerRepository extends JpaRepository<ChatSessionWithVolunteer, Long> {
     /**
-     * возврат сессии по id
+     * Возврат сессии по id
      */
     ChatSessionWithVolunteer findChatSessionWithVolunteerById(Long chatId);
 
