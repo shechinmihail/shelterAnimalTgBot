@@ -36,7 +36,6 @@ public class AdoptionController {
     /**
      * Функция добавления новую запись усыновления{@link AdoptionService#addAdoption(Adoption)}
      *
-     * @param adoption
      * @return возвращает объект, содержащий данные созданной записи
      */
 
@@ -185,7 +184,8 @@ public class AdoptionController {
 
     /**
      * Создание записи в журнал усыновления питомцев
-     * После подписания всех документов, Волонтер создает запись усыновления питомца и назаначает количество дней испытательного срока
+     * После подписания всех документов, Волонтер создает запись усыновления питомца и назначает
+     * количество дней испытательного срока
      *
      * @param userId      - id усыновителя
      * @param petId       - id питомца
@@ -204,16 +204,12 @@ public class AdoptionController {
             )
     )
 
-    /**
-     *
-     * */
     @PatchMapping(path = "/create-an-adoption-record/{userId}/{petId}/{trialPeriod}")
     //Patch http://localhost:8080/adoption/create-an-adoption-record/{userId}/{petId}/{trialPeriod}
     public ResponseEntity<Adoption> createRecord(
             @PathVariable("userId") Long userId,
             @PathVariable("petId") Long petId,
-            @PathVariable("trialPeriod") Integer trialPeriod
-    ) {
+            @PathVariable("trialPeriod") Integer trialPeriod) {
         return ResponseEntity.ok(adoptionService.createRecord(userId, petId, trialPeriod));
     }
 }

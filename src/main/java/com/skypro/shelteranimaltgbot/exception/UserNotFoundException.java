@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class UserNotFoundException extends RuntimeException {
     /**
      * Конструктор исключения
-     * Показ сообщения, что пользователь небыл найден в БД
+     * Показ сообщения, что пользователь не был найден в БД
      */
     public UserNotFoundException() {
         super("Такого пользователя нет в БД");

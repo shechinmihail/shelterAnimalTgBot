@@ -28,7 +28,9 @@ public class ScheduledTask {
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTask.class);
 
-    private final String NOTIFICATION = "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного";
+    private final String NOTIFICATION = "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно," +
+            "как необходимо. Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта" +
+            " будут обязаны самолично проверять условия содержания животного";
 
     private final AdoptionService adoptionService;
     private final TelegramBot telegramBot;
@@ -40,7 +42,9 @@ public class ScheduledTask {
     private final double PERCENT2 = 50.00;
     private final double PERCENT3 = 5.00;
 
-    public ScheduledTask(AdoptionService adoptionService, TelegramBot telegramBot, UserService userService, AdoptionRepository adoptionRepository, UserRepository userRepository) {
+    public ScheduledTask(AdoptionService adoptionService, TelegramBot telegramBot,
+                         UserService userService, AdoptionRepository adoptionRepository,
+                         UserRepository userRepository) {
         this.adoptionService = adoptionService;
         this.telegramBot = telegramBot;
         this.userService = userService;
